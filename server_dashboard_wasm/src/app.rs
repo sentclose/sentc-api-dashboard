@@ -1,8 +1,10 @@
 use alloc::string::String;
+use alloc::vec::Vec;
 
 use sentc_crypto::util::public::{handle_general_server_response, handle_server_response};
 use sentc_crypto_full::util::{make_req, HttpMethod};
-use server_api_common::app::{AppFileOptions, AppOptions, AppRegisterInput, AppUpdateInput};
+use server_api_common::app::{AppFileOptions, AppJwtData, AppOptions, AppRegisterInput, AppUpdateInput};
+use server_api_common::customer::CustomerAppList;
 
 use crate::utils;
 
@@ -62,6 +64,37 @@ pub async fn new_jwt_keys(base_url: String, jwt: &str, app_id: &str) -> Result<s
 	let res = make_req(HttpMethod::PATCH, url.as_str(), "", None, Some(jwt)).await?;
 
 	let out: server_api_common::app::AppJwtRegisterOutput = handle_server_response(res.as_str())?;
+
+	Ok(out)
+}
+
+pub async fn delete_jwt_keys(base_url: String, jwt: &str, app_id: &str, jwt_id: &str) -> Result<(), String>
+{
+	let url = base_url + "/api/v1/customer/app/" + app_id + "/jwt/" + jwt_id;
+
+	let res = make_req(HttpMethod::DELETE, url.as_str(), "", None, Some(jwt)).await?;
+
+	Ok(handle_general_server_response(res.as_str())?)
+}
+
+pub async fn get_app_jwt_data(base_url: String, jwt: &str, app_id: &str) -> Result<Vec<AppJwtData>, String>
+{
+	let url = base_url + "/api/v1/customer/app/" + app_id + "/jwt";
+
+	let res = make_req(HttpMethod::GET, url.as_str(), "", None, Some(jwt)).await?;
+
+	let out: Vec<AppJwtData> = handle_server_response(res.as_str())?;
+
+	Ok(out)
+}
+
+pub async fn get_all_apps(base_url: String, jwt: &str, last_fetched_time: &str, last_id: &str) -> Result<Vec<CustomerAppList>, String>
+{
+	let url = base_url + "/api/v1/customer/apps/" + last_fetched_time + "/" + last_id;
+
+	let res = make_req(HttpMethod::GET, url.as_str(), "", None, Some(jwt)).await?;
+
+	let out: Vec<CustomerAppList> = handle_server_response(res.as_str())?;
 
 	Ok(out)
 }

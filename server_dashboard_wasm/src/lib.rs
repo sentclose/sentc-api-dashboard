@@ -490,3 +490,25 @@ pub async fn new_jwt_keys(base_url: String, jwt: String, app_id: String) -> Resu
 
 	Ok(out.into())
 }
+
+#[wasm_bindgen]
+pub async fn delete_jwt_keys(base_url: String, jwt: String, app_id: String, jwt_id: String) -> Result<(), JsValue>
+{
+	Ok(app::delete_jwt_keys(base_url, jwt.as_str(), app_id.as_str(), jwt_id.as_str()).await?)
+}
+
+#[wasm_bindgen]
+pub async fn get_app_jwt_data(base_url: String, jwt: String, app_id: String) -> Result<JsValue, JsValue>
+{
+	let out = app::get_app_jwt_data(base_url, jwt.as_str(), app_id.as_str()).await?;
+
+	Ok(JsValue::from_serde(&out).unwrap())
+}
+
+#[wasm_bindgen]
+pub async fn get_all_apps(base_url: String, jwt: String, last_fetched_time: String, last_id: String) -> Result<JsValue, JsValue>
+{
+	let out = app::get_all_apps(base_url, jwt.as_str(), last_fetched_time.as_str(), last_id.as_str()).await?;
+
+	Ok(JsValue::from_serde(&out).unwrap())
+}
