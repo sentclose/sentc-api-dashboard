@@ -1,0 +1,31 @@
+[package]
+name = "server_dashboard_wasm"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+server_api_common = {version = "0.1.0", git="ssh://git@gitlab.com/sentclose/sentc/backend/sentc-api", branch = "27-dashboard-init"}
+
+# to get it from ssh: write this in your ~/.cargo/config.toml:
+# [net]
+# git-fetch-with-cli = true
+sentc-crypto = {version = "0.1.0", git = "ssh://git@gitlab.com/sentclose/sentc/sdk.git", features = ["server"]}
+sentc-crypto-full = {version = "0.1.0", git = "ssh://git@gitlab.com/sentclose/sentc/sdk.git", default-features = false, features = ["wasm"]}
+
+sentc-crypto-common = {version = "0.1.0", git="ssh://git@gitlab.com/sentclose/sentc/sdk-common" }
+
+# wasm dep
+getrandom = { version = "0.2", features = ["js"] }
+sha2 = { version = "0.10", default-features = false }
+
+# use the exact version
+wasm-bindgen = {version = "=0.2.81", features = ["serde-serialize"]}
+wasm-bindgen-futures = "0.4.31"
+
+serde_json = {version = "1.0.81", default-features = false, features = ["alloc"]}
+serde = { version = "1.0", default-features = false, features = ["derive", "alloc"] }
