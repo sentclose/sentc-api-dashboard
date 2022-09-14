@@ -17,8 +17,6 @@ server_api_common = {version = "0.1.0", git="ssh://git@gitlab.com/sentclose/sent
 sentc-crypto = {version = "0.1.0", git = "ssh://git@gitlab.com/sentclose/sentc/sdk.git", features = ["server"]}
 sentc-crypto-full = {version = "0.1.0", git = "ssh://git@gitlab.com/sentclose/sentc/sdk.git", default-features = false, features = ["wasm"]}
 
-sentc-crypto-common = {version = "0.1.0", git="ssh://git@gitlab.com/sentclose/sentc/sdk-common" }
-
 # wasm dep
 getrandom = { version = "0.2", features = ["js"] }
 sha2 = { version = "0.10", default-features = false }

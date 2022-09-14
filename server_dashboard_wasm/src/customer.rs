@@ -3,17 +3,17 @@ use alloc::vec;
 
 use sentc_crypto::util::public::{handle_general_server_response, handle_server_response};
 use sentc_crypto::SdkError;
-use sentc_crypto_common::user::{
+use sentc_crypto_full::util::{make_non_auth_req, make_req, HttpMethod};
+use server_api_common::customer::{CustomerRegisterData, CustomerRegisterOutput, CustomerUpdateInput};
+use server_api_common::sdk_common::user::{
 	ChangePasswordData,
 	DoneLoginServerInput,
 	DoneLoginServerKeysOutput,
 	DoneLoginServerOutput,
 	PrepareLoginSaltServerOutput,
+	RegisterData,
 };
-use sentc_crypto_common::ServerOutput;
-use sentc_crypto_full::util::{make_non_auth_req, make_req, HttpMethod};
-use server_api_common::customer::{CustomerRegisterData, CustomerRegisterOutput, CustomerUpdateInput};
-use server_api_common::sdk_common::user::RegisterData;
+use server_api_common::sdk_common::ServerOutput;
 
 use crate::utils;
 

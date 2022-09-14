@@ -386,15 +386,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "sentc-crypto-common"
-version = "0.1.0"
-source = "git+ssh://git@gitlab.com/sentclose/sentc/sdk-common#7a4fbd7f9bfeb0c93553e382e8f8641ab024c717"
-dependencies = [
- "serde",
- "serde_json",
-]
-
-[[package]]
 name = "sentc-crypto-core"
 version = "0.1.0"
 source = "git+ssh://git@gitlab.com/sentclose/sentc/sdk.git#8238f1b558942c67a1419eda91079656e87b54e6"
@@ -472,7 +463,6 @@ version = "0.1.0"
 dependencies = [
  "getrandom",
  "sentc-crypto",
- "sentc-crypto-common 0.1.0 (git+ssh://git@gitlab.com/sentclose/sentc/sdk-common)",
  "sentc-crypto-full",
  "serde",
  "serde_json",
