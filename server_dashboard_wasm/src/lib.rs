@@ -411,9 +411,40 @@ impl From<server_api_common::app::AppRegisterOutput> for AppRegisterOutput
 }
 
 #[wasm_bindgen]
+pub struct AppTokenRenewOutput
+{
+	secret_token: String,
+	public_token: String,
+}
+
+impl From<server_api_common::app::AppTokenRenewOutput> for AppTokenRenewOutput
+{
+	fn from(out: server_api_common::app::AppTokenRenewOutput) -> Self
+	{
+		Self {
+			secret_token: out.secret_token,
+			public_token: out.public_token,
+		}
+	}
+}
+
+#[wasm_bindgen]
+impl AppTokenRenewOutput
+{
+	pub fn get_secret_token(&self) -> String
+	{
+		self.secret_token.clone()
+	}
+
+	pub fn get_public_token(&self) -> String
+	{
+		self.public_token.clone()
+	}
+}
+
+#[wasm_bindgen]
 pub async fn app_create_app(
 	base_url: String,
-	auth_token: String,
 	jwt: String,
 	identifier: String,
 	options: JsValue,
@@ -428,33 +459,34 @@ pub async fn app_create_app(
 	let options: AppOptions = options.into_serde().unwrap();
 	let file_options: AppFileOptions = file_options.into_serde().unwrap();
 
-	let out = app::create(
-		base_url,
-		auth_token.as_str(),
-		jwt.as_str(),
-		identifier,
-		options,
-		file_options,
-	)
-	.await?;
+	let out = app::create(base_url, jwt.as_str(), identifier, options, file_options).await?;
 
 	Ok(out.into())
 }
 
 #[wasm_bindgen]
-pub async fn app_update(base_url: String, auth_token: String, jwt: String, app_id: String, identifier: String) -> Result<(), JsValue>
+pub async fn app_update(base_url: String, jwt: String, app_id: String, identifier: String) -> Result<(), JsValue>
 {
 	let identifier = match identifier.as_str() {
 		"" => None,
 		_ => Some(identifier),
 	};
 
-	Ok(app::update(
-		base_url,
-		auth_token.as_str(),
-		jwt.as_str(),
-		app_id.as_str(),
-		identifier,
-	)
-	.await?)
+	Ok(app::update(base_url, jwt.as_str(), app_id.as_str(), identifier).await?)
+}
+
+#[wasm_bindgen]
+pub async fn renew_token(base_url: String, jwt: String, app_id: String) -> Result<AppTokenRenewOutput, JsValue>
+{
+	let out = app::renew_token(base_url, jwt.as_str(), app_id.as_str()).await?;
+
+	Ok(out.into())
+}
+
+#[wasm_bindgen]
+pub async fn new_jwt_keys(base_url: String, jwt: String, app_id: String) -> Result<AppJwtRegisterOutput, JsValue>
+{
+	let out = app::new_jwt_keys(base_url, jwt.as_str(), app_id.as_str()).await?;
+
+	Ok(out.into())
 }
