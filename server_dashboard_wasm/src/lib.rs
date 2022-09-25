@@ -204,14 +204,6 @@ pub fn decode_jwt(jwt: &str) -> Result<Claims, JsValue>
 }
 
 #[wasm_bindgen]
-pub async fn check_user_identifier_available(base_url: String, auth_token: String, user_identifier: String) -> Result<bool, JsValue>
-{
-	let out = sentc_crypto_full::user::check_user_identifier_available(base_url, auth_token.as_str(), user_identifier.as_str()).await?;
-
-	Ok(out)
-}
-
-#[wasm_bindgen]
 pub async fn register(base_url: String, auth_token: String, email: String, password: String) -> Result<String, JsValue>
 {
 	let out = customer::register(base_url, auth_token.as_str(), email, password.as_str()).await?;
