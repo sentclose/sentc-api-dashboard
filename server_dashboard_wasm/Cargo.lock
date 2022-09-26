@@ -290,7 +290,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1d791538a6dcc1e7cb7fe6f6b58aca40e7f79403c45b2bc274008b5e647af1d8"
 dependencies = [
  "base64ct",
- "rand_core 0.6.3",
+ "rand_core 0.6.4",
  "subtle",
 ]
 
@@ -341,9 +341,9 @@ checksum = "90bde5296fc891b0cef12a6d03ddccc162ce7b2aff54160af9338f8d40df6d19"
 
 [[package]]
 name = "rand_core"
-version = "0.6.3"
+version = "0.6.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d34f1408f55294453790c48b2f1ebbb1c5b4b7563eb1f418bcfcfdbb06ebb4e7"
+checksum = "ec0be4795e2f6a28069bec0b5ff3e2ac9bafc99e6a9a7dc3547996c5c816922c"
 dependencies = [
  "getrandom",
 ]
@@ -357,7 +357,7 @@ checksum = "4501abdff3ae82a1c1b477a17252eb69cee9e66eb915c1abaa4f44d873df9f09"
 [[package]]
 name = "sentc-crypto"
 version = "0.1.0"
-source = "git+ssh://git@gitlab.com/sentclose/sentc/sdk.git#8238f1b558942c67a1419eda91079656e87b54e6"
+source = "git+ssh://git@gitlab.com/sentclose/sentc/sdk.git#f29b50b730e203ba5959ed8a4cb2260cce8ae959"
 dependencies = [
  "base64ct",
  "pem-rfc7468",
@@ -370,7 +370,7 @@ dependencies = [
 [[package]]
 name = "sentc-crypto-common"
 version = "0.1.0"
-source = "git+ssh://git@gitlab.com/sentclose/sentc/backend/sentc-api?branch=27-dashboard-init#73d0942e055d7179a7f24ff8c5b4ab689a12a044"
+source = "git+ssh://git@gitlab.com/sentclose/sentc/backend/sentc-api#6510e3af23e81a35cbec361e9e3794ef866de76c"
 dependencies = [
  "serde",
  "serde_json",
@@ -379,7 +379,7 @@ dependencies = [
 [[package]]
 name = "sentc-crypto-common"
 version = "0.1.0"
-source = "git+ssh://git@gitlab.com/sentclose/sentc/sdk.git#8238f1b558942c67a1419eda91079656e87b54e6"
+source = "git+ssh://git@gitlab.com/sentclose/sentc/sdk.git#f29b50b730e203ba5959ed8a4cb2260cce8ae959"
 dependencies = [
  "serde",
  "serde_json",
@@ -388,14 +388,14 @@ dependencies = [
 [[package]]
 name = "sentc-crypto-core"
 version = "0.1.0"
-source = "git+ssh://git@gitlab.com/sentclose/sentc/sdk.git#8238f1b558942c67a1419eda91079656e87b54e6"
+source = "git+ssh://git@gitlab.com/sentclose/sentc/sdk.git#f29b50b730e203ba5959ed8a4cb2260cce8ae959"
 dependencies = [
  "aes-gcm",
  "argon2",
  "curve25519-dalek",
  "ed25519-dalek",
  "hkdf",
- "rand_core 0.6.3",
+ "rand_core 0.6.4",
  "sha2 0.10.5",
  "x25519-dalek",
 ]
@@ -403,7 +403,7 @@ dependencies = [
 [[package]]
 name = "sentc-crypto-full"
 version = "0.1.0"
-source = "git+ssh://git@gitlab.com/sentclose/sentc/sdk.git#8238f1b558942c67a1419eda91079656e87b54e6"
+source = "git+ssh://git@gitlab.com/sentclose/sentc/sdk.git#f29b50b730e203ba5959ed8a4cb2260cce8ae959"
 dependencies = [
  "base64ct",
  "js-sys",
@@ -450,9 +450,9 @@ dependencies = [
 [[package]]
 name = "server_api_common"
 version = "0.1.0"
-source = "git+ssh://git@gitlab.com/sentclose/sentc/backend/sentc-api?branch=27-dashboard-init#73d0942e055d7179a7f24ff8c5b4ab689a12a044"
+source = "git+ssh://git@gitlab.com/sentclose/sentc/backend/sentc-api#6510e3af23e81a35cbec361e9e3794ef866de76c"
 dependencies = [
- "sentc-crypto-common 0.1.0 (git+ssh://git@gitlab.com/sentclose/sentc/backend/sentc-api?branch=27-dashboard-init)",
+ "sentc-crypto-common 0.1.0 (git+ssh://git@gitlab.com/sentclose/sentc/backend/sentc-api)",
  "serde",
  "serde_json",
 ]
@@ -498,9 +498,9 @@ dependencies = [
 
 [[package]]
 name = "signature"
-version = "1.6.1"
+version = "1.6.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e90531723b08e4d6d71b791108faf51f03e1b4a7784f96b2b87f852ebc247228"
+checksum = "deb766570a2825fa972bceff0d195727876a9cdf2460ab2e52d455dc2de47fd9"
 
 [[package]]
 name = "subtle"
@@ -545,9 +545,9 @@ checksum = "dcc811dc4066ac62f84f11307873c4850cb653bfa9b1719cee2bd2204a4bc5dd"
 
 [[package]]
 name = "unicode-xid"
-version = "0.2.3"
+version = "0.2.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "957e51f3646910546462e67d5f7599b9e4fb8acdd304b087a6494730f9eebf04"
+checksum = "f962df74c8c05a667b5ee8bcf162993134c104e96440b663c8daa176dc772d8c"
 
 [[package]]
 name = "universal-hash"
@@ -656,7 +656,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e5da623d8af10a62342bcbbb230e33e58a63255a58012f8653c578e54bab48df"
 dependencies = [
  "curve25519-dalek",
- "rand_core 0.6.3",
+ "rand_core 0.6.4",
  "zeroize",
 ]
 

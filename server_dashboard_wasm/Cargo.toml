@@ -9,7 +9,7 @@ edition = "2021"
 crate-type = ["cdylib"]
 
 [dependencies]
-server_api_common = {version = "0.1.0", git="ssh://git@gitlab.com/sentclose/sentc/backend/sentc-api", branch = "27-dashboard-init"}
+server_api_common = {version = "0.1.0", git="ssh://git@gitlab.com/sentclose/sentc/backend/sentc-api"}
 
 # to get it from ssh: write this in your ~/.cargo/config.toml:
 # [net]

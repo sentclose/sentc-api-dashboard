@@ -8,7 +8,7 @@ extern crate alloc;
 
 use alloc::string::{String, ToString};
 
-use server_api_common::app::{AppFileOptions, AppOptions};
+use server_api_common::app::{AppFileOptionsInput, AppOptions};
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
@@ -119,21 +119,23 @@ impl From<server_api_common::customer::CustomerEmailData> for CustomerEmailData
 }
 
 #[wasm_bindgen]
-pub struct DoneLoginLightServerOutput
+pub struct DoneLoginLightOutput
 {
 	user_id: String,
 	jwt: String,
 	device_id: String,
+	refresh_token: String,
 }
 
-impl From<server_api_common::sdk_common::user::DoneLoginLightServerOutput> for DoneLoginLightServerOutput
+impl From<server_api_common::sdk_common::user::DoneLoginLightOutput> for DoneLoginLightOutput
 {
-	fn from(key: server_api_common::sdk_common::user::DoneLoginLightServerOutput) -> Self
+	fn from(key: server_api_common::sdk_common::user::DoneLoginLightOutput) -> Self
 	{
 		Self {
 			user_id: key.user_id,
 			jwt: key.jwt,
 			device_id: key.device_id,
+			refresh_token: key.refresh_token,
 		}
 	}
 }
@@ -141,7 +143,7 @@ impl From<server_api_common::sdk_common::user::DoneLoginLightServerOutput> for D
 #[wasm_bindgen]
 pub struct CustomerDoneLoginOutput
 {
-	user_keys: DoneLoginLightServerOutput,
+	user_keys: DoneLoginLightOutput,
 	email_data: CustomerEmailData,
 }
 
@@ -192,6 +194,11 @@ impl CustomerDoneLoginOutput
 	pub fn get_device_id(&self) -> String
 	{
 		self.user_keys.device_id.clone()
+	}
+
+	pub fn get_refresh_token(&self) -> String
+	{
+		self.user_keys.refresh_token.clone()
 	}
 }
 
@@ -449,7 +456,7 @@ pub async fn app_create_app(
 	};
 
 	let options: AppOptions = options.into_serde().unwrap();
-	let file_options: AppFileOptions = file_options.into_serde().unwrap();
+	let file_options: AppFileOptionsInput = file_options.into_serde().unwrap();
 
 	let out = app::create(base_url, jwt.as_str(), identifier, options, file_options).await?;
 

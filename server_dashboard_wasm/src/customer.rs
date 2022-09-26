@@ -37,7 +37,9 @@ pub async fn register(base_url: String, auth_token: &str, email: String, passwor
 	Ok(out.customer_id)
 }
 
+//TODO customer init
 //TODO validate email, for register and update
+//TODo refresh jwt
 
 pub async fn login(
 	base_url: String,

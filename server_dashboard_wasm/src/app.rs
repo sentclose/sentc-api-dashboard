@@ -3,7 +3,7 @@ use alloc::vec::Vec;
 
 use sentc_crypto::util::public::{handle_general_server_response, handle_server_response};
 use sentc_crypto_full::util::{make_req, HttpMethod};
-use server_api_common::app::{AppFileOptions, AppJwtData, AppOptions, AppRegisterInput, AppUpdateInput};
+use server_api_common::app::{AppFileOptionsInput, AppJwtData, AppOptions, AppRegisterInput, AppUpdateInput};
 use server_api_common::customer::CustomerAppList;
 
 use crate::utils;
@@ -13,7 +13,7 @@ pub async fn create(
 	jwt: &str,
 	identifier: Option<String>,
 	options: AppOptions,
-	file_options: AppFileOptions,
+	file_options: AppFileOptionsInput,
 ) -> Result<server_api_common::app::AppRegisterOutput, String>
 {
 	let input = AppRegisterInput {
@@ -98,3 +98,10 @@ pub async fn get_all_apps(base_url: String, jwt: &str, last_fetched_time: &str, 
 
 	Ok(out)
 }
+
+/*
+TODO
+	- update app options
+	- update file options
+	- delete app
+ */
