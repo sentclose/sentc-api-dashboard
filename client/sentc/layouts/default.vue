@@ -30,6 +30,7 @@
 			fixed
 			app
 			dark
+			dense
 		>
 			<v-app-bar-nav-icon @click.stop="drawer = !drawer" />
 
@@ -85,7 +86,7 @@
 			:absolute="!fixed"
 			app
 		>
-			<span>&copy; {{ new Date().getFullYear() }}</span>
+			<span>&copy; {{ new Date().getFullYear() }} - Sentclose</span>
 		</v-footer>
 	</v-app>
 </template>
