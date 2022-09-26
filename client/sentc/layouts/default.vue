@@ -52,7 +52,7 @@
 		</v-app-bar>
 
 		<v-main>
-			<v-container>
+			<v-container fluid :class="{'mx-0': $vuetify.breakpoint.smAndDown, 'px-0': $vuetify.breakpoint.smAndDown}">
 				<Nuxt />
 			</v-container>
 		</v-main>
