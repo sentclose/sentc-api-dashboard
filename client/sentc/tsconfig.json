@@ -26,7 +26,8 @@
       "@nuxt/types",
       "@nuxtjs/axios",
       "@types/node",
-      "@nuxtjs/vuetify"
+      "@nuxtjs/vuetify",
+      "server_dashboard_wasm"
     ]
   },
   "exclude": [
