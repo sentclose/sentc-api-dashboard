@@ -1,5 +1,7 @@
 import {Action, Module, Mutation, VuexModule} from "vuex-module-decorators";
 import {CustomerLoginData} from "~/utils/types";
+import {decode_jwt, refresh_jwt} from "server_dashboard_wasm/server_dashboard_wasm_cjs";
+import {Claims} from "server_dashboard_wasm/server_dashboard_wasm";
 
 /**
  * @author Jörn Heinemann <joernheinemann@gmx.de>
@@ -39,10 +41,6 @@ export default class Customer extends VuexModule
 		return this.user_id;
 	}
 
-	get getJwt() {
-		return this.jwt;
-	}
-
 	get loggedIn() {
 		return this.isLoggedIn;
 	}
@@ -75,5 +73,31 @@ export default class Customer extends VuexModule
 		this.email_send = data.email_send;
 		this.email = data.email;
 		this.refresh_token = data.refresh_token;
+	}
+
+	// eslint-disable-next-line require-await
+	@Action({rawError: true})
+	public async saveData(data: CustomerLoginData)
+	{
+		this.context.commit("setData", data);
+
+		//TODO save it in local storage
+	}
+
+	@Action({rawError: true})
+	public async getJwt()
+	{
+		const jwt_data: Claims = decode_jwt(this.jwt);
+		const exp = jwt_data.get_exp();
+
+		if (exp <= Date.now() / 1000 + 30) {
+			const jwt = await refresh_jwt(process.env.NUXT_ENV_BASE_URL, process.env.NUXT_ENV_APP_PUBLIC_TOKEN, this.jwt, this.refresh_token);
+
+			this.context.commit("setJwt", jwt);
+
+			//TODO save new jwt in local storage too
+		}
+
+		return this.jwt;
 	}
 }
