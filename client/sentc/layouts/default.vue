@@ -49,11 +49,15 @@
 				icon
 				@click.stop="rightDrawer = !rightDrawer"
 			>
-				<v-icon>mdi-menu</v-icon>
+				<v-icon>mdi-cog</v-icon>
 			</v-btn>
 		</v-app-bar>
 
 		<v-main>
+			<v-dialog v-model="deleteDialog" max-width="500">
+				<Delete @changeDone="deleteDialog = false" />
+			</v-dialog>
+
 			<v-container fluid :class="{'mx-0': $vuetify.breakpoint.smAndDown, 'px-0': $vuetify.breakpoint.smAndDown}">
 				<Nuxt />
 			</v-container>
@@ -66,18 +70,32 @@
 			fixed
 		>
 			<v-list>
-				<v-list-item
-					v-for="(item, i) in right_items"
-					:key="i"
-					:to="item.to"
-					router
-					exact
-				>
+				<v-list-item to="/" router exact>
 					<v-list-item-action>
-						<v-icon>{{ item.icon }}</v-icon>
+						<v-icon>mdi-apps</v-icon>
 					</v-list-item-action>
 					<v-list-item-content>
-						<v-list-item-title v-text="item.title" />
+						<v-list-item-title v-text="'All apps'" />
+					</v-list-item-content>
+				</v-list-item>
+
+				<v-list-item to="/billing" router exact>
+					<v-list-item-action>
+						<v-icon>mdi-apps</v-icon>
+					</v-list-item-action>
+					<v-list-item-content>
+						<v-list-item-title v-text="'Billing'" />
+					</v-list-item-content>
+				</v-list-item>
+
+				<v-divider />
+
+				<v-list-item @click="deleteDialog = !deleteDialog">
+					<v-list-item-action>
+						<v-icon>mdi-apps</v-icon>
+					</v-list-item-action>
+					<v-list-item-content>
+						<v-list-item-title v-text="'Delete'" />
 					</v-list-item-content>
 				</v-list-item>
 			</v-list>
@@ -96,9 +114,12 @@
 import Vue from "vue";
 import Component from "vue-class-component";
 import {Getter} from "nuxt-property-decorator";
+import Delete from "~/components/Customer/Delete.vue";
 
 @Component({
 	name: "DefaultLayout",
+	// eslint-disable-next-line @typescript-eslint/naming-convention
+	components: {Delete},
 	watch: {
 		getLogin(val: number) {
 			if (this.$vuetify.breakpoint.sm) {
@@ -112,8 +133,6 @@ import {Getter} from "nuxt-property-decorator";
 			}
 		}
 	}
-	// eslint-disable-next-line @typescript-eslint/naming-convention
-	//components: {Delete, ResetPw, ChangePw, Register, Login}
 })
 export default class extends Vue
 {
@@ -130,6 +149,8 @@ export default class extends Vue
 
 	private title = "Sentc Dashboard";
 
+	private deleteDialog = false;
+
 	private items = [
 		{
 			icon: "mdi-apps",
@@ -140,19 +161,6 @@ export default class extends Vue
 			icon: "mdi-chart-bubble",
 			title: "Inspire",
 			to: "/inspire"
-		}
-	];
-
-	private right_items = [
-		{
-			icon: "mdi-apps",
-			title: "Sign up",
-			to: "/register"
-		},
-		{
-			icon: "mdi-chart-bubble",
-			title: "Sign in",
-			to: "/login"
 		}
 	];
 }

@@ -73,6 +73,7 @@ export default class Customer extends VuexModule
 		this.email_send = data.email_send;
 		this.email = data.email;
 		this.refresh_token = data.refresh_token;
+		this.isLoggedIn = 1;
 	}
 
 	// eslint-disable-next-line require-await
