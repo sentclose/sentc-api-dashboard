@@ -32,7 +32,7 @@
 			dark
 			dense
 		>
-			<v-app-bar-nav-icon @click.stop="drawer = !drawer" />
+			<v-app-bar-nav-icon v-if="getLogin=== 1 && $vuetify.breakpoint.sm" @click.stop="drawer = !drawer" />
 
 			<v-btn
 				icon
@@ -45,6 +45,7 @@
 
 			<v-spacer />
 			<v-btn
+				v-if="getLogin=== 1"
 				icon
 				@click.stop="rightDrawer = !rightDrawer"
 			>
@@ -94,16 +95,33 @@
 <script lang="ts">
 import Vue from "vue";
 import Component from "vue-class-component";
+import {Getter} from "nuxt-property-decorator";
 
 @Component({
-	name: "DefaultLayout"
+	name: "DefaultLayout",
+	watch: {
+		getLogin(val: number) {
+			if (this.$vuetify.breakpoint.sm) {
+				return;
+			}
+
+			if (val === 1 && this.drawer === false) {
+				this.drawer = true;
+			} else if (val !== 1) {
+				this.drawer = false;
+			}
+		}
+	}
 	// eslint-disable-next-line @typescript-eslint/naming-convention
 	//components: {Delete, ResetPw, ChangePw, Register, Login}
 })
 export default class extends Vue
 {
+	@Getter("customer/Customer/loggedIn")
+	private getLogin: number;
+
 	private clipped = true;
-	private drawer = true;
+	private drawer = false;
 	private fixed = false;
 
 	private miniVariant = false;
