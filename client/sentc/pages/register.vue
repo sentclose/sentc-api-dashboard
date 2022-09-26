@@ -1,5 +1,9 @@
 <template>
 	<div>
+		<ErrorEvent />
+
+		<Login ref="login" style="display: none" />
+
 		<v-row justify="center" align="center" class="mt-3">
 			<v-img :src="p('Sentc.png')" max-width="200" />
 		</v-row>
@@ -67,11 +71,16 @@
 import Vue from "vue";
 import Component from "vue-class-component";
 import zxcvbn from "zxcvbn";
-import {register} from "../../../server_dashboard_wasm/pkg/server_dashboard_wasm_cjs";
+import {register} from "server_dashboard_wasm/server_dashboard_wasm_cjs";
 import {SentcError} from "~/utils/types";
 import {p} from "~/utils/utils";
+import Login from "~/pages/login.vue";
+import ErrorEvent from "~/components/ErrorEvent.vue";
+import {Mutation} from "nuxt-property-decorator";
 
 @Component({
+	// eslint-disable-next-line @typescript-eslint/naming-convention
+	components: {Login, ErrorEvent},
 	computed: {
 		score() {
 			if (this.password.length < 6) {
@@ -121,6 +130,9 @@ export default class extends Vue
 
 	private showPassword = false;
 
+	@Mutation("event/ErrorEvent/setMsg")
+	private setMsg: (msg: string) => void;
+
 	private rules = {
 		required: (value) => { return !!value || "Required."; },
 		email: (value) => {
@@ -140,22 +152,33 @@ export default class extends Vue
 			return false;
 		}
 
+		const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+		if (!pattern.test(this.email)) {
+			this.setMsg("Invalid e-mail");
+			return false;
+		}
+
 		if (this.password !== this.password2) {
+			this.setMsg("Passwords are not the same");
 			return false;
 		}
 
 		try {
 			await register(process.env.NUXT_ENV_BASE_URL, process.env.NUXT_ENV_APP_PUBLIC_TOKEN, this.email, this.password);
 		} catch (e) {
-			const err: SentcError = JSON.parse(e);
+			try {
+				const err: SentcError = JSON.parse(e);
+				this.setMsg(err.error_message);
+			} catch (e) {
+				this.setMsg("An undefined error");
+			}
 
-			console.log(err.error_message);
-
-			console.error(e);
-			//TODO handle error
+			return;
 		}
 
-		//TODO log user in
+		//@ts-ignore
+		return this.$refs.login.login(this.email, this.password);
 	}
 }
 </script>
