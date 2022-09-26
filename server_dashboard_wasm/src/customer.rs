@@ -7,6 +7,7 @@ use sentc_crypto_full::util::{make_non_auth_req, make_req, HttpMethod};
 use server_api_common::customer::{CustomerRegisterData, CustomerRegisterOutput, CustomerUpdateInput};
 use server_api_common::sdk_common::user::{
 	ChangePasswordData,
+	DoneLoginLightServerOutput,
 	DoneLoginServerInput,
 	DoneLoginServerKeysOutput,
 	DoneLoginServerOutput,
@@ -37,9 +38,21 @@ pub async fn register(base_url: String, auth_token: &str, email: String, passwor
 	Ok(out.customer_id)
 }
 
+pub async fn refresh_jwt(base_url: String, auth_token: &str, old_jwt: &str, refresh_token: &str) -> Result<String, String>
+{
+	let url = base_url + "/api/v1/customer/refresh";
+
+	let input = sentc_crypto::user::prepare_refresh_jwt(refresh_token)?;
+
+	let res = make_req(HttpMethod::PUT, url.as_str(), auth_token, Some(input), Some(old_jwt)).await?;
+
+	let server_output: DoneLoginLightServerOutput = handle_server_response(res.as_str())?;
+
+	Ok(server_output.jwt)
+}
+
 //TODO customer init
 //TODO validate email, for register and update
-//TODo refresh jwt
 
 pub async fn login(
 	base_url: String,
