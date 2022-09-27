@@ -49,7 +49,7 @@ import {p} from "~/utils/utils";
 import {CustomerLoginData, SentcError} from "~/utils/types";
 import {login} from "server_dashboard_wasm/server_dashboard_wasm_cjs";
 import ErrorEvent from "~/components/ErrorEvent.vue";
-import {Mutation} from "nuxt-property-decorator";
+import {Action, Mutation} from "nuxt-property-decorator";
 import {CustomerDoneLoginOutput} from "server_dashboard_wasm/server_dashboard_wasm";
 
 @Component({
@@ -66,8 +66,8 @@ export default class extends Vue
 	@Mutation("event/ErrorEvent/setMsg")
 	private setMsg: (msg: string) => void;
 
-	@Mutation("customer/Customer/setData")
-	private setData: (data:CustomerLoginData) => void;
+	@Action("customer/Customer/saveData")
+	private saveData: (data: CustomerLoginData)=> Promise<void>;
 
 	private rules = {
 		required: (value) => { return !!value || "Required."; },
@@ -96,7 +96,7 @@ export default class extends Vue
 		try {
 			const data: CustomerDoneLoginOutput = await login(process.env.NUXT_ENV_BASE_URL, process.env.NUXT_ENV_APP_PUBLIC_TOKEN, email, password);
 
-			this.setData({
+			await this.saveData({
 				email_status: data.get_email_status(),
 				validate_email: data.get_validate_email(),
 				email_send: data.get_email_send(),
