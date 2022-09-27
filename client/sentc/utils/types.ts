@@ -14,3 +14,15 @@ export interface CustomerLoginData
 	refresh_token: string,
 	device_id: string
 }
+
+export const enum USER_KEY_STORAGE_NAMES
+{
+	userData = "user_data",
+	actualUser = "actual_user",
+
+	userPublicData = "user_public_data",
+	userPublicKey = "user_public_key",
+	userVerifyKey = "user_verify_key",
+
+	groupData = "group_data"
+}

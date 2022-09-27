@@ -1,7 +1,8 @@
 import {Action, Module, Mutation, VuexModule} from "vuex-module-decorators";
-import {CustomerLoginData} from "~/utils/types";
+import {CustomerLoginData, USER_KEY_STORAGE_NAMES} from "~/utils/types";
 import {decode_jwt, refresh_jwt} from "server_dashboard_wasm/server_dashboard_wasm_cjs";
 import {Claims} from "server_dashboard_wasm/server_dashboard_wasm";
+import {Storage} from "~/utils/FileStorage";
 
 /**
  * @author Jörn Heinemann <joernheinemann@gmx.de>
@@ -76,13 +77,38 @@ export default class Customer extends VuexModule
 		this.isLoggedIn = 1;
 	}
 
+	@Mutation
+	public setLogout()
+	{
+		this.jwt = "";
+		this.refresh_token = "";
+		this.email = "";
+		this.validate_email = false;
+		this.email_send = 0;
+		this.email_status = 0;
+		this.user_id = "";
+		this.device_id = "";
+	}
+
 	// eslint-disable-next-line require-await
 	@Action({rawError: true})
 	public async saveData(data: CustomerLoginData)
 	{
 		this.context.commit("setData", data);
 
-		//TODO save it in local storage
+		const storage = await Storage.getStore();
+
+		await storage.set(USER_KEY_STORAGE_NAMES.userData, data);
+	}
+
+	@Action({rawError: true})
+	public async logout()
+	{
+		this.context.commit("setLogout");
+
+		const storage = await Storage.getStore();
+
+		await storage.delete(USER_KEY_STORAGE_NAMES.userData);
 	}
 
 	@Action({rawError: true})
@@ -96,7 +122,13 @@ export default class Customer extends VuexModule
 
 			this.context.commit("setJwt", jwt);
 
-			//TODO save new jwt in local storage too
+			const storage = await Storage.getStore();
+
+			const data: CustomerLoginData = await storage.getItem(USER_KEY_STORAGE_NAMES.userData);
+
+			data.jwt = jwt;
+
+			await storage.set(USER_KEY_STORAGE_NAMES.userData, data);
 		}
 
 		return this.jwt;
