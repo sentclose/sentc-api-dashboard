@@ -151,9 +151,9 @@ export default class App extends VuexModule
 		} catch (e) {
 			try {
 				const err: SentcError = JSON.parse(e);
-				await this.context.dispatch("event/ErrorEvent/setMsg", err.error_message, {root: true});
+				this.context.commit("event/ErrorEvent/setMsg", err.error_message, {root: true});
 			} catch (e) {
-				await this.context.dispatch("event/ErrorEvent/setMsg", "An undefined error", {root: true});
+				this.context.commit("event/ErrorEvent/setMsg", "An undefined error", {root: true});
 			}
 		}
 	}
@@ -177,9 +177,9 @@ export default class App extends VuexModule
 		} catch (e) {
 			try {
 				const err: SentcError = JSON.parse(e);
-				await this.context.dispatch("event/ErrorEvent/setMsg", err.error_message, {root: true});
+				this.context.commit("event/ErrorEvent/setMsg", err.error_message, {root: true});
 			} catch (e) {
-				await this.context.dispatch("event/ErrorEvent/setMsg", "An undefined error", {root: true});
+				this.context.commit("event/ErrorEvent/setMsg", "An undefined error", {root: true});
 			}
 		}
 	}
