@@ -80,7 +80,7 @@ import {delete_jwt_keys} from "server_dashboard_wasm/server_dashboard_wasm_cjs";
 	// eslint-disable-next-line @typescript-eslint/naming-convention
 	components: {ErrorEvent},
 	async fetch() {
-		this.app_id = this.$router.params?.app_id;
+		this.app_id = this.$route.params?.appId;
 
 		if (!this.app_id || this.app_id === "") {
 			return this.$router.push("/");
