@@ -454,6 +454,75 @@ impl AppTokenRenewOutput
 }
 
 #[wasm_bindgen]
+pub struct AppList
+{
+	id: String,
+	identifier: String,
+	time: u128,
+}
+
+impl From<server_api_common::customer::CustomerAppList> for AppList
+{
+	fn from(d: server_api_common::customer::CustomerAppList) -> Self
+	{
+		Self {
+			id: d.id,
+			identifier: d.identifier,
+			time: d.time,
+		}
+	}
+}
+
+#[wasm_bindgen]
+pub struct AppDetails
+{
+	options: AppOptions,
+	file_options: AppFileOptionsInput,
+	details: AppList,
+}
+
+impl From<server_api_common::app::AppDetails> for AppDetails
+{
+	fn from(d: server_api_common::app::AppDetails) -> Self
+	{
+		Self {
+			options: d.options,
+			file_options: d.file_options,
+			details: d.details.into(),
+		}
+	}
+}
+
+#[wasm_bindgen]
+impl AppDetails
+{
+	pub fn get_id(&self) -> String
+	{
+		self.details.id.clone()
+	}
+
+	pub fn get_identifier(&self) -> String
+	{
+		self.details.identifier.clone()
+	}
+
+	pub fn get_time(&self) -> String
+	{
+		self.details.time.to_string()
+	}
+
+	pub fn get_options(&self) -> JsValue
+	{
+		JsValue::from_serde(&self.options).unwrap()
+	}
+
+	pub fn get_file_options(&self) -> JsValue
+	{
+		JsValue::from_serde(&self.file_options).unwrap()
+	}
+}
+
+#[wasm_bindgen]
 pub async fn app_create_app(
 	base_url: String,
 	jwt: String,
@@ -522,4 +591,12 @@ pub async fn get_all_apps(base_url: String, jwt: String, last_fetched_time: Stri
 	let out = app::get_all_apps(base_url, jwt.as_str(), last_fetched_time.as_str(), last_id.as_str()).await?;
 
 	Ok(JsValue::from_serde(&out).unwrap())
+}
+
+#[wasm_bindgen]
+pub async fn get_app(base_url: String, jwt: String, app_id: String) -> Result<AppDetails, JsValue>
+{
+	let out = app::get_app(base_url, jwt.as_str(), app_id.as_str()).await?;
+
+	Ok(out.into())
 }
