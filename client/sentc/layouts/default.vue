@@ -1,6 +1,7 @@
 <template>
 	<v-app dark>
 		<v-navigation-drawer
+			v-if="getLogin === 1"
 			v-model="drawer"
 			:mini-variant="miniVariant"
 			:clipped="clipped"
@@ -20,6 +21,30 @@
 					</v-list-item-action>
 					<v-list-item-content>
 						<v-list-item-title v-text="item.title" />
+					</v-list-item-content>
+				</v-list-item>
+
+				<v-list-item
+					v-for="(item, i) in appList"
+					:key="i"
+					:to="'/app/'+item"
+					router
+					exact
+				>
+					<v-list-item-action v-if="app(item) !== undefined">
+						<v-icon>mdi-apps</v-icon>
+					</v-list-item-action>
+					<v-list-item-content v-if="app(item) !== undefined">
+						<v-list-item-title v-text="app(item).identifier" />
+					</v-list-item-content>
+				</v-list-item>
+
+				<v-list-item>
+					<v-list-item-action>
+						<v-icon>mdi-plus</v-icon>
+					</v-list-item-action>
+					<v-list-item-content>
+						<v-list-item-title v-text="'See more apps'" />
 					</v-list-item-content>
 				</v-list-item>
 			</v-list>
@@ -64,6 +89,7 @@
 		</v-main>
 
 		<v-navigation-drawer
+			v-if="getLogin === 1"
 			v-model="rightDrawer"
 			:right="right"
 			temporary
@@ -115,6 +141,7 @@ import Vue from "vue";
 import Component from "vue-class-component";
 import {Getter} from "nuxt-property-decorator";
 import Delete from "~/components/Customer/Delete.vue";
+import {AppData} from "~/utils/types";
 
 @Component({
 	name: "DefaultLayout",
@@ -139,6 +166,12 @@ export default class extends Vue
 	@Getter("customer/Customer/loggedIn")
 	private getLogin: number;
 
+	@Getter("app/App/appList")
+	private appList: string[];
+
+	@Getter("app/App/app")
+	private app: (id: string) => AppData;
+
 	private clipped = true;
 	private drawer = false;
 	private fixed = false;
@@ -154,13 +187,13 @@ export default class extends Vue
 	private items = [
 		{
 			icon: "mdi-apps",
-			title: "Welcome",
-			to: "/"
+			title: "Apps",
+			to: "/app"
 		},
 		{
 			icon: "mdi-chart-bubble",
-			title: "Inspire",
-			to: "/inspire"
+			title: "Create app",
+			to: "/app/create"
 		}
 	];
 }
