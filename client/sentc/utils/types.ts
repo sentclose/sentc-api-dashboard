@@ -26,3 +26,82 @@ export const enum USER_KEY_STORAGE_NAMES
 
 	groupData = "group_data"
 }
+
+export interface AppData
+{
+	id: string,
+	identifier: string,
+	time: number
+}
+
+export interface AppDetails
+{
+	id: string,
+	identifier: string,
+	time: number,
+	options: AppOptions,
+	file_options
+}
+
+export interface AppJwtData {
+	jwt_key_id: string,
+	jwt_alg: string, //should be ES384 for now
+	time: number,
+	sign_key: string,
+	verify_key: string,
+}
+
+export interface AppOptions
+{
+	group_create: number,
+	group_get: number,
+
+	group_user_keys: number,
+	group_user_update_check: number,
+
+	group_invite: number,
+	group_auto_invite: number,
+	group_reject_invite: number,
+	group_accept_invite: number,
+
+	group_join_req: number,
+	group_accept_join_req: number,
+	group_reject_join_req: number,
+
+	group_key_rotation: number,
+
+	group_user_delete: number,
+	group_delete: number,
+
+	group_leave: number,
+	group_change_rank: number,
+
+	user_exists: number,
+	user_register: number,
+	user_delete: number,
+	user_update: number,
+	user_change_password: number,
+	user_reset_password: number,
+	user_prepare_login: number,
+	user_done_login: number,
+	user_public_data: number,
+	user_jwt_refresh: number,
+
+	key_register: number,
+	key_get: number,
+
+	group_list: number,
+
+	file_register: number,
+	file_part_upload: number,
+	file_get: number,
+	file_part_download: number,
+
+	user_device_register: number,
+	user_device_delete: number,
+	user_device_list: number,
+
+	group_invite_stop: number,
+
+	user_key_update: number,
+}
