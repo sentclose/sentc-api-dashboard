@@ -29,7 +29,7 @@
 							</v-radio-group>
 						</td>
 						<td>
-							Registration of a user. Use backend if you must send more information's about the user.
+							Registration of a user. Use Backend if you must send more information's about the user.
 						</td>
 					</tr>
 
@@ -46,7 +46,7 @@
 							</v-radio-group>
 						</td>
 						<td>
-							Make the first login request to get the right client salt back. It is recommended to use Frontend.
+							Make the first login request to get the right client salt back. It is recommended to use <b>Frontend</b>.
 						</td>
 					</tr>
 
@@ -63,9 +63,8 @@
 							</v-radio-group>
 						</td>
 						<td>
-							Make the second login request to check the client login and get the client keys back. <br>
-							It is recommended to use Frontend. <br>
-							If you want to load more information's about the user after login, make a request after login to your backend with the jwt.
+							Make the second login request to get the client keys back. It is recommended to use <b>Frontend</b> <br>
+							If you want to load more information's about the user after login, use the jwt in your own backend.
 						</td>
 					</tr>
 				</tbody>
