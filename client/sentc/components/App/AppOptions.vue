@@ -628,6 +628,77 @@
 									Delete a group. Use secret when collection more information's about the group when creating groups.
 								</td>
 							</tr>
+
+							<!----------------------------------------------------------------------------------------->
+							<!--file endpoints-->
+
+							<!--File register-->
+							<tr>
+								<td class="endpoint">
+									File register
+								</td>
+								<td class="options">
+									<v-radio-group v-model="options.file_register" row>
+										<v-radio label="Public" :value="1" />
+										<v-radio label="Secret" :value="2" />
+										<v-radio label="Block" :value="0" />
+									</v-radio-group>
+								</td>
+								<td class="des">
+									Create a new file in the api. No upload is happened here. It is recommended to use <b>Public</b>
+								</td>
+							</tr>
+
+							<!--File fetch-->
+							<tr>
+								<td class="endpoint">
+									File fetch
+								</td>
+								<td class="options">
+									<v-radio-group v-model="options.file_get" row>
+										<v-radio label="Public" :value="1" />
+										<v-radio label="Secret" :value="2" />
+										<v-radio label="Block" :value="0" />
+									</v-radio-group>
+								</td>
+								<td class="des">
+									Get the file information's to download the file. It is recommended to use <b>Public</b>
+								</td>
+							</tr>
+
+							<!--File part upload-->
+							<tr>
+								<td class="endpoint">
+									File part upload
+								</td>
+								<td class="options">
+									<v-radio-group v-model="options.file_part_upload" row>
+										<v-radio label="Public" :value="1" />
+										<v-radio label="Secret" :value="2" />
+										<v-radio label="Block" :value="0" />
+									</v-radio-group>
+								</td>
+								<td class="des">
+									Upload a file part to the sentc api. It is recommended to use <b>Public</b>
+								</td>
+							</tr>
+
+							<!--File part download-->
+							<tr>
+								<td class="endpoint">
+									File part download
+								</td>
+								<td class="options">
+									<v-radio-group v-model="options.file_part_download" row>
+										<v-radio label="Public" :value="1" />
+										<v-radio label="Secret" :value="2" />
+										<v-radio label="Block" :value="0" />
+									</v-radio-group>
+								</td>
+								<td class="des">
+									Download a file part from the sentc api. It is recommended to use <b>Public</b>
+								</td>
+							</tr>
 						</tbody>
 					</template>
 				</v-simple-table>
