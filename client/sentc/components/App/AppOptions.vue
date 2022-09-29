@@ -508,6 +508,126 @@
 									Group member can reject the join req from a non group member. It is recommended to use <b>Public</b>
 								</td>
 							</tr>
+
+							<!--Group invite stop-->
+							<tr>
+								<td class="endpoint">
+									Group invite stop
+								</td>
+								<td class="options">
+									<v-radio-group v-model="options.group_invite_stop" row>
+										<v-radio label="Public" :value="1" />
+										<v-radio label="Secret" :value="2" />
+										<v-radio label="Block" :value="0" />
+									</v-radio-group>
+								</td>
+								<td class="des">
+									Block or allow group invites and join requests for this group. This is called by the group admin. <br>
+									It is recommended to use <b>Public</b>
+								</td>
+							</tr>
+
+							<!--Group key rotation-->
+							<tr>
+								<td class="endpoint">
+									Group key rotation
+								</td>
+								<td class="options">
+									<v-radio-group v-model="options.group_key_rotation" row>
+										<v-radio label="Public" :value="1" />
+										<v-radio label="Secret" :value="2" />
+										<v-radio label="Block" :value="0" />
+									</v-radio-group>
+								</td>
+								<td class="des">
+									Started the key rotation for a group to create a new group key. It is recommended to use <b>Public</b>
+								</td>
+							</tr>
+
+							<!--Group user delete-->
+							<tr>
+								<td class="endpoint">
+									Group user delete
+								</td>
+								<td class="options">
+									<v-radio-group v-model="options.group_user_delete" row>
+										<v-radio label="Public" :value="1" />
+										<v-radio label="Secret" :value="2" />
+										<v-radio label="Block" :value="0" />
+									</v-radio-group>
+								</td>
+								<td class="des">
+									Delete a group member. It is recommended to use <b>Public</b>
+								</td>
+							</tr>
+
+							<!--Group leave-->
+							<tr>
+								<td class="endpoint">
+									Group leave
+								</td>
+								<td class="options">
+									<v-radio-group v-model="options.group_leave" row>
+										<v-radio label="Public" :value="1" />
+										<v-radio label="Secret" :value="2" />
+										<v-radio label="Block" :value="0" />
+									</v-radio-group>
+								</td>
+								<td class="des">
+									A group member can leave a group. It is recommended to use <b>Public</b>
+								</td>
+							</tr>
+
+							<!--Group list-->
+							<tr>
+								<td class="endpoint">
+									Group list
+								</td>
+								<td class="options">
+									<v-radio-group v-model="options.group_list" row>
+										<v-radio label="Public" :value="1" />
+										<v-radio label="Secret" :value="2" />
+										<v-radio label="Block" :value="0" />
+									</v-radio-group>
+								</td>
+								<td class="des">
+									A list of all groups where the actual user is member. It is recommended to use <b>Public</b>
+								</td>
+							</tr>
+
+							<!--Group change rank-->
+							<tr>
+								<td class="endpoint">
+									Group change rank
+								</td>
+								<td class="options">
+									<v-radio-group v-model="options.group_change_rank" row>
+										<v-radio label="Public" :value="1" />
+										<v-radio label="Secret" :value="2" />
+										<v-radio label="Block" :value="0" />
+									</v-radio-group>
+								</td>
+								<td class="des">
+									Change a rank of a group member. It is recommended to use <b>Public</b>
+								</td>
+							</tr>
+
+							<!--Group delete-->
+							<tr>
+								<td class="endpoint">
+									Group delete
+								</td>
+								<td class="options">
+									<v-radio-group v-model="options.group_delete" row>
+										<v-radio label="Public" :value="1" />
+										<v-radio label="Secret" :value="2" />
+										<v-radio label="Block" :value="0" />
+									</v-radio-group>
+								</td>
+								<td class="des">
+									Delete a group. Use secret when collection more information's about the group when creating groups.
+								</td>
+							</tr>
 						</tbody>
 					</template>
 				</v-simple-table>
