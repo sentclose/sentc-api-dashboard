@@ -495,7 +495,7 @@
 							<!--Group reject join req-->
 							<tr>
 								<td class="endpoint">
-									Group join request
+									Group reject join request
 								</td>
 								<td class="options">
 									<v-radio-group v-model="options.group_reject_join_req" row>
