@@ -1,5 +1,5 @@
 <template>
-	<div style="max-width: 1300px">
+	<div style="max-width: 1200px">
 		<h1>Options</h1>
 
 		<v-expansion-panels popout>
