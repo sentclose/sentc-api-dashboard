@@ -241,7 +241,7 @@ export default class AppOptions extends Vue
 }
 
 .options {
-	width: 430px !important;
+	width: 360px !important;
 }
 
 .des {
