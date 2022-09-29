@@ -389,6 +389,125 @@
 									It is recommended to use <b>Public</b>
 								</td>
 							</tr>
+
+							<!--Group invite-->
+							<tr>
+								<td class="endpoint">
+									Group invite
+								</td>
+								<td class="options">
+									<v-radio-group v-model="options.group_invite" row>
+										<v-radio label="Public" :value="1" />
+										<v-radio label="Secret" :value="2" />
+										<v-radio label="Block" :value="0" />
+									</v-radio-group>
+								</td>
+								<td class="des">
+									A group member can send invite requests to another non group member. It is recommended to use <b>Public</b>
+								</td>
+							</tr>
+
+							<!--Group auto invite-->
+							<tr>
+								<td class="endpoint">
+									Group auto invite
+								</td>
+								<td class="options">
+									<v-radio-group v-model="options.group_auto_invite" row>
+										<v-radio label="Public" :value="1" />
+										<v-radio label="Secret" :value="2" />
+										<v-radio label="Block" :value="0" />
+									</v-radio-group>
+								</td>
+								<td class="des">
+									A group member can send invite requests to another non group member and it will automatically accepted. It is recommended to use <b>Public</b>
+								</td>
+							</tr>
+
+							<!--Group accept invite-->
+							<tr>
+								<td class="endpoint">
+									Group accept invite
+								</td>
+								<td class="options">
+									<v-radio-group v-model="options.group_accept_invite" row>
+										<v-radio label="Public" :value="1" />
+										<v-radio label="Secret" :value="2" />
+										<v-radio label="Block" :value="0" />
+									</v-radio-group>
+								</td>
+								<td class="des">
+									The non group member can accept the invite request from a group member. It is recommended to use <b>Public</b>
+								</td>
+							</tr>
+
+							<!--Group reject invite-->
+							<tr>
+								<td class="endpoint">
+									Group reject invite
+								</td>
+								<td class="options">
+									<v-radio-group v-model="options.group_reject_invite" row>
+										<v-radio label="Public" :value="1" />
+										<v-radio label="Secret" :value="2" />
+										<v-radio label="Block" :value="0" />
+									</v-radio-group>
+								</td>
+								<td class="des">
+									The non group member can reject the invite request from a group member. It is recommended to use <b>Public</b>
+								</td>
+							</tr>
+
+							<!--Group join req-->
+							<tr>
+								<td class="endpoint">
+									Group join request
+								</td>
+								<td class="options">
+									<v-radio-group v-model="options.group_join_req" row>
+										<v-radio label="Public" :value="1" />
+										<v-radio label="Secret" :value="2" />
+										<v-radio label="Block" :value="0" />
+									</v-radio-group>
+								</td>
+								<td class="des">
+									A non group member can send join requests and a group member can accept or reject it. It is recommended to use <b>Public</b>
+								</td>
+							</tr>
+
+							<!--Group accept join req-->
+							<tr>
+								<td class="endpoint">
+									Group accept join request
+								</td>
+								<td class="options">
+									<v-radio-group v-model="options.group_accept_join_req" row>
+										<v-radio label="Public" :value="1" />
+										<v-radio label="Secret" :value="2" />
+										<v-radio label="Block" :value="0" />
+									</v-radio-group>
+								</td>
+								<td class="des">
+									Group member can accept a join req from a non group member. It is recommended to use <b>Public</b>
+								</td>
+							</tr>
+
+							<!--Group reject join req-->
+							<tr>
+								<td class="endpoint">
+									Group join request
+								</td>
+								<td class="options">
+									<v-radio-group v-model="options.group_reject_join_req" row>
+										<v-radio label="Public" :value="1" />
+										<v-radio label="Secret" :value="2" />
+										<v-radio label="Block" :value="0" />
+									</v-radio-group>
+								</td>
+								<td class="des">
+									Group member can reject the join req from a non group member. It is recommended to use <b>Public</b>
+								</td>
+							</tr>
 						</tbody>
 					</template>
 				</v-simple-table>
