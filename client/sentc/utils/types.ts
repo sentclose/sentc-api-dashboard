@@ -51,6 +51,12 @@ export interface AppJwtData {
 	verify_key: string,
 }
 
+export interface AppFileOptions {
+	file_storage: number,
+	storage_url?: string,
+	auth_token?: string
+}
+
 export interface AppOptions
 {
 	group_create: number,
