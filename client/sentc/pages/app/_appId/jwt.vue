@@ -12,7 +12,9 @@
 								<tr>
 									<th style="width: 290px">Id</th>
 									<th>Jwt sign key</th>
+									<th class="col-copy" />
 									<th>Jwt verify key</th>
+									<th class="col-copy" />
 									<th>Created time</th>
 									<th style="width: 40px">Delete</th>
 								</tr>
@@ -21,10 +23,57 @@
 							<tbody>
 								<tr v-for="(jwt_data,i) in app_jwt_data" :key="i">
 									<td>{{ jwt_data.jwt_key_id }}</td>
-									<td><v-text-field v-model="jwt_data.sign_key" class="txt" readonly append-outer-icon="mdi-content-copy" @click:append-outer="copyKey(jwt_data.sign_key)" /></td>
-									<td><v-text-field v-model="jwt_data.verify_key" class="txt" readonly append-outer-icon="mdi-content-copy" @click:append-outer="copyKey(jwt_data.sign_key)" /></td>
+
+									<td><v-text-field v-model="jwt_data.sign_key" class="txt" readonly /></td>
+									<td class="col-copy">
+										<v-tooltip bottom>
+											<template #activator="{on,attrs}">
+												<v-btn
+													v-bind="attrs"
+													icon
+													v-on="on"
+													@click="copyKey(jwt_data.sign_key)"
+												>
+													<v-icon>mdi-content-copy</v-icon>
+												</v-btn>
+											</template>
+											<span>Copy key</span>
+										</v-tooltip>
+									</td>
+
+									<td><v-text-field v-model="jwt_data.verify_key" class="txt" readonly /></td>
+									<td class="col-copy">
+										<v-tooltip bottom>
+											<template #activator="{on,attrs}">
+												<v-btn
+													v-bind="attrs"
+													icon
+													v-on="on"
+													@click="copyKey(jwt_data.verify_key)"
+												>
+													<v-icon>mdi-content-copy</v-icon>
+												</v-btn>
+											</template>
+											<span>Copy key</span>
+										</v-tooltip>
+									</td>
 									<td>{{ ts(jwt_data.time) }}</td>
-									<td style="width: 40px"><v-btn icon color="error" @click="delete_sheet = !delete_sheet; key_to_delete = jwt_data.jwt_key_id"><v-icon>mdi-delete</v-icon></v-btn></td>
+									<td style="width: 40px">
+										<v-tooltip bottom>
+											<template #activator="{on,attrs}">
+												<v-btn
+													v-bind="attrs"
+													icon
+													color="error"
+													v-on="on"
+													@click="delete_sheet = !delete_sheet; key_to_delete = jwt_data.jwt_key_id"
+												>
+													<v-icon>mdi-delete</v-icon>
+												</v-btn>
+											</template>
+											<span>Delete jwt key</span>
+										</v-tooltip>
+									</td>
 								</tr>
 							</tbody>
 						</template>
@@ -163,5 +212,17 @@ export default class extends Vue
 </script>
 
 <style scoped>
+.txt ::v-deep(.v-input__slot::before) {
+	border-style: none !important;
+}
 
+.txt {
+	margin-top: 10px;
+}
+
+.col-copy{
+	width: 40px;
+	margin: 0;
+	padding: 0;
+}
 </style>
