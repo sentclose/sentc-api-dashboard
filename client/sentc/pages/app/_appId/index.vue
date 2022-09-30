@@ -85,7 +85,4 @@ export default class extends Vue
 
 <style scoped>
 
-.txt ::v-deep(.v-input__slot::before) {
-	border-style: none !important;
-}
 </style>
