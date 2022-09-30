@@ -1,55 +1,5 @@
 <template>
 	<v-app dark>
-		<v-navigation-drawer
-			v-if="getLogin === 1"
-			v-model="drawer"
-			:mini-variant="miniVariant"
-			:clipped="clipped"
-			fixed
-			app
-		>
-			<v-list>
-				<v-list-item
-					v-for="(item, i) in items"
-					:key="i"
-					:to="item.to"
-					router
-					exact
-				>
-					<v-list-item-action>
-						<v-icon>{{ item.icon }}</v-icon>
-					</v-list-item-action>
-					<v-list-item-content>
-						<v-list-item-title v-text="item.title" />
-					</v-list-item-content>
-				</v-list-item>
-
-				<v-list-item
-					v-for="(item, i) in appList"
-					:key="i"
-					:to="'/app/'+item"
-					router
-					exact
-				>
-					<v-list-item-action v-if="app(item) !== undefined">
-						<v-icon>mdi-apps</v-icon>
-					</v-list-item-action>
-					<v-list-item-content v-if="app(item) !== undefined">
-						<v-list-item-title v-text="app(item).identifier" />
-					</v-list-item-content>
-				</v-list-item>
-
-				<v-list-item>
-					<v-list-item-action>
-						<v-icon>mdi-plus</v-icon>
-					</v-list-item-action>
-					<v-list-item-content>
-						<v-list-item-title v-text="'See more apps'" />
-					</v-list-item-content>
-				</v-list-item>
-			</v-list>
-		</v-navigation-drawer>
-
 		<v-app-bar
 			:clipped-left="clipped"
 			fixed
@@ -57,15 +7,6 @@
 			dark
 			dense
 		>
-			<v-app-bar-nav-icon v-if="getLogin=== 1 && $vuetify.breakpoint.sm" @click.stop="drawer = !drawer" />
-
-			<v-btn
-				icon
-				@click.stop="miniVariant = !miniVariant"
-			>
-				<v-icon>mdi-{{ `chevron-${miniVariant ? 'right' : 'left'}` }}</v-icon>
-			</v-btn>
-
 			<v-toolbar-title v-text="title" />
 
 			<v-spacer />
@@ -79,53 +20,12 @@
 		</v-app-bar>
 
 		<v-main>
-			<v-dialog v-model="deleteDialog" max-width="500">
-				<Delete @changeDone="deleteDialog = false" />
-			</v-dialog>
-
 			<v-container fluid :class="{'mx-0': $vuetify.breakpoint.smAndDown, 'px-0': $vuetify.breakpoint.smAndDown}">
 				<Nuxt />
 			</v-container>
 		</v-main>
 
-		<v-navigation-drawer
-			v-if="getLogin === 1"
-			v-model="rightDrawer"
-			:right="right"
-			temporary
-			fixed
-		>
-			<v-list>
-				<v-list-item to="/" router exact>
-					<v-list-item-action>
-						<v-icon>mdi-apps</v-icon>
-					</v-list-item-action>
-					<v-list-item-content>
-						<v-list-item-title v-text="'All apps'" />
-					</v-list-item-content>
-				</v-list-item>
-
-				<v-list-item to="/billing" router exact>
-					<v-list-item-action>
-						<v-icon>mdi-apps</v-icon>
-					</v-list-item-action>
-					<v-list-item-content>
-						<v-list-item-title v-text="'Billing'" />
-					</v-list-item-content>
-				</v-list-item>
-
-				<v-divider />
-
-				<v-list-item @click="deleteDialog = !deleteDialog">
-					<v-list-item-action>
-						<v-icon>mdi-apps</v-icon>
-					</v-list-item-action>
-					<v-list-item-content>
-						<v-list-item-title v-text="'Delete'" />
-					</v-list-item-content>
-				</v-list-item>
-			</v-list>
-		</v-navigation-drawer>
+		<CustomerMenu v-model="rightDrawer" />
 
 		<v-footer
 			:absolute="!fixed"
@@ -141,49 +41,25 @@ import Vue from "vue";
 import Component from "vue-class-component";
 import {Getter} from "nuxt-property-decorator";
 import Delete from "~/components/Customer/Delete.vue";
-import {AppData} from "~/utils/types";
+import CustomerMenu from "~/components/Customer/CustomerMenu.vue";
 
 @Component({
 	name: "DefaultLayout",
 	// eslint-disable-next-line @typescript-eslint/naming-convention
-	components: {Delete},
-	middleware: ["getUser"],
-	watch: {
-		getLogin(val: number) {
-			if (this.$vuetify.breakpoint.sm) {
-				return;
-			}
-
-			if (val === 1 && this.drawer === false) {
-				this.drawer = true;
-			} else if (val !== 1) {
-				this.drawer = false;
-			}
-		}
-	}
+	components: {CustomerMenu, Delete},
+	middleware: ["getUser"]
 })
 export default class extends Vue
 {
 	@Getter("customer/Customer/loggedIn")
 	private getLogin: number;
 
-	@Getter("app/App/appList")
-	private appList: string[];
-
-	@Getter("app/App/app")
-	private app: (id: string) => AppData;
-
 	private clipped = true;
-	private drawer = false;
 	private fixed = false;
 
-	private miniVariant = false;
-	private right = true;
 	private rightDrawer = false;
 
 	private title = "Sentc Dashboard";
-
-	private deleteDialog = false;
 
 	private items = [
 		{
