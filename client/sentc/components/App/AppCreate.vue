@@ -9,7 +9,7 @@
 		<v-row justify="center" :class="{'mx-0': $vuetify.breakpoint.smAndDown, 'px-0': $vuetify.breakpoint.smAndDown}">
 			<v-col sm="12" md="12" lg="12" :class="{'mx-0': $vuetify.breakpoint.smAndDown, 'px-0': $vuetify.breakpoint.smAndDown}" style="max-width: 1300px">
 				<v-form @submit.prevent="createApp">
-					<v-card>
+					<v-card flat>
 						<v-card-title class="headline">Create an app</v-card-title>
 
 						<v-card-text style="max-width: 300px">
@@ -20,7 +20,7 @@
 
 						<v-card-title class="title">Options</v-card-title>
 
-						<v-expansion-panels popout>
+						<v-expansion-panels popout flat>
 							<v-expansion-panel>
 								<v-expansion-panel-header expand-icon="mdi-chevron-down">
 									<span><v-icon>mdi-cog</v-icon> App options</span>

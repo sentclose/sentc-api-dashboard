@@ -2,7 +2,7 @@
 	<div v-if="!$fetchState.pending">
 		<ErrorEvent />
 
-		<v-card v-if="app_data && app_data !== {}">
+		<v-card v-if="app_data && app_data !== {}" flat>
 			<v-card-title class="headline">
 				{{ app_data.identifier }}
 			</v-card-title>
@@ -74,11 +74,8 @@ export default class extends Vue
 
 	/*
 	TODO
-		- add jwt keys
-		- renew token
 		- delete app
 		- update app call
-		- show jwt keys in a non edit text field
 	 */
 }
 </script>
