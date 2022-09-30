@@ -4,64 +4,50 @@
 
 		<v-row v-if="app_data && app_data !== {}" justify="center" :class="{'mx-0': $vuetify.breakpoint.smAndDown, 'px-0': $vuetify.breakpoint.smAndDown}">
 			<v-col sm="12" md="12" lg="12" :class="{'mx-0': $vuetify.breakpoint.smAndDown, 'px-0': $vuetify.breakpoint.smAndDown}" style="max-width: 1300px">
-				<v-row justify="center" align="center" class="mt-3" :class="{'mx-0': $vuetify.breakpoint.smAndDown, 'px-0': $vuetify.breakpoint.smAndDown}">
-					<v-col cols="12" sm="10" md="8" lg="6">
-						<v-card>
-							<v-card-title class="headline">
-								{{ app_data.identifier }}
-							</v-card-title>
+				<v-card>
+					<v-card-title class="headline">
+						{{ app_data.identifier }}
+					</v-card-title>
 
-							<v-card-text>
-								Created at: {{ ts(app_data.time) }}
-							</v-card-text>
-						</v-card>
-					</v-col>
-				</v-row>
+					<v-card-text>
+						Created at: {{ ts(app_data.time) }}
+					</v-card-text>
 
-				<v-row :class="{'mx-0': $vuetify.breakpoint.smAndDown, 'px-0': $vuetify.breakpoint.smAndDown}">
-					<v-col cols="12" :class="{'mx-0': $vuetify.breakpoint.smAndDown, 'px-0': $vuetify.breakpoint.smAndDown}">
-						<v-card>
-							<v-card-title class="headline">Created Jwt</v-card-title>
-						</v-card>
+					<v-expansion-panels popout>
+						<v-expansion-panel>
+							<v-expansion-panel-header expand-icon="mdi-chevron-down">
+								<span><v-icon>mdi-key</v-icon> Jwt keys</span>
+							</v-expansion-panel-header>
+							<v-expansion-panel-content>
+								<div style="overflow-x: auto">
+									<div style="width: 1200px">
+										<v-simple-table>
+											<template #default>
+												<thead>
+													<tr>
+														<th>Jwt sign key</th>
+														<th>Jwt verify key</th>
+														<th>Created time</th>
+														<th style="width: 40px">Delete</th>
+													</tr>
+												</thead>
 
-						<v-card v-for="(jwt_data,i) in app_jwt_data" :key="i" class="mt-3">
-							<v-card-text>
-								Jwt verify key {{ jwt_data.verify_key }}
-							</v-card-text>
-
-							<v-card-text>
-								Jwt sign key {{ jwt_data.sign_key }}
-							</v-card-text>
-
-							<v-card-text>
-								Jwt created: {{ ts(jwt_data.time) }}
-							</v-card-text>
-
-							<v-card-actions>
-								<v-spacer />
-
-								<v-btn color="error" @click="delete_sheet = true"><v-icon left>mdi-delete</v-icon> Delete jwt</v-btn>
-
-								<v-bottom-sheet v-model="delete_sheet" persistent>
-									<v-sheet
-										class="text-center"
-										height="200px"
-									>
-										<div class="pa-3">
-											<h1 class="display-5">Confirm</h1>
-											<br>
-
-											Do you really want to delete this jwt?
-										</div>
-
-										<v-btn class="mt-6" text color="error" @click="deleteJwt(jwt_data.jwt_key_id)">Delete</v-btn>
-										<v-btn class="mt-6" text color="primary" @click="delete_sheet = false">Cancel</v-btn>
-									</v-sheet>
-								</v-bottom-sheet>
-							</v-card-actions>
-						</v-card>
-					</v-col>
-				</v-row>
+												<tbody>
+													<tr v-for="(jwt_data,i) in app_jwt_data" :key="i">
+														<td><v-text-field v-model="jwt_data.sign_key" class="txt" readonly append-outer-icon="mdi-content-copy" @click:append-outer="copyKey(jwt_data.sign_key)" /></td>
+														<td><v-text-field v-model="jwt_data.verify_key" class="txt" readonly append-outer-icon="mdi-content-copy" @click:append-outer="copyKey(jwt_data.sign_key)" /></td>
+														<td>{{ ts(jwt_data.time) }}</td>
+														<td style="width: 40px"><v-btn icon color="error"><v-icon>mdi-delete</v-icon></v-btn></td>
+													</tr>
+												</tbody>
+											</template>
+										</v-simple-table>
+									</div>
+								</div>
+							</v-expansion-panel-content>
+						</v-expansion-panel>
+					</v-expansion-panels>
+				</v-card>
 			</v-col>
 		</v-row>
 	</div>
@@ -145,9 +131,9 @@ export default class extends Vue
 
 	private async deleteJwt(id: string)
 	{
-		const jwt = await this.getJwt();
-
 		try {
+			const jwt = await this.getJwt();
+
 			await delete_jwt_keys(process.env.NUXT_ENV_BASE_URL, jwt, this.app_id, id);
 		} catch (e) {
 			try {
@@ -163,15 +149,25 @@ export default class extends Vue
 		this.removeJwtData({app_id: this.app_id, jwt_id: id});
 	}
 
+	private copyKey(key: string)
+	{
+		//TODO
+	}
+
 	/*
 	TODO
 		- add jwt keys
 		- renew token
 		- delete app
+		- update app call
+		- show jwt keys in a non edit text field
 	 */
 }
 </script>
 
 <style scoped>
 
+.txt ::v-deep(.v-input__slot::before) {
+	border-style: none !important;
+}
 </style>

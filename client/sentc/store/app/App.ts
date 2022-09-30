@@ -147,7 +147,7 @@ export default class App extends VuexModule
 
 			const jwt_data: AppJwtData[] = await get_app_jwt_data(process.env.NUXT_ENV_BASE_URL, jwt, app_id);
 
-			this.context.commit("setAppJwtData", jwt_data);
+			this.context.commit("setAppJwtData", {jwt_data, id: app_id});
 		} catch (e) {
 			try {
 				const err: SentcError = JSON.parse(e);
