@@ -89,11 +89,11 @@
 				</v-card-text>
 
 				<v-card-actions>
-					<v-btn @click="copyEnv">Export as .env</v-btn>
+					<v-btn text color="primary" @click="copyEnv">Export as .env</v-btn>
 
 					<v-spacer />
 
-					<v-btn @click="createDialog = false">Done</v-btn>
+					<v-btn text color="success" @click="createDialog = false">Done</v-btn>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
