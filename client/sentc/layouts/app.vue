@@ -32,7 +32,7 @@
 			dark
 			dense
 		>
-			<v-app-bar-nav-icon v-if="getLogin=== 1 && $vuetify.breakpoint.sm" @click.stop="drawer = !drawer" />
+			<v-app-bar-nav-icon v-if="getLogin=== 1 && ($vuetify.breakpoint.sm || $vuetify.breakpoint.xs)" @click.stop="drawer = !drawer" />
 
 			<v-btn
 				icon
@@ -67,7 +67,7 @@
 			</v-container>
 		</v-main>
 
-		<customer-menu :model="rightDrawer" />
+		<customer-menu v-model="rightDrawer" />
 
 		<v-footer
 			:absolute="!fixed"
