@@ -58,7 +58,7 @@ import Component from "vue-class-component";
 import ErrorEvent from "~/components/ErrorEvent.vue";
 import {AppDetails, AppJwtData, SentcError} from "~/utils/types";
 import {Action, Getter, Mutation} from "nuxt-property-decorator";
-import {getTime} from "~/utils/utils";
+import {copyToClipboard, getTime} from "~/utils/utils";
 import {delete_jwt_keys} from "server_dashboard_wasm/server_dashboard_wasm_cjs";
 
 @Component({
@@ -132,7 +132,7 @@ export default class extends Vue
 
 	private copyKey(key: string)
 	{
-		//TODO
+		return copyToClipboard(key);
 	}
 
 	private async deleteJwt()

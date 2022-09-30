@@ -15,3 +15,7 @@ export function getTime(timestamp: number) {
 		minute: "numeric"
 	});
 }
+
+export function copyToClipboard(text: string) {
+	return navigator.clipboard.writeText(text);
+}
