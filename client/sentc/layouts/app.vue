@@ -83,7 +83,6 @@ import Vue from "vue";
 import Component from "vue-class-component";
 import {Getter} from "nuxt-property-decorator";
 import Delete from "~/components/Customer/Delete.vue";
-import {AppData} from "~/utils/types";
 import CustomerMenu from "~/components/Customer/CustomerMenu.vue";
 
 @Component({
