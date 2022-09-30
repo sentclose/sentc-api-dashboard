@@ -147,6 +147,7 @@ import {AppData} from "~/utils/types";
 	name: "DefaultLayout",
 	// eslint-disable-next-line @typescript-eslint/naming-convention
 	components: {Delete},
+	middleware: ["getUser"],
 	watch: {
 		getLogin(val: number) {
 			if (this.$vuetify.breakpoint.sm) {
