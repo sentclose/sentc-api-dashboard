@@ -84,6 +84,18 @@ export default class App extends VuexModule
 	}
 
 	@Mutation
+	public pushAppJwtData(data: {jwt_data: AppJwtData, id: string})
+	{
+		const {id, jwt_data} = data;
+
+		if (!this.app_jwt_data.has(id)) {
+			this.app_jwt_data.set(id, []);
+		}
+
+		this.app_jwt_data.get(id).unshift(jwt_data);
+	}
+
+	@Mutation
 	public removeApp(id: string)
 	{
 		for (let i = 0; i < this.app_list.length; i++) {

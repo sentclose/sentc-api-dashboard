@@ -1,8 +1,26 @@
 <template>
 	<div v-if="!$fetchState.pending">
 		<ErrorEvent />
-		<v-card v-if="app_data && app_data !== {}" align="center" style="min-height: 50vh">
-			<v-card-title class="headline">Jwt Key list</v-card-title>
+		<v-card v-if="app_data && app_data !== {}" style="min-height: 50vh" flat>
+			<v-card-title class="headline">
+				Jwt Key list
+				<v-spacer />
+
+				<v-tooltip bottom color="primary">
+					<template #activator="{on,attrs}">
+						<v-btn
+							v-bind="attrs"
+							icon
+							color="primary"
+							v-on="on"
+							@click="createJwtKey"
+						>
+							<v-icon>mdi-plus</v-icon>
+						</v-btn>
+					</template>
+					<span>Create new jwt key</span>
+				</v-tooltip>
+			</v-card-title>
 
 			<div style="overflow-x: auto">
 				<div style="width: 1200px">
@@ -59,7 +77,7 @@
 									</td>
 									<td>{{ ts(jwt_data.time) }}</td>
 									<td style="width: 40px">
-										<v-tooltip bottom>
+										<v-tooltip bottom color="error">
 											<template #activator="{on,attrs}">
 												<v-btn
 													v-bind="attrs"
@@ -108,7 +126,8 @@ import ErrorEvent from "~/components/ErrorEvent.vue";
 import {AppDetails, AppJwtData, SentcError} from "~/utils/types";
 import {Action, Getter, Mutation} from "nuxt-property-decorator";
 import {copyToClipboard, getTime} from "~/utils/utils";
-import {delete_jwt_keys} from "server_dashboard_wasm/server_dashboard_wasm_cjs";
+import {delete_jwt_keys, new_jwt_keys} from "server_dashboard_wasm/server_dashboard_wasm_cjs";
+import {AppJwtRegisterOutput} from "server_dashboard_wasm/server_dashboard_wasm";
 
 @Component({
 	// eslint-disable-next-line @typescript-eslint/naming-convention
@@ -174,6 +193,9 @@ export default class extends Vue
 	@Mutation("event/ErrorEvent/setMsg")
 	private setMsg: (msg: string) => void;
 
+	@Mutation("app/App/setAppJwtData")
+	private pushAppJwtData: (data: {jwt_data: AppJwtData, id: string}) => void;
+
 	private ts(ts: number)
 	{
 		return getTime(ts);
@@ -205,8 +227,43 @@ export default class extends Vue
 
 		this.removeJwtData({app_id: this.app_id, jwt_id: id});
 
+		for (let i = 0; i < this.app_jwt_data.length; i++) {
+			if (this.app_jwt_data[i].jwt_key_id === id) {
+				this.app_jwt_data.splice(i, 1);
+				break;
+			}
+		}
+
 		this.key_to_delete = "";
 		this.delete_sheet = false;
+	}
+
+	private async createJwtKey()
+	{
+		try {
+			const jwt = await this.getJwt();
+
+			const out: AppJwtRegisterOutput = await new_jwt_keys(process.env.NUXT_ENV_BASE_URL, jwt, this.app_id);
+
+			const jwt_data: AppJwtData = {
+				jwt_key_id: out.get_jwt_id(),
+				sign_key: out.get_jwt_sign_key(),
+				verify_key: out.get_jwt_verify_key(),
+				jwt_alg: out.get_jwt_alg(),
+				time: Date.now()
+			};
+
+			this.pushAppJwtData({jwt_data, id: this.app_id});
+
+			this.app_jwt_data.unshift(jwt_data);
+		} catch (e) {
+			try {
+				const err: SentcError = JSON.parse(e);
+				this.setMsg(err.error_message);
+			} catch (e) {
+				this.setMsg("An undefined error");
+			}
+		}
 	}
 }
 </script>
