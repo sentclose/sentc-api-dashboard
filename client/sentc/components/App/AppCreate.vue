@@ -197,7 +197,7 @@ SENTC_JWT_VERIFY_KEY=${this.jwt_verify_key}
 	width: 150px;
 }
 
-.txt >>> .v-input__slot::before {
+.txt ::v-deep(.v-input__slot::before) {
 	border-style: none !important;
 }
 </style>
