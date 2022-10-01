@@ -2,7 +2,7 @@
 	<div>
 		<ErrorEvent />
 		<v-card v-if="app_data && app_data !== {}" style="min-height: 50vh" flat>
-			<v-card-title class="headline"><v-icon>mdi-cog</v-icon> App options</v-card-title>
+			<v-card-title class="headline"><v-icon left>mdi-cog</v-icon> App options</v-card-title>
 
 			<v-card-text>
 				<AppOptions ref="options" :data="app_data.options" />
