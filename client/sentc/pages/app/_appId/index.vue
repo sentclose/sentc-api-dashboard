@@ -68,8 +68,36 @@
 				In JWT, new jwt keys can be added ore old once deleted. <br>
 
 				In App access token can a new secret and public token pair created. The old tokens are invalid.
+
+				<v-divider class="mt-3" />
 			</v-card-text>
+
+			<v-expansion-panels flat popout>
+				<v-expansion-panel>
+					<v-expansion-panel-header>Danger Zone</v-expansion-panel-header>
+					<v-expansion-panel-content eager>
+						<v-btn text color="error" @click="delete_sheet = !delete_sheet">Delete app</v-btn>
+					</v-expansion-panel-content>
+				</v-expansion-panel>
+			</v-expansion-panels>
 		</v-card>
+
+		<v-bottom-sheet v-model="delete_sheet" persistent>
+			<v-sheet
+				class="text-center"
+				height="200px"
+			>
+				<div class="pa-3">
+					<h1 class="display-5">Delete app</h1>
+					<br>
+
+					Do you really want to delete this app?
+				</div>
+
+				<v-btn class="mt-6" text color="error" @click="deleteApp">Delete</v-btn>
+				<v-btn class="mt-6" text color="primary" @click="delete_sheet = false">Cancel</v-btn>
+			</v-sheet>
+		</v-bottom-sheet>
 	</div>
 </template>
 
@@ -80,7 +108,7 @@ import {Action, Getter, Mutation} from "nuxt-property-decorator";
 import {AppDetails, SentcError} from "~/utils/types";
 import ErrorEvent from "~/components/ErrorEvent.vue";
 import {getTime} from "~/utils/utils";
-import {app_update} from "server_dashboard_wasm";
+import {app_delete, app_update} from "server_dashboard_wasm";
 
 @Component({
 	// eslint-disable-next-line @typescript-eslint/naming-convention
@@ -116,6 +144,8 @@ export default class extends Vue
 
 	private new_identifier = "";
 
+	private delete_sheet = false;
+
 	@Getter("app/App/appDetails")
 	private getAppDetails: (id: string) => AppDetails;
 
@@ -133,6 +163,9 @@ export default class extends Vue
 
 	@Mutation("app/App/setAppIdentifier")
 	private setAppIdentifier: (data: {id: string, identifier: string})=>void;
+
+	@Mutation("app/App/removeApp")
+	private removeApp: (id: string) => void;
 
 	private ts(ts: number)
 	{
@@ -164,10 +197,25 @@ export default class extends Vue
 		}
 	}
 
-	/*
-	TODO
-		- delete app with a bottom sheet
-	 */
+	private async deleteApp()
+	{
+		try {
+			const jwt = await this.getJwt();
+
+			await app_delete(process.env.NUXT_ENV_BASE_URL, jwt, this.app_id);
+
+			this.removeApp(this.app_id);
+
+			return this.$router.push("/");
+		} catch (e) {
+			try {
+				const err: SentcError = JSON.parse(e);
+				this.setMsg(err.error_message);
+			} catch (e) {
+				this.setMsg("An undefined error");
+			}
+		}
+	}
 }
 </script>
 
