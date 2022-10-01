@@ -9,7 +9,7 @@
 			<v-row :class="{'mx-0': $vuetify.breakpoint.smAndDown, 'px-0': $vuetify.breakpoint.smAndDown}">
 				<v-col v-for="(item, i) in appList" :key="i" cols="12" md="6" lg="4">
 					<v-card v-if="app(item) !== undefined" exact :to="'/app/'+item">
-						<v-card-title>{{ app(item).identifier }}</v-card-title>
+						<v-card-title>{{ app(item).identifier ? app(item).identifier : "unnamed" }}</v-card-title>
 						<v-card-text>
 							Created: {{ ts(app(item).time) }}
 						</v-card-text>
@@ -28,6 +28,13 @@ import {AppData} from "~/utils/types";
 import {getTime} from "~/utils/utils";
 
 @Component({
+	middleware: ({store, redirect}) => {
+		const logged_in = store.getters["customer/Customer/loggedIn"];
+
+		if (logged_in !== 1) {
+			return redirect("/login");
+		}
+	},
 	async fetch() {
 		if (this.appList.length > 0) {
 			return;
