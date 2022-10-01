@@ -31,7 +31,7 @@
 import Vue from "vue";
 import Component from "vue-class-component";
 import {Getter, Mutation} from "nuxt-property-decorator";
-import {delete_customer} from "server_dashboard_wasm/server_dashboard_wasm_cjs";
+import {delete_customer} from "server_dashboard_wasm";
 import {SentcError} from "~/utils/types";
 
 @Component

@@ -116,8 +116,7 @@ import AppOptions from "~/components/App/AppOptions.vue";
 import {Action, Mutation, Prop} from "nuxt-property-decorator";
 import {AppFileOptions as AppFileOptionsType, AppOptions as AppOptionsType, SentcError} from "~/utils/types";
 import AppFileOptions from "~/components/App/AppFileOptions.vue";
-import {app_create_app} from "server_dashboard_wasm/server_dashboard_wasm_cjs";
-import {AppRegisterOutput} from "server_dashboard_wasm/server_dashboard_wasm";
+import {app_create_app, AppRegisterOutput} from "server_dashboard_wasm";
 import ErrorEvent from "~/components/ErrorEvent.vue";
 import {p} from "~/utils/utils";
 

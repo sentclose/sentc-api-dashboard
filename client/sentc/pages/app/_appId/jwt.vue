@@ -126,8 +126,7 @@ import ErrorEvent from "~/components/ErrorEvent.vue";
 import {AppDetails, AppJwtData, SentcError} from "~/utils/types";
 import {Action, Getter, Mutation} from "nuxt-property-decorator";
 import {copyToClipboard, getTime} from "~/utils/utils";
-import {delete_jwt_keys, new_jwt_keys} from "server_dashboard_wasm/server_dashboard_wasm_cjs";
-import {AppJwtRegisterOutput} from "server_dashboard_wasm/server_dashboard_wasm";
+import {delete_jwt_keys, new_jwt_keys, AppJwtRegisterOutput} from "server_dashboard_wasm";
 
 @Component({
 	// eslint-disable-next-line @typescript-eslint/naming-convention

@@ -47,10 +47,9 @@ import Vue from "vue";
 import Component from "vue-class-component";
 import {p} from "~/utils/utils";
 import {CustomerLoginData, SentcError} from "~/utils/types";
-import {login} from "server_dashboard_wasm/server_dashboard_wasm_cjs";
+import {login, CustomerDoneLoginOutput} from "server_dashboard_wasm";
 import ErrorEvent from "~/components/ErrorEvent.vue";
 import {Action, Mutation} from "nuxt-property-decorator";
-import {CustomerDoneLoginOutput} from "server_dashboard_wasm/server_dashboard_wasm";
 
 @Component({
 	// eslint-disable-next-line @typescript-eslint/naming-convention

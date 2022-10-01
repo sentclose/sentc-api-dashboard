@@ -81,8 +81,7 @@ import Component from "vue-class-component";
 import ErrorEvent from "~/components/ErrorEvent.vue";
 import {AppDetails, SentcError} from "~/utils/types";
 import {Action, Getter, Mutation} from "nuxt-property-decorator";
-import {AppTokenRenewOutput} from "server_dashboard_wasm/server_dashboard_wasm";
-import {renew_token} from "server_dashboard_wasm/server_dashboard_wasm_cjs";
+import {AppTokenRenewOutput, renew_token} from "server_dashboard_wasm";
 
 @Component({
 	// eslint-disable-next-line @typescript-eslint/naming-convention

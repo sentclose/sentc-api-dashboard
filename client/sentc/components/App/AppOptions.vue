@@ -712,7 +712,7 @@ import Vue from "vue";
 import Component from "vue-class-component";
 import {Prop} from "nuxt-property-decorator";
 import {AppOptions as AppOptionsType} from "~/utils/types";
-import {app_options_default, app_options_lax} from "server_dashboard_wasm/server_dashboard_wasm_cjs";
+import {app_options_default, app_options_lax} from "server_dashboard_wasm";
 
 @Component({
 	fetch() {
@@ -746,11 +746,6 @@ export default class AppOptions extends Vue
 	{
 		this.options = this.data ? Object.assign({}, this.data) : app_options_default();
 	}
-
-	/*
-	TODO
-	- update and create options
-	 */
 }
 </script>
 
