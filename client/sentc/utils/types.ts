@@ -40,7 +40,7 @@ export interface AppDetails
 	identifier: string,
 	time: number,
 	options: AppOptions,
-	file_options
+	file_options: AppFileOptions
 }
 
 export interface AppJwtData {
