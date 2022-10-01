@@ -1,83 +1,59 @@
 <template>
-	<v-row justify="center" align="center">
-		<v-col cols="12" sm="8" md="6">
-			<v-card class="logo py-4 d-flex justify-center">
-				<NuxtLogo />
-				<VuetifyLogo />
-			</v-card>
-			<v-card>
-				<v-card-title class="headline">
-					Welcome to the Vuetify + Nuxt.js template
-				</v-card-title>
-				<v-card-text>
-					<p>Vuetify is a progressive Material Design component framework for Vue.js. It was designed to empower developers to create amazing applications.</p>
-					<p>
-						For more information on Vuetify, check out the <a
-							href="https://vuetifyjs.com"
-							target="_blank"
-							rel="noopener noreferrer"
-						>
-							documentation
-						</a>.
-					</p>
-					<p>
-						If you have questions, please join the official <a
-							href="https://chat.vuetifyjs.com/"
-							target="_blank"
-							rel="noopener noreferrer"
-							title="chat"
-						>
-							discord
-						</a>.
-					</p>
-					<p>
-						Find a bug? Report it on the github <a
-							href="https://github.com/vuetifyjs/vuetify/issues"
-							target="_blank"
-							rel="noopener noreferrer"
-							title="contribute"
-						>
-							issue board
-						</a>.
-					</p>
-					<p>Thank you for developing with Vuetify and I look forward to bringing more exciting features in the future.</p>
-					<div class="text-xs-right">
-						<em><small>&mdash; John Leider</small></em>
-					</div>
-					<hr class="my-3">
-					<a
-						href="https://nuxtjs.org/"
-						target="_blank"
-						rel="noopener noreferrer"
-					>
-						Nuxt Documentation
-					</a>
-					<br>
-					<a
-						href="https://github.com/nuxt/nuxt.js"
-						target="_blank"
-						rel="noopener noreferrer"
-					>
-						Nuxt GitHub
-					</a>
-				</v-card-text>
-				<v-card-actions>
-					<v-spacer />
-					<v-btn
-						color="primary"
-						nuxt
-						to="/inspire"
-					>
-						Continue
-					</v-btn>
-				</v-card-actions>
-			</v-card>
+	<v-row justify="center" :class="{'mx-0': $vuetify.breakpoint.smAndDown, 'px-0': $vuetify.breakpoint.smAndDown}">
+		<v-col sm="12" md="12" lg="12" :class="{'mx-0': $vuetify.breakpoint.smAndDown, 'px-0': $vuetify.breakpoint.smAndDown}" style="max-width: 1300px">
+			<v-row class="mx-3 mt-3 mb-3" :class="{'mx-0': $vuetify.breakpoint.smAndDown, 'px-0': $vuetify.breakpoint.smAndDown}">
+				<h1 class="display-1">Apps</h1> <v-spacer />
+				<v-btn color="primary" to="/app/create">New app</v-btn>
+			</v-row>
+
+			<v-row :class="{'mx-0': $vuetify.breakpoint.smAndDown, 'px-0': $vuetify.breakpoint.smAndDown}">
+				<v-col v-for="(item, i) in appList" :key="i" cols="12" md="6" lg="4">
+					<v-card v-if="app(item) !== undefined" exact :to="'/app/'+item">
+						<v-card-title>{{ app(item).identifier }}</v-card-title>
+						<v-card-text>
+							Created: {{ ts(app(item).time) }}
+						</v-card-text>
+					</v-card>
+				</v-col>
+			</v-row>
 		</v-col>
 	</v-row>
 </template>
 
-<script>
-export default {
-	name: "IndexPage"
-};
+<script lang="ts">
+import Vue from "vue";
+import Component from "vue-class-component";
+import {Action, Getter} from "nuxt-property-decorator";
+import {AppData} from "~/utils/types";
+import {getTime} from "~/utils/utils";
+
+@Component({
+	async fetch() {
+		if (this.appList.length > 0) {
+			return;
+		}
+
+		await this.fetchApps();
+	}
+})
+export default class extends Vue
+{
+	@Getter("app/App/appList")
+	private appList: string[];
+
+	@Getter("app/App/app")
+	private app: (id: string) => AppData;
+
+	@Action("app/App/fetchApps")
+	private fetchApps: () => Promise<void>;
+
+	private ts(ts: number)
+	{
+		return getTime(ts);
+	}
+}
 </script>
+
+<style scoped>
+
+</style>
