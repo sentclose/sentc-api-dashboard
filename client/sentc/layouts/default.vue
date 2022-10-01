@@ -7,7 +7,19 @@
 			dark
 			dense
 		>
-			<v-toolbar-title v-text="title" />
+			<nuxt-link to="/">
+				<v-img
+					class="mx-2"
+					:src="p('Sentc.png')"
+					max-width="35"
+					max-height="35"
+					contain
+				/>
+			</nuxt-link>
+
+			<nuxt-link to="/" style="text-decoration: none; color: inherit">
+				<v-toolbar-title v-text="title" />
+			</nuxt-link>
 
 			<v-spacer />
 			<v-btn
@@ -42,6 +54,7 @@ import Component from "vue-class-component";
 import {Getter} from "nuxt-property-decorator";
 import Delete from "~/components/Customer/Delete.vue";
 import CustomerMenu from "~/components/Customer/CustomerMenu.vue";
+import {p} from "~/utils/utils";
 
 @Component({
 	name: "DefaultLayout",
@@ -61,17 +74,9 @@ export default class extends Vue
 
 	private title = "Sentc Dashboard";
 
-	private items = [
-		{
-			icon: "mdi-apps",
-			title: "Apps",
-			to: "/app"
-		},
-		{
-			icon: "mdi-chart-bubble",
-			title: "Create app",
-			to: "/app/create"
-		}
-	];
+	private p(item: string)
+	{
+		return p(item);
+	}
 }
 </script>

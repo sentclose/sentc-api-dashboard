@@ -34,14 +34,19 @@
 		>
 			<v-app-bar-nav-icon v-if="getLogin=== 1 && ($vuetify.breakpoint.sm || $vuetify.breakpoint.xs)" @click.stop="drawer = !drawer" />
 
-			<v-btn
-				icon
-				@click.stop="miniVariant = !miniVariant"
-			>
-				<v-icon>mdi-{{ `chevron-${miniVariant ? 'right' : 'left'}` }}</v-icon>
-			</v-btn>
+			<nuxt-link to="/">
+				<v-img
+					class="mx-2"
+					:src="p('Sentc.png')"
+					max-width="35"
+					max-height="35"
+					contain
+				/>
+			</nuxt-link>
 
-			<v-toolbar-title v-text="title" />
+			<nuxt-link to="/" style="text-decoration: none; color: inherit">
+				<v-toolbar-title v-text="title" />
+			</nuxt-link>
 
 			<v-spacer />
 			<v-btn
@@ -84,6 +89,7 @@ import Component from "vue-class-component";
 import {Getter} from "nuxt-property-decorator";
 import Delete from "~/components/Customer/Delete.vue";
 import CustomerMenu from "~/components/Customer/CustomerMenu.vue";
+import {p} from "~/utils/utils";
 
 @Component({
 	// eslint-disable-next-line @typescript-eslint/naming-convention
@@ -107,17 +113,12 @@ export default class extends Vue
 
 	private deleteDialog = false;
 
+	private p(item: string)
+	{
+		return p(item);
+	}
+
 	private items = [
-		{
-			icon: "mdi-apps",
-			title: "All apps",
-			to: "/app"
-		},
-		{
-			icon: "mdi-chart-bubble",
-			title: "Create app",
-			to: "/app/create"
-		},
 		{
 			icon: "mdi-home",
 			title: "App overview",
