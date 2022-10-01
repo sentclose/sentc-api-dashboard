@@ -21,9 +21,10 @@
 import Vue from "vue";
 import Component from "vue-class-component";
 import ErrorEvent from "~/components/ErrorEvent.vue";
-import {AppDetails} from "~/utils/types";
+import {AppDetails, AppOptions as AppOptionsType, SentcError} from "~/utils/types";
 import {Action, Getter, Mutation} from "nuxt-property-decorator";
 import AppOptions from "~/components/App/AppOptions.vue";
+import {app_update_options} from "server_dashboard_wasm";
 
 @Component({
 	// eslint-disable-next-line @typescript-eslint/naming-convention
@@ -59,12 +60,35 @@ export default class extends Vue
 	@Action("app/App/fetchDetails")
 	private fetchDetails: (app_id: string) => Promise<void>;
 
+	@Action("customer/Customer/getJwt")
+	private getJwt: () => Promise<string>;
+
 	@Mutation("event/ErrorEvent/setMsg")
 	private setMsg: (msg: string) => void;
 
+	@Mutation("app/App/setAppOptions")
+	private setAppOptions: (data: {id: string, options: AppOptionsType})=>void;
+
 	private async updateOptions()
 	{
+		//@ts-ignore
+		const options: AppOptionsType = this.$refs.options.options;
 
+		try {
+			const jwt = await this.getJwt();
+
+			await app_update_options(process.env.NUXT_ENV_BASE_URL, jwt, this.app_id, options);
+
+			this.setAppOptions({id: this.app_id, options});
+			this.app_data.options = options;
+		} catch (e) {
+			try {
+				const err: SentcError = JSON.parse(e);
+				this.setMsg(err.error_message);
+			} catch (e) {
+				this.setMsg("An undefined error");
+			}
+		}
 	}
 }
 

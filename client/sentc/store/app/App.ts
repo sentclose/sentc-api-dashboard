@@ -1,5 +1,5 @@
 import {Action, Module, Mutation, VuexModule} from "vuex-module-decorators";
-import {AppData, AppDetails, AppJwtData, SentcError} from "~/utils/types";
+import {AppData, AppDetails, AppJwtData, AppOptions, SentcError} from "~/utils/types";
 import {get_all_apps, get_app, get_app_jwt_data} from "server_dashboard_wasm/server_dashboard_wasm_cjs";
 
 /**
@@ -56,6 +56,18 @@ export default class App extends VuexModule
 	public setAppDetails(data: AppDetails)
 	{
 		this.app_details.set(data.id, data);
+	}
+
+	@Mutation
+	public setAppOptions(data: {id: string, options: AppOptions})
+	{
+		const app = this.app_details.get(data.id);
+
+		if (!app) {
+			return;
+		}
+
+		app.options = data.options;
 	}
 
 	@Mutation
