@@ -51,7 +51,6 @@ pub async fn refresh_jwt(base_url: String, auth_token: &str, old_jwt: &str, refr
 	Ok(server_output.jwt)
 }
 
-//TODO customer init
 //TODO validate email, for register and update
 
 pub async fn login(

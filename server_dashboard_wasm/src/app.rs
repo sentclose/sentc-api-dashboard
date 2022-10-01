@@ -99,20 +99,44 @@ pub async fn get_all_apps(base_url: String, jwt: &str, last_fetched_time: &str, 
 	Ok(out)
 }
 
-pub async fn get_app(base_url: String, jwt: &str, app_id: &str)-> Result<server_api_common::app::AppDetails,String>
+pub async fn get_app(base_url: String, jwt: &str, app_id: &str) -> Result<server_api_common::app::AppDetails, String>
 {
 	let url = base_url + "/api/v1/customer/app/" + app_id;
-	
-	let res = make_req(HttpMethod::GET,url.as_str(),"",None,Some(jwt)).await?;
-	
+
+	let res = make_req(HttpMethod::GET, url.as_str(), "", None, Some(jwt)).await?;
+
 	let out: server_api_common::app::AppDetails = handle_server_response(res.as_str())?;
-	
+
 	Ok(out)
 }
 
-/*
-TODO
-	- update app options
-	- update file options
-	- delete app
- */
+pub async fn update_options(base_url: String, jwt: &str, app_id: &str, options: AppOptions) -> Result<(), String>
+{
+	let url = base_url + "/api/v1/customer/app/" + app_id + "/options";
+
+	let input = utils::to_string(&options)?;
+
+	let res = make_req(HttpMethod::PUT, url.as_str(), "", Some(input), Some(jwt)).await?;
+
+	handle_general_server_response(res.as_str())
+}
+
+pub async fn update_file_options(base_url: String, jwt: &str, app_id: &str, options: AppFileOptionsInput) -> Result<(), String>
+{
+	let url = base_url + "/api/v1/customer/app/" + app_id + "/file_options";
+
+	let input = utils::to_string(&options)?;
+
+	let res = make_req(HttpMethod::PUT, url.as_str(), "", Some(input), Some(jwt)).await?;
+
+	handle_general_server_response(res.as_str())
+}
+
+pub async fn delete_app(base_url: String, jwt: &str, app_id: &str) -> Result<(), String>
+{
+	let url = base_url + "/api/v1/customer/app/" + app_id;
+
+	let res = make_req(HttpMethod::DELETE, url.as_str(), "", None, Some(jwt)).await?;
+
+	handle_general_server_response(res.as_str())
+}

@@ -600,3 +600,25 @@ pub async fn get_app(base_url: String, jwt: String, app_id: String) -> Result<Ap
 
 	Ok(out.into())
 }
+
+#[wasm_bindgen]
+pub async fn app_update_options(base_url: String, jwt: String, app_id: String, options: JsValue) -> Result<(), JsValue>
+{
+	let options: AppOptions = options.into_serde().unwrap();
+
+	Ok(app::update_options(base_url, jwt.as_str(), app_id.as_str(), options).await?)
+}
+
+#[wasm_bindgen]
+pub async fn app_update_file_options(base_url: String, jwt: String, app_id: String, file_options: JsValue) -> Result<(), JsValue>
+{
+	let options: AppFileOptionsInput = file_options.into_serde().unwrap();
+
+	Ok(app::update_file_options(base_url, jwt.as_str(), app_id.as_str(), options).await?)
+}
+
+#[wasm_bindgen]
+pub async fn app_delete(base_url: String, jwt: String, app_id: String) -> Result<(), JsValue>
+{
+	Ok(app::delete_app(base_url, jwt.as_str(), app_id.as_str()).await?)
+}
