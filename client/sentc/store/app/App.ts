@@ -1,6 +1,6 @@
 import {Action, Module, Mutation, VuexModule} from "vuex-module-decorators";
 import {AppData, AppDetails, AppFileOptions, AppJwtData, AppOptions, SentcError} from "~/utils/types";
-import {get_all_apps, get_app, get_app_jwt_data} from "server_dashboard_wasm/server_dashboard_wasm_cjs";
+import {get_all_apps, get_app, get_app_jwt_data} from "server_dashboard_wasm";
 
 /**
  * @author Jörn Heinemann <joernheinemann@gmx.de>
@@ -175,19 +175,15 @@ export default class App extends VuexModule
 	@Action({rawError: true})
 	public async fetchApps()
 	{
-		const last = this.app_list[this.app_list.length - 1];
-		const last_item = this.app_data.get(last);
-
-		if (!last_item) {
-			return;
-		}
+		const last = this.app_list[this.app_list.length - 1] ?? "none";
+		const last_time = this.app_data.get(last)?.time.toString() ?? "0";
 
 		let apps: AppData[] = [];
 
 		try {
 			const jwt = await this.context.dispatch("customer/Customer/getJwt", {}, {root: true});
 
-			apps = await get_all_apps(process.env.NUXT_ENV_BASE_URL, jwt, last_item.time.toString(), last);
+			apps = await get_all_apps(process.env.NUXT_ENV_BASE_URL, jwt, last_time, last);
 		} catch (e) {
 			//no need to set error
 		}
