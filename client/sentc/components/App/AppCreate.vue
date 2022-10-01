@@ -13,12 +13,21 @@
 						<v-card-title class="headline">Create an app</v-card-title>
 
 						<v-card-text style="max-width: 300px">
-							<v-text-field v-model="identifier" label="App name" />
+							<v-text-field v-model="identifier" label="App name" messages="optional" />
 						</v-card-text>
 
 						<v-divider />
 
 						<v-card-title class="title">Options</v-card-title>
+						<v-card-text>
+							<p>
+								The following options are optional. The default options require an own backend, <br>
+								for user registration, user delete, group create and group delete.
+							</p>
+							<p>
+								Files are disabled by default. If you need to handle larger files, just enable the file storage.
+							</p>
+						</v-card-text>
 
 						<v-expansion-panels popout flat>
 							<v-expansion-panel>
