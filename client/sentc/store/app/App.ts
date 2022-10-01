@@ -47,7 +47,8 @@ export default class App extends VuexModule
 	@Mutation
 	public setApp(data: AppData)
 	{
-		this.app_list.push(data.id);
+		//push a new app to the front
+		this.app_list.unshift(data.id);
 
 		this.app_data.set(data.id, data);
 	}

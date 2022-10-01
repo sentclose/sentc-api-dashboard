@@ -114,7 +114,7 @@ import Vue from "vue";
 import Component from "vue-class-component";
 import AppOptions from "~/components/App/AppOptions.vue";
 import {Action, Mutation, Prop} from "nuxt-property-decorator";
-import {AppFileOptions as AppFileOptionsType, AppOptions as AppOptionsType, SentcError} from "~/utils/types";
+import {AppData, AppFileOptions as AppFileOptionsType, AppOptions as AppOptionsType, SentcError} from "~/utils/types";
 import AppFileOptions from "~/components/App/AppFileOptions.vue";
 import {app_create_app, AppRegisterOutput} from "server_dashboard_wasm";
 import ErrorEvent from "~/components/ErrorEvent.vue";
@@ -134,6 +134,9 @@ export default class AppCreate extends Vue
 
 	@Action("customer/Customer/getJwt")
 	private getJwt: () => Promise<string>;
+
+	@Mutation("app/App/setApp")
+	private setApp: (data: AppData) => void;
 
 	private identifier = "";
 
@@ -172,6 +175,14 @@ export default class AppCreate extends Vue
 			this.jwt_verify_key = out.get_jwt_verify_key();
 
 			this.createDialog = true;
+
+			const app_data: AppData = {
+				time: Date.now(),
+				identifier: this.identifier ? this.identifier : "unnamed",
+				id: out.get_app_id()
+			};
+
+			this.setApp(app_data);
 		} catch (e) {
 			try {
 				const err: SentcError = JSON.parse(e);
