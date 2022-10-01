@@ -3,7 +3,7 @@
 		<ErrorEvent />
 
 		<v-card v-if="app_data && app_data !== {}" style="min-height: 50vh" flat>
-			<v-card-title class="headline">Renew app token</v-card-title>
+			<v-card-title class="headline"><v-icon left>mdi-key-variant</v-icon> Renew app token</v-card-title>
 			<v-card-text class="pb-3">
 				<p>
 					Sentc api doesn't know the tokens because they are hashed. If you forgot the tokens, you have to create new tokens. <br>

@@ -119,28 +119,28 @@ export default class extends Vue
 			to: "/app/create"
 		},
 		{
-			icon: "mdi-apps",
+			icon: "mdi-home",
 			title: "App overview",
 			to: "/app/" + this.$route.params?.appId
 		},
 		{
 			icon: "mdi-key",
-			title: "App jwt keys",
+			title: "Jwt keys",
 			to: "/app/" + this.$route.params?.appId + "/jwt"
 		},
 		{
-			icon: "mdi-key",
-			title: "App access token",
+			icon: "mdi-key-variant",
+			title: "Access token",
 			to: "/app/" + this.$route.params?.appId + "/token"
 		},
 		{
 			icon: "mdi-cog",
-			title: "App options",
+			title: "Options",
 			to: "/app/" + this.$route.params?.appId + "/options"
 		},
 		{
 			icon: "mdi-file",
-			title: "App file options",
+			title: "File options",
 			to: "/app/" + this.$route.params?.appId + "/file_options"
 		}
 	];

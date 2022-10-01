@@ -3,7 +3,7 @@
 		<ErrorEvent />
 		<v-card v-if="app_data && app_data !== {}" style="min-height: 50vh" flat>
 			<v-card-title class="headline">
-				Jwt Key list
+				<v-icon left>mdi-key</v-icon> Jwt Key list
 				<v-spacer />
 
 				<v-tooltip bottom color="primary">
