@@ -24,11 +24,20 @@
 import Vue from "vue";
 import Component from "vue-class-component";
 import {AppFileOptions as AppFileOptionsType} from "~/utils/types";
-import {Mutation} from "nuxt-property-decorator";
+import {Mutation, Prop} from "nuxt-property-decorator";
 
-@Component
+@Component({
+	fetch() {
+		if (this.data) {
+			this.options = Object.assign({}, this.data);
+		}
+	}
+})
 export default class AppFileOptions extends Vue
 {
+	@Prop()
+	private data:AppFileOptionsType;
+
 	private file_storage_none = -1;
 	private file_storage_sentc = 0;
 	private file_storage_own = 1;
@@ -44,7 +53,7 @@ export default class AppFileOptions extends Vue
 
 	public getOptions()
 	{
-		if (this.options.storage_url === "") {
+		if (!this.options.storage_url || this.options.storage_url === "") {
 			if (this.options.file_storage === this.file_storage_own) {
 				//storage url must be set for own storage
 				this.setMsg("Storage url must be set for own backend storage");

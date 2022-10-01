@@ -137,6 +137,11 @@ export default class extends Vue
 			icon: "mdi-cog",
 			title: "App options",
 			to: "/app/" + this.$route.params?.appId + "/options"
+		},
+		{
+			icon: "mdi-file",
+			title: "App file options",
+			to: "/app/" + this.$route.params?.appId + "/file_options"
 		}
 	];
 }
