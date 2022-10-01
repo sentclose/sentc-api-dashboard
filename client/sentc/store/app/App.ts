@@ -59,6 +59,26 @@ export default class App extends VuexModule
 	}
 
 	@Mutation
+	public setAppIdentifier(data: {id: string, identifier: string})
+	{
+		const {id, identifier} = data;
+
+		const app = this.app_details.get(id);
+
+		if (app) {
+			app.identifier = identifier;
+		}
+
+		//set it in app overview too
+
+		const app_view = this.app_data.get(id);
+
+		if (app_view) {
+			app_view.identifier = identifier;
+		}
+	}
+
+	@Mutation
 	public setAppOptions(data: {id: string, options: AppOptions})
 	{
 		const app = this.app_details.get(data.id);

@@ -4,7 +4,58 @@
 
 		<v-card v-if="app_data && app_data !== {}" flat>
 			<v-card-title class="headline">
-				{{ app_data.identifier }}
+				<span v-if="!edit_identifier">
+					{{ app_data.identifier ? app_data.identifier : "unnamed" }}
+
+					<v-tooltip bottom>
+						<template #activator="{on,attrs}">
+							<v-btn
+								v-bind="attrs"
+								class="ml-3"
+								icon
+								right
+								v-on="on"
+								@click="edit_identifier = !edit_identifier"
+							><v-icon>mdi-pencil</v-icon></v-btn>
+						</template>
+						<span>Edit identifier</span>
+					</v-tooltip>
+
+				</span>
+
+				<span v-if="edit_identifier" class="d-flex">
+					<v-text-field v-model="new_identifier" label="App identifier" />
+
+					<v-tooltip bottom color="success">
+						<template #activator="{on,attrs}">
+							<v-btn
+								color="success"
+								v-bind="attrs"
+								class="mt-3"
+								icon
+								right
+								v-on="on"
+								@click="updateIdentifier"
+							><v-icon>mdi-plus</v-icon></v-btn>
+						</template>
+						<span>Set new identifier</span>
+					</v-tooltip>
+
+					<v-tooltip bottom color="error">
+						<template #activator="{on,attrs}">
+							<v-btn
+								color="error"
+								v-bind="attrs"
+								class="mt-3"
+								icon
+								right
+								v-on="on"
+								@click="edit_identifier = !edit_identifier"
+							><v-icon>mdi-minus</v-icon></v-btn>
+						</template>
+						<span>Cancel Edit identifier</span>
+					</v-tooltip>
+				</span>
 			</v-card-title>
 
 			<v-card-text>
@@ -26,9 +77,10 @@
 import Vue from "vue";
 import Component from "vue-class-component";
 import {Action, Getter, Mutation} from "nuxt-property-decorator";
-import {AppDetails} from "~/utils/types";
+import {AppDetails, SentcError} from "~/utils/types";
 import ErrorEvent from "~/components/ErrorEvent.vue";
 import {getTime} from "~/utils/utils";
+import {app_update} from "server_dashboard_wasm";
 
 @Component({
 	// eslint-disable-next-line @typescript-eslint/naming-convention
@@ -49,6 +101,8 @@ import {getTime} from "~/utils/utils";
 
 			this.app_data = this.getAppDetails(this.app_id);
 		}
+
+		this.new_identifier = this.app_data.identifier;
 	}
 })
 export default class extends Vue
@@ -57,6 +111,10 @@ export default class extends Vue
 
 	//@ts-ignore
 	private app_data: AppDetails = {};
+
+	private edit_identifier = false;
+
+	private new_identifier = "";
 
 	@Getter("app/App/appDetails")
 	private getAppDetails: (id: string) => AppDetails;
@@ -67,15 +125,48 @@ export default class extends Vue
 	@Action("app/App/fetchDetails")
 	private fetchDetails: (app_id: string) => Promise<void>;
 
+	@Action("customer/Customer/getJwt")
+	private getJwt: () => Promise<string>;
+
+	@Mutation("event/ErrorEvent/setMsg")
+	private setMsg: (msg: string) => void;
+
+	@Mutation("app/App/setAppIdentifier")
+	private setAppIdentifier: (data: {id: string, identifier: string})=>void;
+
 	private ts(ts: number)
 	{
 		return getTime(ts);
 	}
 
+	private async updateIdentifier()
+	{
+		if (this.new_identifier === this.app_data.identifier) {
+			this.edit_identifier = false;
+			return;
+		}
+
+		try {
+			const jwt = await this.getJwt();
+
+			await app_update(process.env.NUXT_ENV_BASE_URL, jwt, this.app_id, this.new_identifier);
+
+			this.setAppIdentifier({id: this.app_id, identifier: this.new_identifier});
+			this.app_data.identifier = this.new_identifier;
+			this.edit_identifier = false;
+		} catch (e) {
+			try {
+				const err: SentcError = JSON.parse(e);
+				this.setMsg(err.error_message);
+			} catch (e) {
+				this.setMsg("An undefined error");
+			}
+		}
+	}
+
 	/*
 	TODO
-		- delete app
-		- update app call
+		- delete app with a bottom sheet
 	 */
 }
 </script>
