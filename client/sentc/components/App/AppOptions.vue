@@ -717,7 +717,7 @@ import {app_options_default, app_options_lax} from "server_dashboard_wasm/server
 @Component({
 	fetch() {
 		if (this.data) {
-			this.options = this.data;
+			this.options = Object.assign({}, this.data);
 			return;
 		}
 		
@@ -744,7 +744,7 @@ export default class AppOptions extends Vue
 
 	private resetOptions()
 	{
-		this.options = this.data ? this.data : app_options_default();
+		this.options = this.data ? Object.assign({}, this.data) : app_options_default();
 	}
 
 	/*
