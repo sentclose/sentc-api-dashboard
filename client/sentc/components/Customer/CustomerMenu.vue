@@ -7,15 +7,6 @@
 			fixed
 		>
 			<v-list>
-				<v-list-item to="/" router exact>
-					<v-list-item-action>
-						<v-icon>mdi-apps</v-icon>
-					</v-list-item-action>
-					<v-list-item-content>
-						<v-list-item-title v-text="'All apps'" />
-					</v-list-item-content>
-				</v-list-item>
-
 				<v-list-item to="/billing" router exact>
 					<v-list-item-action>
 						<v-icon>mdi-apps</v-icon>
