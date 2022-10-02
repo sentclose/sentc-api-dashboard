@@ -57,6 +57,12 @@ export default class Customer extends VuexModule
 	}
 
 	@Mutation
+	public setEmail(email:string)
+	{
+		this.email = email;
+	}
+
+	@Mutation
 	public setLoginStatus(status: number)
 	{
 		this.isLoggedIn = status;

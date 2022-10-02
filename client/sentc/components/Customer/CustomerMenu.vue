@@ -7,12 +7,21 @@
 			fixed
 		>
 			<v-list>
-				<v-list-item to="/billing" router exact>
+				<v-list-item to="/customer/billing" router exact>
 					<v-list-item-action>
 						<v-icon>mdi-apps</v-icon>
 					</v-list-item-action>
 					<v-list-item-content>
 						<v-list-item-title v-text="'Billing'" />
+					</v-list-item-content>
+				</v-list-item>
+
+				<v-list-item to="/customer/update" router exact>
+					<v-list-item-action>
+						<v-icon>mdi-apps</v-icon>
+					</v-list-item-action>
+					<v-list-item-content>
+						<v-list-item-title v-text="'Email update'" />
 					</v-list-item-content>
 				</v-list-item>
 
