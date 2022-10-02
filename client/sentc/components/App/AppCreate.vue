@@ -19,7 +19,7 @@
 						<v-divider />
 
 						<v-card-title class="title">Options</v-card-title>
-						<v-card-text>
+						<v-card-text style="color: black">
 							<p>
 								The following options are optional. The default options require an own backend, <br>
 								for user registration, user delete, group create and group delete.
