@@ -59,10 +59,6 @@
 		</v-app-bar>
 
 		<v-main>
-			<v-dialog v-model="deleteDialog" max-width="500">
-				<Delete @changeDone="deleteDialog = false" />
-			</v-dialog>
-
 			<v-container fluid :class="{'mx-0': $vuetify.breakpoint.smAndDown, 'px-0': $vuetify.breakpoint.smAndDown}">
 				<v-row justify="center" :class="{'mx-0': $vuetify.breakpoint.smAndDown, 'px-0': $vuetify.breakpoint.smAndDown}">
 					<v-col sm="12" md="12" lg="12" :class="{'mx-0': $vuetify.breakpoint.smAndDown, 'px-0': $vuetify.breakpoint.smAndDown}" style="max-width: 1300px">
@@ -109,8 +105,6 @@ export default class extends Vue
 	private rightDrawer = false;
 
 	private title = "Sentc Dashboard";
-
-	private deleteDialog = false;
 
 	private p(item: string)
 	{
