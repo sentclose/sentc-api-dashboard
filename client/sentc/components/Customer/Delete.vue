@@ -30,7 +30,7 @@
 <script lang="ts">
 import Vue from "vue";
 import Component from "vue-class-component";
-import {Getter, Mutation} from "nuxt-property-decorator";
+import {Action, Getter, Mutation} from "nuxt-property-decorator";
 import {delete_customer} from "server_dashboard_wasm";
 import {SentcError} from "~/utils/types";
 
@@ -54,8 +54,8 @@ export default class Delete extends Vue
 	@Mutation("event/ErrorEvent/setMsg")
 	private setMsg: (msg: string) => void;
 
-	@Mutation("customer/Customer/setLoginStatus")
-	private setLoginStatus: (status: number) => void;
+	@Action("customer/Customer/logout")
+	private logout: () => Promise<void>;
 
 	private async deleteUser()
 	{
@@ -77,10 +77,9 @@ export default class Delete extends Vue
 			return;
 		}
 
-		this.setLoginStatus(0);
-		this.$emit("changeDone", true);
+		await this.logout();
 
-		return this.$router.push("/");
+		location.replace("/");
 	}
 }
 </script>

@@ -20,10 +20,21 @@
 
 				<v-list-item @click="deleteDialog = !deleteDialog">
 					<v-list-item-action>
-						<v-icon>mdi-apps</v-icon>
+						<v-icon>mdi-account-remove</v-icon>
 					</v-list-item-action>
 					<v-list-item-content>
 						<v-list-item-title v-text="'Delete'" />
+					</v-list-item-content>
+				</v-list-item>
+
+				<v-divider />
+
+				<v-list-item @click="logOut">
+					<v-list-item-action>
+						<v-icon>mdi-logout</v-icon>
+					</v-list-item-action>
+					<v-list-item-content>
+						<v-list-item-title v-text="'Logout'" />
 					</v-list-item-content>
 				</v-list-item>
 			</v-list>
@@ -38,7 +49,7 @@
 <script lang="ts">
 import Vue from "vue";
 import Component from "vue-class-component";
-import {Prop} from "nuxt-property-decorator";
+import {Action, Prop} from "nuxt-property-decorator";
 import Delete from "~/components/Customer/Delete.vue";
 
 @Component({
@@ -64,6 +75,16 @@ export default class CustomerMenu extends Vue
 	private model = false;
 
 	private deleteDialog = false;
+
+	@Action("customer/Customer/logout")
+	private logout: () => Promise<void>;
+
+	private async logOut()
+	{
+		await this.logout();
+
+		location.replace("/");
+	}
 }
 </script>
 
