@@ -8,50 +8,50 @@
 
 		<v-row justify="center" align="center" class="mt-3" :class="{'mx-0': $vuetify.breakpoint.smAndDown, 'px-0': $vuetify.breakpoint.smAndDown}">
 			<v-col cols="12" sm="10" md="8" lg="6" :class="{'mx-0': $vuetify.breakpoint.smAndDown, 'px-0': $vuetify.breakpoint.smAndDown}">
-				<v-form @submit.prevent="pLogin">
-					<v-card>
-						<v-card-title class="heading">Login</v-card-title>
+				<v-form @submit.prevent="resetPw">
+					<v-card flat>
+						<v-card-title class="heading">Reset your password</v-card-title>
 
 						<v-card-text>
 							<v-text-field
-								v-model.lazy="email"
+								v-model="email"
 								label="Email"
 								prepend-icon="mdi-account-circle"
 								:rules="[rules.required, rules.email]"
 							/>
-
-							<v-text-field
-								v-model="password"
-								label="Password"
-								:type="showPassword ? 'text' : 'password'"
-								prepend-icon="mdi-lock"
-								:append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-								:rules="[rules.required]"
-								@click:append="showPassword = !showPassword"
-							/>
-
-							<v-btn text style="font-size: 0.90em" color="primary" to="/customer/password">Forgot your password?</v-btn>
 						</v-card-text>
 
 						<v-card-actions>
 							<v-spacer />
-							<v-btn color="success" type="submit">Login</v-btn>
+							<v-btn type="submit" text color="primary">Reset password</v-btn>
 						</v-card-actions>
 					</v-card>
 				</v-form>
 			</v-col>
 		</v-row>
+
+		<v-dialog v-model="dialog" max-width="700">
+			<v-card>
+				<v-card-title class="headline">We send you an email to reset your password</v-card-title>
+				<v-card-text>Please verify your email.</v-card-text>
+
+				<v-card-actions>
+					<v-spacer />
+					<v-btn text @click="dialog=false">close</v-btn>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
 	</div>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
 import Component from "vue-class-component";
-import {p} from "~/utils/utils";
-import {CustomerLoginData, SentcError} from "~/utils/types";
-import {login, CustomerDoneLoginOutput} from "server_dashboard_wasm";
 import ErrorEvent from "~/components/ErrorEvent.vue";
+import {p} from "~/utils/utils";
 import {Action, Mutation} from "nuxt-property-decorator";
+import {CustomerLoginData, SentcError} from "~/utils/types";
+import {prepare_reset_password} from "../../../../server_dashboard_wasm/pkg";
 
 @Component({
 	// eslint-disable-next-line @typescript-eslint/naming-convention
@@ -59,16 +59,9 @@ import {Action, Mutation} from "nuxt-property-decorator";
 })
 export default class extends Vue
 {
+	//this is called without logged in
+
 	private email = "";
-	private password = "";
-
-	private showPassword = false;
-
-	@Mutation("event/ErrorEvent/setMsg")
-	private setMsg: (msg: string) => void;
-
-	@Action("customer/Customer/saveData")
-	private saveData: (data: CustomerLoginData)=> Promise<void>;
 
 	private rules = {
 		required: (value) => { return !!value || "Required."; },
@@ -78,35 +71,27 @@ export default class extends Vue
 		}
 	};
 
+	private dialog = false;
+
+	@Mutation("event/ErrorEvent/setMsg")
+	private setMsg: (msg: string) => void;
+
+	@Action("customer/Customer/saveData")
+	private saveData: (data: CustomerLoginData)=> Promise<void>;
+
 	private p(item: string)
 	{
 		return p(item);
 	}
 
-	private pLogin()
+	private async resetPw()
 	{
-		return this.login(this.email, this.password);
-	}
-
-	public async login(email: string, password: string)
-	{
-		if (email === "" || password === "") {
-			return false;
-		}
+		//send an email
 
 		try {
-			const data: CustomerDoneLoginOutput = await login(process.env.NUXT_ENV_BASE_URL, process.env.NUXT_ENV_APP_PUBLIC_TOKEN, email, password);
+			await prepare_reset_password(process.env.NUXT_ENV_BASE_URL, process.env.NUXT_ENV_APP_PUBLIC_TOKEN, this.email);
 
-			await this.saveData({
-				email_status: data.get_email_status(),
-				validate_email: data.get_validate_email(),
-				email_send: data.get_email_send(),
-				email: data.get_email(),
-				user_id: data.get_user_id(),
-				device_id: data.get_device_id(),
-				jwt: data.get_jwt(),
-				refresh_token: data.get_refresh_token()
-			});
+			this.dialog = true;
 		} catch (e) {
 			try {
 				const err: SentcError = JSON.parse(e);
@@ -115,8 +100,6 @@ export default class extends Vue
 				this.setMsg("An undefined error");
 			}
 		}
-
-		return this.$router.push("/");
 	}
 }
 </script>
