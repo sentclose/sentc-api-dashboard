@@ -17,7 +17,7 @@
 				/>
 			</nuxt-link>
 
-			<nuxt-link to="/" style="text-decoration: none; color: inherit">
+			<nuxt-link v-show="$vuetify.breakpoint.mdAndUp" to="/" style="text-decoration: none; color: inherit">
 				<v-toolbar-title v-text="title" />
 			</nuxt-link>
 
@@ -28,6 +28,14 @@
 				@click.stop="rightDrawer = !rightDrawer"
 			>
 				<v-icon>mdi-cog</v-icon>
+			</v-btn>
+
+			<v-btn v-if="getLogin !== 1" text to="/login" class="mr-3">
+				<v-icon left>mdi-login</v-icon> sign in
+			</v-btn>
+
+			<v-btn v-if="getLogin !== 1" color="primary" to="/register">
+				<v-icon left>mdi-account-plus</v-icon> sign up
 			</v-btn>
 		</v-app-bar>
 

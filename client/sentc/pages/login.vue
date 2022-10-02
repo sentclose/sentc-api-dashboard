@@ -2,12 +2,12 @@
 	<div>
 		<ErrorEvent />
 
-		<v-row justify="center" align="center" class="mt-3">
+		<v-row justify="center" align="center" class="mt-3" :class="{'mx-0': $vuetify.breakpoint.smAndDown, 'px-0': $vuetify.breakpoint.smAndDown}">
 			<v-img :src="p('Sentc.png')" max-width="200" />
 		</v-row>
 
-		<v-row justify="center" align="center" class="mt-3">
-			<v-col cols="12" sm="10" md="8" lg="6">
+		<v-row justify="center" align="center" class="mt-3" :class="{'mx-0': $vuetify.breakpoint.smAndDown, 'px-0': $vuetify.breakpoint.smAndDown}">
+			<v-col cols="12" sm="10" md="8" lg="6" :class="{'mx-0': $vuetify.breakpoint.smAndDown, 'px-0': $vuetify.breakpoint.smAndDown}">
 				<v-form @submit.prevent="pLogin">
 					<v-card>
 						<v-card-title class="heading">Login</v-card-title>

@@ -76,6 +76,9 @@ const config: NuxtConfig = {
 		theme: {
 			//dark: true,
 			themes: {
+				light: {
+					primary_dark: colors.blue.darken2
+				},
 				dark: {
 					primary: colors.blue.darken2,
 					accent: colors.grey.darken3,
