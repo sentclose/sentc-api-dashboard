@@ -72,7 +72,7 @@
 
 						<v-card-actions>
 							<v-spacer />
-							<v-btn text color="primary" type="submit">Change password</v-btn>
+							<v-btn text color="primary" type="submit" :loading="pw_change_loading">Change password</v-btn>
 						</v-card-actions>
 					</v-card>
 				</v-form>
@@ -180,6 +180,7 @@ export default class extends Vue
 	private dialog = false;
 	private pw_change_dialog = false;
 	private showPassword = false;
+	private pw_change_loading = false;
 
 	private rules = {
 		required: (value) => { return !!value || "Required."; },
@@ -223,6 +224,8 @@ export default class extends Vue
 			return;
 		}
 
+		this.pw_change_loading = true;
+
 		try {
 			await change_password(process.env.NUXT_ENV_BASE_URL, process.env.NUXT_ENV_APP_PUBLIC_TOKEN, this.getEmail, this.old_pw, this.new_pw);
 
@@ -235,6 +238,8 @@ export default class extends Vue
 				this.setMsg("An undefined error");
 			}
 		}
+
+		this.pw_change_loading = false;
 	}
 }
 </script>
