@@ -26,6 +26,10 @@ export default class App extends VuexModule
 		return this.app_list;
 	}
 
+	get appListEnd() {
+		return this.app_list_end;
+	}
+
 	get app() {
 		return (app_id: string) => {
 			return this.app_data.get(app_id);
@@ -111,6 +115,10 @@ export default class App extends VuexModule
 			return;
 		}
 
+		if (data.length < 20) {
+			this.app_list_end = true;
+		}
+
 		for (let i = 0; i < data.length; i++) {
 			const datum = data[i];
 
@@ -176,6 +184,10 @@ export default class App extends VuexModule
 	@Action({rawError: true})
 	public async fetchApps()
 	{
+		if (this.app_list_end) {
+			return;
+		}
+
 		const last = this.app_list[this.app_list.length - 1] ?? "none";
 		const last_time = this.app_data.get(last)?.time.toString() ?? "0";
 

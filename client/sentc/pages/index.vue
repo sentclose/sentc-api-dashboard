@@ -6,7 +6,7 @@
 				<v-btn color="primary" to="/app/create">New app</v-btn>
 			</v-row>
 
-			<v-row :class="{'mx-0': $vuetify.breakpoint.smAndDown, 'px-0': $vuetify.breakpoint.smAndDown}">
+			<v-row :class="{'mx-0': $vuetify.breakpoint.smAndDown, 'px-0': $vuetify.breakpoint.smAndDown}" class="mb-5">
 				<v-col v-for="(item, i) in appList" :key="i" cols="12" md="6" lg="4">
 					<v-hover v-slot="{hover}">
 						<v-card v-if="app(item) !== undefined" exact :to="'/app/'+item" :elevation="hover ? 12 : 2">
@@ -17,6 +17,10 @@
 						</v-card>
 					</v-hover>
 				</v-col>
+			</v-row>
+
+			<v-row v-if="!appListEnd" align="center" justify="center" class="my-5">
+				<v-btn color="primary" text @click="loadMore">Load more</v-btn>
 			</v-row>
 		</v-col>
 	</v-row>
@@ -47,11 +51,16 @@ import {getTime} from "~/utils/utils";
 })
 export default class extends Vue
 {
+	private btn_loading = false;
+
 	@Getter("app/App/appList")
 	private appList: string[];
 
 	@Getter("app/App/app")
 	private app: (id: string) => AppData;
+
+	@Getter("app/App/appListEnd")
+	private appListEnd: boolean;
 
 	@Action("app/App/fetchApps")
 	private fetchApps: () => Promise<void>;
@@ -59,6 +68,15 @@ export default class extends Vue
 	private ts(ts: number)
 	{
 		return getTime(ts);
+	}
+
+	private async loadMore()
+	{
+		this.btn_loading = true;
+
+		await this.fetchApps();
+
+		this.btn_loading = false;
 	}
 }
 </script>
