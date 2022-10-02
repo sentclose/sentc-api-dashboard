@@ -18,10 +18,10 @@
 
 				<v-list-item to="/customer/update" router exact>
 					<v-list-item-action>
-						<v-icon>mdi-apps</v-icon>
+						<v-icon>mdi-account</v-icon>
 					</v-list-item-action>
 					<v-list-item-content>
-						<v-list-item-title v-text="'Email update'" />
+						<v-list-item-title v-text="'Update data'" />
 					</v-list-item-content>
 				</v-list-item>
 
