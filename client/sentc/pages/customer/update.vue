@@ -3,7 +3,14 @@
 		<ErrorEvent />
 
 		<v-row justify="center" :class="{'mx-0': $vuetify.breakpoint.smAndDown, 'px-0': $vuetify.breakpoint.smAndDown}">
-			<v-col sm="12" md="12" lg="12" :class="{'mx-0': $vuetify.breakpoint.smAndDown, 'px-0': $vuetify.breakpoint.smAndDown}" style="max-width: 1300px">
+			<v-col
+				cols="12"
+				sm="12"
+				md="8"
+				lg="6"
+				:class="{'mx-0': $vuetify.breakpoint.smAndDown, 'px-0': $vuetify.breakpoint.smAndDown}"
+				style="max-width: 1300px"
+			>
 				<h1 class="display-1">Settings</h1>
 
 				<v-form @submit.prevent="changeEmail">
@@ -76,6 +83,35 @@
 						</v-card-actions>
 					</v-card>
 				</v-form>
+
+				<v-divider />
+
+				<v-expansion-panels flat popout>
+					<v-expansion-panel>
+						<v-expansion-panel-header>Danger Zone</v-expansion-panel-header>
+						<v-expansion-panel-content eager>
+							<v-card-title class="headline">Delete account</v-card-title>
+
+							<v-card-text>
+								<v-text-field
+									v-model="delete_pw"
+									label="Password"
+									:type="showPassword ? 'text' : 'password'"
+									prepend-icon="mdi-lock"
+									:append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+									:rules="[rules.required]"
+									messages="Please enter your password to delete the account"
+									@click:append="showPassword = !showPassword"
+								/>
+							</v-card-text>
+
+							<v-card-actions>
+								<v-spacer />
+								<v-btn text color="error" @click="delete_sheet=true">Delete</v-btn>
+							</v-card-actions>
+						</v-expansion-panel-content>
+					</v-expansion-panel>
+				</v-expansion-panels>
 			</v-col>
 		</v-row>
 
@@ -101,6 +137,23 @@
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
+
+		<v-bottom-sheet v-model="delete_sheet" persistent>
+			<v-sheet
+				class="text-center"
+				height="200px"
+			>
+				<div class="pa-3">
+					<h1 class="display-5">Delete Account</h1>
+					<br>
+
+					Do you really want to delete your account?
+				</div>
+
+				<v-btn class="mt-6" text color="error" @click="deleteUser">Delete</v-btn>
+				<v-btn class="mt-6" text color="primary" @click="delete_sheet = false">Cancel</v-btn>
+			</v-sheet>
+		</v-bottom-sheet>
 	</div>
 </template>
 
@@ -109,7 +162,7 @@ import Vue from "vue";
 import Component from "vue-class-component";
 import ErrorEvent from "~/components/ErrorEvent.vue";
 import {Action, Getter, Mutation} from "nuxt-property-decorator";
-import {change_password, update} from "server_dashboard_wasm";
+import {change_password, delete_customer, update} from "server_dashboard_wasm";
 import {SentcError} from "~/utils/types";
 import zxcvbn from "zxcvbn";
 
@@ -171,16 +224,22 @@ export default class extends Vue
 	@Action("customer/Customer/getJwt")
 	private getJwt: () => Promise<string>;
 
+	@Action("customer/Customer/logout")
+	private logout: () => Promise<void>;
+
 	private email = "";
 
 	private old_pw = "";
 	private new_pw = "";
 	private new_pw_2 = "";
 
+	private delete_pw = "";
+
 	private dialog = false;
 	private pw_change_dialog = false;
 	private showPassword = false;
 	private pw_change_loading = false;
+	private delete_sheet = false;
 
 	private rules = {
 		required: (value) => { return !!value || "Required."; },
@@ -240,6 +299,35 @@ export default class extends Vue
 		}
 
 		this.pw_change_loading = false;
+	}
+
+	private async deleteUser()
+	{
+		if (this.getEmail === "") {
+			this.setMsg("Not logged in");
+			return false;
+		}
+
+		if (!this.delete_pw || this.delete_pw === "") {
+			return; 
+		}
+
+		try {
+			await delete_customer(process.env.NUXT_ENV_BASE_URL, process.env.NUXT_ENV_APP_PUBLIC_TOKEN, this.getEmail, this.delete_pw);
+		} catch (e) {
+			try {
+				const err: SentcError = JSON.parse(e);
+				this.setMsg(err.error_message);
+			} catch (e) {
+				this.setMsg("An undefined error");
+			}
+
+			return;
+		}
+
+		await this.logout();
+
+		location.replace("/");
 	}
 }
 </script>
