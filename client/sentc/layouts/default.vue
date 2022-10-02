@@ -60,14 +60,13 @@
 import Vue from "vue";
 import Component from "vue-class-component";
 import {Getter} from "nuxt-property-decorator";
-import Delete from "~/components/Customer/Delete.vue";
 import CustomerMenu from "~/components/Customer/CustomerMenu.vue";
 import {p} from "~/utils/utils";
 
 @Component({
 	name: "DefaultLayout",
 	// eslint-disable-next-line @typescript-eslint/naming-convention
-	components: {CustomerMenu, Delete},
+	components: {CustomerMenu},
 	middleware: ["getUser"]
 })
 export default class extends Vue
