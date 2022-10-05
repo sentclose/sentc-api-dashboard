@@ -46,6 +46,7 @@
 import Vue from "vue";
 import Component from "vue-class-component";
 import {Action, Prop} from "nuxt-property-decorator";
+import {p} from "~/utils/utils";
 
 @Component({
 	// eslint-disable-next-line @typescript-eslint/naming-convention
@@ -75,7 +76,7 @@ export default class CustomerMenu extends Vue
 	{
 		await this.logout();
 
-		location.replace("/");
+		location.replace(p(""));
 	}
 }
 </script>

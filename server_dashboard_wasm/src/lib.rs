@@ -219,6 +219,12 @@ pub async fn register(base_url: String, auth_token: String, email: String, passw
 }
 
 #[wasm_bindgen]
+pub async fn done_register(base_url: String, jwt: String, token: String) -> Result<(), JsValue>
+{
+	Ok(customer::done_register(base_url, jwt.as_str(), token).await?)
+}
+
+#[wasm_bindgen]
 pub async fn refresh_jwt(base_url: String, auth_token: String, old_jwt: String, refresh_token: String) -> Result<String, JsValue>
 {
 	Ok(customer::refresh_jwt(

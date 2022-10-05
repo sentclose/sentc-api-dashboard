@@ -57,7 +57,7 @@ export default class Customer extends VuexModule
 	}
 
 	@Mutation
-	public setEmail(email:string)
+	public setEmailMut(email:string)
 	{
 		this.email = email;
 	}
@@ -103,6 +103,21 @@ export default class Customer extends VuexModule
 		this.context.commit("setData", data);
 
 		const storage = await Storage.getStore();
+
+		await storage.set(USER_KEY_STORAGE_NAMES.userData, data);
+	}
+
+	@Action({rawError: true})
+	public async setEmail(email: string)
+	{
+		this.context.commit("setEmailMut", email);
+
+		//save the new email
+		const storage = await Storage.getStore();
+
+		const data: CustomerLoginData = await storage.getItem(USER_KEY_STORAGE_NAMES.userData);
+
+		data.email = email;
 
 		await storage.set(USER_KEY_STORAGE_NAMES.userData, data);
 	}

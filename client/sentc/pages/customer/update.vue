@@ -165,6 +165,7 @@ import {Action, Getter, Mutation} from "nuxt-property-decorator";
 import {change_password, delete_customer, update} from "server_dashboard_wasm";
 import {SentcError} from "~/utils/types";
 import zxcvbn from "zxcvbn";
+import {p} from "~/utils/utils";
 
 @Component({
 	// eslint-disable-next-line @typescript-eslint/naming-convention
@@ -218,14 +219,14 @@ export default class extends Vue
 	@Mutation("event/ErrorEvent/setMsg")
 	private setMsg: (msg: string) => void;
 
-	@Mutation("customer/Customer/setEmail")
-	private setEmail: (email: string)=> void;
-
 	@Action("customer/Customer/getJwt")
 	private getJwt: () => Promise<string>;
 
 	@Action("customer/Customer/logout")
 	private logout: () => Promise<void>;
+
+	@Action("customer/Customer/setEmail")
+	private setEmail: (email: string)=> Promise<void>;
 
 	private email = "";
 
@@ -259,7 +260,7 @@ export default class extends Vue
 			const jwt = await this.getJwt();
 			await update(process.env.NUXT_ENV_BASE_URL, process.env.NUXT_ENV_APP_PUBLIC_TOKEN, jwt, this.email);
 
-			this.setEmail(this.email);
+			await this.setEmail(this.email);
 
 			this.dialog = true;
 		} catch (e) {
@@ -327,7 +328,7 @@ export default class extends Vue
 
 		await this.logout();
 
-		location.replace("/");
+		location.replace(p(""));
 	}
 }
 </script>

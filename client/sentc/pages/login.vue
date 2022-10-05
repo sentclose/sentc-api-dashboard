@@ -88,7 +88,7 @@ export default class extends Vue
 		return this.login(this.email, this.password);
 	}
 
-	public async login(email: string, password: string)
+	public async login(email: string, password: string, link = true)
 	{
 		if (email === "" || password === "") {
 			return false;
@@ -116,7 +116,9 @@ export default class extends Vue
 			}
 		}
 
-		return this.$router.push("/");
+		if (link) {
+			return this.$router.push("/");
+		}
 	}
 }
 </script>
