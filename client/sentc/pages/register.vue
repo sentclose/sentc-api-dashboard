@@ -68,11 +68,11 @@
 		<v-dialog v-model="dialog" max-width="700">
 			<v-card>
 				<v-card-title class="headline">Registration was successful</v-card-title>
-				<v-card-text>We send an Email to your address. Please verify your Email under this link: <nuxt-link to="/" />, or just click on the link in the Email.</v-card-text>
+				<v-card-text>We send an Email to your address. Please verify your Email under this link: <nuxt-link to="/customer/validation/register">validation</nuxt-link>, or just click on the link in the Email.</v-card-text>
 
 				<v-card-text>
 					<p>
-						Tank you for registration.
+						Thank you for registration.
 					</p>
 				</v-card-text>
 
