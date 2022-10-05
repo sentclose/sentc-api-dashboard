@@ -64,6 +64,24 @@
 				</v-form>
 			</v-col>
 		</v-row>
+
+		<v-dialog v-model="dialog" max-width="700">
+			<v-card>
+				<v-card-title class="headline">Registration was successful</v-card-title>
+				<v-card-text>We send an Email to your address. Please verify your Email under this link: <nuxt-link to="/" />, or just click on the link in the Email.</v-card-text>
+
+				<v-card-text>
+					<p>
+						Tank you for registration.
+					</p>
+				</v-card-text>
+
+				<v-card-actions>
+					<v-spacer />
+					<v-btn text to="/" color="primary">Go to start</v-btn>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
 	</div>
 </template>
 
@@ -130,6 +148,8 @@ export default class extends Vue
 
 	private showPassword = false;
 
+	private dialog = false;
+
 	@Mutation("event/ErrorEvent/setMsg")
 	private setMsg: (msg: string) => void;
 
@@ -177,8 +197,10 @@ export default class extends Vue
 			return;
 		}
 
+		this.dialog = true;
+
 		//@ts-ignore
-		return this.$refs.login.login(this.email, this.password);
+		return this.$refs.login.login(this.email, this.password, false);
 	}
 }
 </script>
