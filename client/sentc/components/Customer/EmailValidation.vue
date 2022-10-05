@@ -28,7 +28,7 @@
 					</v-form>
 				</div>
 
-				<div v-if="part===1">
+				<div v-if="part === 1">
 					<v-form @submit.prevent="validateEmail">
 						<v-card flat>
 							<v-card-title class="headline">
@@ -135,7 +135,7 @@ import zxcvbn from "zxcvbn";
 
 		this.token = param;
 
-		if (this.part === 0) {
+		if (this.part !== 1) {
 			await this.validateEmail();
 		}
 	},
