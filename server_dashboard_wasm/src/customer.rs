@@ -4,7 +4,7 @@ use alloc::vec;
 use sentc_crypto::util::public::{handle_general_server_response, handle_server_response};
 use sentc_crypto::SdkError;
 use sentc_crypto_full::util::{make_non_auth_req, make_req, HttpMethod};
-use server_api_common::customer::{CustomerRegisterData, CustomerRegisterOutput, CustomerUpdateInput};
+use server_api_common::customer::{CustomerDoneRegistrationInput, CustomerRegisterData, CustomerRegisterOutput, CustomerUpdateInput};
 use server_api_common::sdk_common::user::{
 	ChangePasswordData,
 	DoneLoginLightServerOutput,
@@ -36,6 +36,23 @@ pub async fn register(base_url: String, auth_token: &str, email: String, passwor
 	let out: CustomerRegisterOutput = handle_server_response(res.as_str())?;
 
 	Ok(out.customer_id)
+}
+
+pub async fn done_register(base_url: String, jwt: &str, token: String) -> Result<(), String>
+{
+	//call this for update email too
+
+	let input = CustomerDoneRegistrationInput {
+		token,
+	};
+
+	let input = utils::to_string(&input)?;
+
+	let url = base_url + "/api/v1/customer/register_validation";
+
+	let res = make_req(HttpMethod::POST, url.as_str(), "", Some(input), Some(jwt)).await?;
+
+	handle_general_server_response(res.as_str())
 }
 
 pub async fn refresh_jwt(base_url: String, auth_token: &str, old_jwt: &str, refresh_token: &str) -> Result<String, String>
