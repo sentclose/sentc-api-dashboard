@@ -165,6 +165,7 @@ import {Action, Getter, Mutation} from "nuxt-property-decorator";
 import {change_password, delete_customer, update} from "server_dashboard_wasm";
 import {SentcError} from "~/utils/types";
 import zxcvbn from "zxcvbn";
+import {p} from "~/utils/utils";
 
 @Component({
 	// eslint-disable-next-line @typescript-eslint/naming-convention
@@ -327,7 +328,7 @@ export default class extends Vue
 
 		await this.logout();
 
-		location.replace("/");
+		location.replace(p(""));
 	}
 }
 </script>
