@@ -53,6 +53,8 @@
 								:rules="[rules.required]"
 								@click:append="showPassword = !showPassword"
 							/>
+
+							<Captcha ref="captcha" />
 						</v-card-text>
 
 						<v-card-actions>
@@ -95,10 +97,11 @@ import {p} from "~/utils/utils";
 import Login from "~/pages/login.vue";
 import ErrorEvent from "~/components/ErrorEvent.vue";
 import {Mutation} from "nuxt-property-decorator";
+import Captcha from "~/components/Customer/Captcha.vue";
 
 @Component({
 	// eslint-disable-next-line @typescript-eslint/naming-convention
-	components: {Login, ErrorEvent},
+	components: {Captcha, Login, ErrorEvent},
 	computed: {
 		score() {
 			if (this.password.length < 6) {
@@ -185,10 +188,24 @@ export default class extends Vue
 		}
 
 		try {
-			await register(process.env.NUXT_ENV_BASE_URL, process.env.NUXT_ENV_APP_PUBLIC_TOKEN, this.email, this.password);
+			//@ts-ignore
+			const captcha: false | string[] = this.$refs.captcha.getSolution();
+
+			if (!captcha) {
+				return;
+			}
+
+			await register(process.env.NUXT_ENV_BASE_URL, process.env.NUXT_ENV_APP_PUBLIC_TOKEN, this.email, this.password, captcha[0], captcha[1]);
 		} catch (e) {
 			try {
 				const err: SentcError = JSON.parse(e);
+
+				if (err.error_message === "Captcha is wrong") {
+					//load a new captcha
+					//@ts-ignore
+					await this.$refs.captcha.getCaptcha();
+				}
+
 				this.setMsg(err.error_message);
 			} catch (e) {
 				this.setMsg("An undefined error");

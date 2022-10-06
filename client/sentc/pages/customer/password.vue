@@ -19,6 +19,8 @@
 								prepend-icon="mdi-account-circle"
 								:rules="[rules.required, rules.email]"
 							/>
+
+							<Captcha ref="captcha" />
 						</v-card-text>
 
 						<v-card-actions>
@@ -52,10 +54,11 @@ import {p} from "~/utils/utils";
 import {Action, Mutation} from "nuxt-property-decorator";
 import {CustomerLoginData, SentcError} from "~/utils/types";
 import {prepare_reset_password} from "../../../../server_dashboard_wasm/pkg";
+import Captcha from "~/components/Customer/Captcha.vue";
 
 @Component({
 	// eslint-disable-next-line @typescript-eslint/naming-convention
-	components: {ErrorEvent}
+	components: {Captcha, ErrorEvent}
 })
 export default class extends Vue
 {
@@ -89,12 +92,26 @@ export default class extends Vue
 		//send an email
 
 		try {
-			await prepare_reset_password(process.env.NUXT_ENV_BASE_URL, process.env.NUXT_ENV_APP_PUBLIC_TOKEN, this.email);
+			//@ts-ignore
+			const captcha: false | string[] = this.$refs.captcha.getSolution();
+
+			if (!captcha) {
+				return;
+			}
+
+			await prepare_reset_password(process.env.NUXT_ENV_BASE_URL, process.env.NUXT_ENV_APP_PUBLIC_TOKEN, this.email, captcha[0], captcha[1]);
 
 			this.dialog = true;
 		} catch (e) {
 			try {
 				const err: SentcError = JSON.parse(e);
+
+				if (err.error_message === "Captcha is wrong") {
+					//load a new captcha
+					//@ts-ignore
+					await this.$refs.captcha.getCaptcha();
+				}
+
 				this.setMsg(err.error_message);
 			} catch (e) {
 				this.setMsg("An undefined error");
