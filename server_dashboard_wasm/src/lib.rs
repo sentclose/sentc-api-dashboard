@@ -135,17 +135,23 @@ pub struct CustomerEmailData
 	email: String,
 	email_send: u128,
 	email_status: i32,
+	name: String,
+	first_name: String,
+	company: Option<String>,
 }
 
-impl From<server_api_common::customer::CustomerEmailData> for CustomerEmailData
+impl From<server_api_common::customer::CustomerDataOutput> for CustomerEmailData
 {
-	fn from(data: server_api_common::customer::CustomerEmailData) -> Self
+	fn from(data: server_api_common::customer::CustomerDataOutput) -> Self
 	{
 		Self {
 			validate_email: data.validate_email,
 			email: data.email,
 			email_send: data.email_send,
 			email_status: data.email_status,
+			name: data.name,
+			first_name: data.first_name,
+			company: data.company,
 		}
 	}
 }
@@ -232,6 +238,21 @@ impl CustomerDoneLoginOutput
 	{
 		self.user_keys.refresh_token.clone()
 	}
+
+	pub fn get_name(&self) -> String
+	{
+		self.email_data.name.clone()
+	}
+
+	pub fn get_first_name(&self) -> String
+	{
+		self.email_data.first_name.clone()
+	}
+
+	pub fn get_company(&self) -> Option<String>
+	{
+		self.email_data.company.clone()
+	}
 }
 
 #[wasm_bindgen]
@@ -256,15 +277,26 @@ pub async fn register(
 	auth_token: String,
 	email: String,
 	password: String,
+	name: String,
+	first_name: String,
+	company: String,
 	captcha_solution: String,
 	captcha_id: String,
 ) -> Result<String, JsValue>
 {
+	let company = match company.as_str() {
+		"" => Some(company),
+		_ => None,
+	};
+
 	let out = customer::register(
 		base_url,
 		auth_token.as_str(),
 		email,
 		password.as_str(),
+		name,
+		first_name,
+		company,
 		captcha_solution,
 		captcha_id,
 	)

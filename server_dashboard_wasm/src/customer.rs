@@ -4,7 +4,7 @@ use alloc::vec;
 use sentc_crypto::util::public::{handle_general_server_response, handle_server_response};
 use sentc_crypto::SdkError;
 use sentc_crypto_full::util::{make_non_auth_req, make_req, HttpMethod};
-use server_api_common::customer::{CustomerDoneRegistrationInput, CustomerRegisterData, CustomerRegisterOutput, CustomerUpdateInput};
+use server_api_common::customer::{CustomerData, CustomerDoneRegistrationInput, CustomerRegisterData, CustomerRegisterOutput, CustomerUpdateInput};
 use server_api_common::sdk_common::user::{
 	CaptchaCreateOutput,
 	CaptchaInput,
@@ -36,6 +36,9 @@ pub async fn register(
 	auth_token: &str,
 	email: String,
 	password: &str,
+	name: String,
+	first_name: String,
+	company: Option<String>,
 	captcha_solution: String,
 	captcha_id: String,
 ) -> Result<String, String>
@@ -44,6 +47,11 @@ pub async fn register(
 	let register_data = RegisterData::from_string(register_data.as_str()).map_err(|e| SdkError::JsonParseFailed(e))?;
 
 	let input = CustomerRegisterData {
+		customer_data: CustomerData {
+			name,
+			first_name,
+			company,
+		},
 		email,
 		register_data: register_data.device,
 		captcha_input: CaptchaInput {
