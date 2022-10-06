@@ -145,6 +145,22 @@ pub async fn update(base_url: String, auth_token: &str, jwt: &str, new_email: St
 	Ok(handle_general_server_response(res.as_str())?)
 }
 
+pub async fn update_data(base_url: String, jwt: &str, name: String, first_name: String, company: Option<String>) -> Result<(), String>
+{
+	let url = base_url + "/api/v1/customer/data";
+
+	let input = CustomerData {
+		name,
+		first_name,
+		company,
+	};
+	let input = utils::to_string(&input)?;
+
+	let res = make_req(HttpMethod::PUT, url.as_str(), "", Some(input), Some(jwt)).await?;
+
+	handle_general_server_response(res.as_str())
+}
+
 pub async fn delete_customer(base_url: String, auth_token: &str, email: &str, pw: &str) -> Result<(), String>
 {
 	let prep_server_input = sentc_crypto::user::prepare_login_start(email)?;
