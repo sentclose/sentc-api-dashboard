@@ -30,6 +30,25 @@
 
 				<v-divider />
 
+				<v-form @submit.prevent="updateData">
+					<v-card flat>
+						<v-card-title class="headline">Update data</v-card-title>
+
+						<v-card-text>
+							<v-text-field v-model="first_name" label="Firstname" :rules="[rules.required]" />
+							<v-text-field v-model="customer_name" label="Name" :rules="[rules.required]" />
+							<v-text-field v-model="company" label="Company" messages="Optional" />
+						</v-card-text>
+
+						<v-card-actions>
+							<v-spacer />
+							<v-btn type="submit" text color="primary">Update data</v-btn>
+						</v-card-actions>
+					</v-card>
+				</v-form>
+
+				<v-divider />
+
 				<v-form @submit.prevent="changePassword">
 					<v-card flat>
 						<v-card-title class="headline">Change password</v-card-title>
@@ -162,7 +181,7 @@ import Vue from "vue";
 import Component from "vue-class-component";
 import ErrorEvent from "~/components/ErrorEvent.vue";
 import {Action, Getter, Mutation} from "nuxt-property-decorator";
-import {change_password, delete_customer, update} from "server_dashboard_wasm";
+import {change_password, delete_customer, update, update_data} from "server_dashboard_wasm";
 import {SentcError} from "~/utils/types";
 import zxcvbn from "zxcvbn";
 import {p} from "~/utils/utils";
@@ -170,6 +189,11 @@ import {p} from "~/utils/utils";
 @Component({
 	// eslint-disable-next-line @typescript-eslint/naming-convention
 	components: {ErrorEvent},
+	fetch() {
+		this.customer_name = this.getName;
+		this.first_name = this.getFirstName;
+		this.company = this.getCompany ?? "";
+	},
 	computed: {
 		score() {
 			if (this.new_pw.length < 6) {
@@ -216,6 +240,15 @@ export default class extends Vue
 	@Getter("customer/Customer/getEmail")
 	private getEmail: string;
 
+	@Getter("customer/Customer/getName")
+	private getName: string;
+
+	@Getter("customer/Customer/getFirstName")
+	private getFirstName: string;
+
+	@Getter("customer/Customer/getCompany")
+	private getCompany?: string;
+
 	@Mutation("event/ErrorEvent/setMsg")
 	private setMsg: (msg: string) => void;
 
@@ -228,7 +261,14 @@ export default class extends Vue
 	@Action("customer/Customer/setEmail")
 	private setEmail: (email: string)=> Promise<void>;
 
+	@Action("customer/Customer/setCustomerData")
+	private setCustomerData: (data: {name: string, first_name: string, company?: string})=> Promise<void>;
+
 	private email = "";
+
+	private customer_name = "";
+	private first_name = "";
+	private company = "";
 
 	private old_pw = "";
 	private new_pw = "";
@@ -263,6 +303,32 @@ export default class extends Vue
 			await this.setEmail(this.email);
 
 			this.dialog = true;
+		} catch (e) {
+			try {
+				const err: SentcError = JSON.parse(e);
+				this.setMsg(err.error_message);
+			} catch (e) {
+				this.setMsg("An undefined error");
+			}
+		}
+	}
+
+	private async updateData()
+	{
+		if (!this.customer_name || this.customer_name === "" || !this.first_name || this.first_name === "") {
+			return;
+		}
+
+		if (!this.company) {
+			this.company = "";
+		}
+
+		try {
+			const jwt = await this.getJwt();
+
+			await update_data(process.env.NUXT_ENV_BASE_URL, jwt, this.customer_name, this.first_name, this.company);
+
+			await this.setCustomerData({name: this.customer_name, first_name: this.first_name, company: this.company});
 		} catch (e) {
 			try {
 				const err: SentcError = JSON.parse(e);

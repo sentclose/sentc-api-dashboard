@@ -32,6 +32,12 @@ export default class Customer extends VuexModule
 
 	private device_id = "";
 
+	private name = "";
+
+	private first_name = "";
+
+	private company?: string = "";
+
 	//use a var because if anyone tries to access the public or private keys without init the store -> error
 	//0 = can't login not login data
 	//1 = is log in
@@ -50,6 +56,18 @@ export default class Customer extends VuexModule
 		return this.email;
 	}
 
+	get getName() {
+		return this.name;
+	}
+
+	get getFirstName() {
+		return this.first_name;
+	}
+
+	get getCompany() {
+		return this.company;
+	}
+
 	@Mutation
 	public setJwt(token: string)
 	{
@@ -60,6 +78,15 @@ export default class Customer extends VuexModule
 	public setEmailMut(email:string)
 	{
 		this.email = email;
+	}
+
+	@Mutation
+	public setCustomerDataMut(data: {name: string, first_name: string, company?: string})
+	{
+		const {name, first_name, company} = data;
+		this.name = name;
+		this.first_name = first_name;
+		this.company = company;
 	}
 
 	@Mutation
@@ -120,6 +147,22 @@ export default class Customer extends VuexModule
 		data.email = email;
 
 		await storage.set(USER_KEY_STORAGE_NAMES.userData, data);
+	}
+
+	@Action({rawError: true})
+	public async setCustomerData(data: {name: string, first_name: string, company?: string})
+	{
+		this.context.commit("setCustomerDataMut", data);
+
+		const {name, first_name, company} = data;
+
+		const storage = await Storage.getStore();
+
+		const customer_data: CustomerLoginData = await storage.getItem(USER_KEY_STORAGE_NAMES.userData);
+
+		customer_data.name = name;
+		customer_data.company = company;
+		customer_data.first_name = first_name;
 	}
 
 	@Action({rawError: true})

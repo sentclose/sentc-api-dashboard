@@ -12,7 +12,10 @@ export interface CustomerLoginData
 	user_id: string,
 	jwt: string,
 	refresh_token: string,
-	device_id: string
+	device_id: string,
+	name: string,
+	first_name: string,
+	company?: string
 }
 
 export const enum USER_KEY_STORAGE_NAMES
