@@ -6,6 +6,8 @@ use sentc_crypto::SdkError;
 use sentc_crypto_full::util::{make_non_auth_req, make_req, HttpMethod};
 use server_api_common::customer::{CustomerDoneRegistrationInput, CustomerRegisterData, CustomerRegisterOutput, CustomerUpdateInput};
 use server_api_common::sdk_common::user::{
+	CaptchaCreateOutput,
+	CaptchaInput,
 	ChangePasswordData,
 	DoneLoginLightServerOutput,
 	DoneLoginServerInput,
@@ -18,7 +20,25 @@ use server_api_common::sdk_common::ServerOutput;
 
 use crate::utils;
 
-pub async fn register(base_url: String, auth_token: &str, email: String, password: &str) -> Result<String, String>
+pub async fn captcha_req(base_url: String, auth_token: &str) -> Result<CaptchaCreateOutput, String>
+{
+	let url = base_url + "/api/v1/customer/captcha";
+
+	let res = make_non_auth_req(HttpMethod::GET, url.as_str(), auth_token, None).await?;
+
+	let out: CaptchaCreateOutput = handle_server_response(res.as_str())?;
+
+	Ok(out)
+}
+
+pub async fn register(
+	base_url: String,
+	auth_token: &str,
+	email: String,
+	password: &str,
+	captcha_solution: String,
+	captcha_id: String,
+) -> Result<String, String>
 {
 	let register_data = sentc_crypto::user::register(email.as_str(), password)?;
 	let register_data = RegisterData::from_string(register_data.as_str()).map_err(|e| SdkError::JsonParseFailed(e))?;
@@ -26,6 +46,10 @@ pub async fn register(base_url: String, auth_token: &str, email: String, passwor
 	let input = CustomerRegisterData {
 		email,
 		register_data: register_data.device,
+		captcha_input: CaptchaInput {
+			captcha_solution,
+			captcha_id,
+		},
 	};
 	let input = utils::to_string(&input)?;
 
@@ -67,8 +91,6 @@ pub async fn refresh_jwt(base_url: String, auth_token: &str, old_jwt: &str, refr
 
 	Ok(server_output.jwt)
 }
-
-//TODO validate email, for register and update
 
 pub async fn login(
 	base_url: String,
@@ -148,10 +170,20 @@ pub async fn delete_customer(base_url: String, auth_token: &str, email: &str, pw
 	Ok(handle_general_server_response(res.as_str())?)
 }
 
-pub async fn prepare_reset_password(base_url: String, auth_token: &str, email: String) -> Result<(), String>
+pub async fn prepare_reset_password(
+	base_url: String,
+	auth_token: &str,
+	email: String,
+	captcha_solution: String,
+	captcha_id: String,
+) -> Result<(), String>
 {
 	let input = server_api_common::customer::CustomerResetPasswordInput {
 		email,
+		captcha_input: CaptchaInput {
+			captcha_solution,
+			captcha_id,
+		},
 	};
 	let input = utils::to_string(&input)?;
 

@@ -12,6 +12,38 @@ use server_api_common::app::{AppFileOptionsInput, AppOptions};
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
+pub struct CaptchaCreateOutput
+{
+	captcha_id: String,
+	png: String,
+}
+
+impl From<server_api_common::sdk_common::user::CaptchaCreateOutput> for CaptchaCreateOutput
+{
+	fn from(o: server_api_common::sdk_common::user::CaptchaCreateOutput) -> Self
+	{
+		Self {
+			captcha_id: o.captcha_id,
+			png: o.png,
+		}
+	}
+}
+
+#[wasm_bindgen]
+impl CaptchaCreateOutput
+{
+	pub fn get_captcha_id(&self) -> String
+	{
+		self.captcha_id.clone()
+	}
+
+	pub fn get_png(&self) -> String
+	{
+		self.png.clone()
+	}
+}
+
+#[wasm_bindgen]
 pub struct Claims
 {
 	aud: String,
@@ -211,9 +243,32 @@ pub fn decode_jwt(jwt: &str) -> Result<Claims, JsValue>
 }
 
 #[wasm_bindgen]
-pub async fn register(base_url: String, auth_token: String, email: String, password: String) -> Result<String, JsValue>
+pub async fn captcha_req(base_url: String, auth_token: String) -> Result<CaptchaCreateOutput, JsValue>
 {
-	let out = customer::register(base_url, auth_token.as_str(), email, password.as_str()).await?;
+	let out = customer::captcha_req(base_url, auth_token.as_str()).await?;
+
+	Ok(out.into())
+}
+
+#[wasm_bindgen]
+pub async fn register(
+	base_url: String,
+	auth_token: String,
+	email: String,
+	password: String,
+	captcha_solution: String,
+	captcha_id: String,
+) -> Result<String, JsValue>
+{
+	let out = customer::register(
+		base_url,
+		auth_token.as_str(),
+		email,
+		password.as_str(),
+		captcha_solution,
+		captcha_id,
+	)
+	.await?;
 
 	Ok(out)
 }
@@ -257,9 +312,15 @@ pub async fn delete_customer(base_url: String, auth_token: String, email: String
 }
 
 #[wasm_bindgen]
-pub async fn prepare_reset_password(base_url: String, auth_token: String, email: String) -> Result<(), JsValue>
+pub async fn prepare_reset_password(
+	base_url: String,
+	auth_token: String,
+	email: String,
+	captcha_solution: String,
+	captcha_id: String,
+) -> Result<(), JsValue>
 {
-	Ok(customer::prepare_reset_password(base_url, auth_token.as_str(), email).await?)
+	Ok(customer::prepare_reset_password(base_url, auth_token.as_str(), email, captcha_solution, captcha_id).await?)
 }
 
 #[wasm_bindgen]
