@@ -105,7 +105,10 @@ export default class extends Vue
 				user_id: data.get_user_id(),
 				device_id: data.get_device_id(),
 				jwt: data.get_jwt(),
-				refresh_token: data.get_refresh_token()
+				refresh_token: data.get_refresh_token(),
+				name: data.get_name(),
+				first_name: data.get_first_name(),
+				company: data.get_company()
 			});
 		} catch (e) {
 			try {

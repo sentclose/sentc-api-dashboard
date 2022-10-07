@@ -4,7 +4,7 @@ use alloc::vec;
 use sentc_crypto::util::public::{handle_general_server_response, handle_server_response};
 use sentc_crypto::SdkError;
 use sentc_crypto_full::util::{make_non_auth_req, make_req, HttpMethod};
-use server_api_common::customer::{CustomerDoneRegistrationInput, CustomerRegisterData, CustomerRegisterOutput, CustomerUpdateInput};
+use server_api_common::customer::{CustomerData, CustomerDoneRegistrationInput, CustomerRegisterData, CustomerRegisterOutput, CustomerUpdateInput};
 use server_api_common::sdk_common::user::{
 	CaptchaCreateOutput,
 	CaptchaInput,
@@ -36,6 +36,9 @@ pub async fn register(
 	auth_token: &str,
 	email: String,
 	password: &str,
+	name: String,
+	first_name: String,
+	company: Option<String>,
 	captcha_solution: String,
 	captcha_id: String,
 ) -> Result<String, String>
@@ -44,6 +47,11 @@ pub async fn register(
 	let register_data = RegisterData::from_string(register_data.as_str()).map_err(|e| SdkError::JsonParseFailed(e))?;
 
 	let input = CustomerRegisterData {
+		customer_data: CustomerData {
+			name,
+			first_name,
+			company,
+		},
 		email,
 		register_data: register_data.device,
 		captcha_input: CaptchaInput {
@@ -135,6 +143,22 @@ pub async fn update(base_url: String, auth_token: &str, jwt: &str, new_email: St
 	.await?;
 
 	Ok(handle_general_server_response(res.as_str())?)
+}
+
+pub async fn update_data(base_url: String, jwt: &str, name: String, first_name: String, company: Option<String>) -> Result<(), String>
+{
+	let url = base_url + "/api/v1/customer/data";
+
+	let input = CustomerData {
+		name,
+		first_name,
+		company,
+	};
+	let input = utils::to_string(&input)?;
+
+	let res = make_req(HttpMethod::PUT, url.as_str(), "", Some(input), Some(jwt)).await?;
+
+	handle_general_server_response(res.as_str())
 }
 
 pub async fn delete_customer(base_url: String, auth_token: &str, email: &str, pw: &str) -> Result<(), String>
