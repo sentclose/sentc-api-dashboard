@@ -370,7 +370,7 @@ dependencies = [
 [[package]]
 name = "sentc-crypto-common"
 version = "0.1.0"
-source = "git+ssh://git@gitlab.com/sentclose/sentc/backend/sentc-api#8b3a1b83ac8da4e022b06ac759b7358d188b2ba3"
+source = "git+ssh://git@gitlab.com/sentclose/sentc/backend/sentc-api#c745b13591f0ddcd57886c1492b2bf962a11b1f9"
 dependencies = [
  "serde",
  "serde_json",
@@ -450,7 +450,7 @@ dependencies = [
 [[package]]
 name = "server_api_common"
 version = "0.1.0"
-source = "git+ssh://git@gitlab.com/sentclose/sentc/backend/sentc-api#8b3a1b83ac8da4e022b06ac759b7358d188b2ba3"
+source = "git+ssh://git@gitlab.com/sentclose/sentc/backend/sentc-api#c745b13591f0ddcd57886c1492b2bf962a11b1f9"
 dependencies = [
  "sentc-crypto-common 0.1.0 (git+ssh://git@gitlab.com/sentclose/sentc/backend/sentc-api)",
  "serde",
