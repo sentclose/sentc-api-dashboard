@@ -108,6 +108,9 @@ export default class Customer extends VuexModule
 		this.email = data.email;
 		this.refresh_token = data.refresh_token;
 		this.isLoggedIn = 1;
+		this.name = data.name;
+		this.first_name = data.first_name;
+		this.company = data.company;
 	}
 
 	@Mutation
@@ -163,6 +166,8 @@ export default class Customer extends VuexModule
 		customer_data.name = name;
 		customer_data.company = company;
 		customer_data.first_name = first_name;
+
+		await storage.set(USER_KEY_STORAGE_NAMES.userData, customer_data);
 	}
 
 	@Action({rawError: true})
