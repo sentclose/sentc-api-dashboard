@@ -24,6 +24,27 @@
 							/>
 
 							<v-text-field
+								v-model="first_name"
+								prepend-icon="mdi-account-circle"
+								label="Firstname"
+								:rules="[rules.required]"
+							/>
+
+							<v-text-field
+								v-model="customer_name"
+								prepend-icon="mdi-account-circle"
+								label="Name"
+								:rules="[rules.required]"
+							/>
+
+							<v-text-field
+								v-model="company"
+								prepend-icon="mdi-account-circle"
+								label="Company"
+								messages="Optional"
+							/>
+
+							<v-text-field
 								v-model="password"
 								label="Password"
 								:type="showPassword ? 'text' : 'password'"
@@ -149,6 +170,10 @@ export default class extends Vue
 	private password = "";
 	private password2 = "";
 
+	private customer_name = "";
+	private first_name = "";
+	private company = "";
+
 	private showPassword = false;
 
 	private dialog = false;
@@ -171,7 +196,7 @@ export default class extends Vue
 
 	private async register()
 	{
-		if (this.email === "" || this.password === "") {
+		if (this.email === "" || this.password === "" || !this.customer_name || this.customer_name === "" || !this.first_name || this.first_name === "") {
 			return false;
 		}
 
@@ -187,6 +212,10 @@ export default class extends Vue
 			return false;
 		}
 
+		if (!this.company) {
+			this.company = "";
+		}
+
 		try {
 			//@ts-ignore
 			const captcha: false | string[] = this.$refs.captcha.getSolution();
@@ -195,7 +224,7 @@ export default class extends Vue
 				return;
 			}
 
-			await register(process.env.NUXT_ENV_BASE_URL, process.env.NUXT_ENV_APP_PUBLIC_TOKEN, this.email, this.password, captcha[0], captcha[1]);
+			await register(process.env.NUXT_ENV_BASE_URL, process.env.NUXT_ENV_APP_PUBLIC_TOKEN, this.email, this.password, this.customer_name, this.first_name, this.company, captcha[0], captcha[1]);
 		} catch (e) {
 			try {
 				const err: SentcError = JSON.parse(e);
