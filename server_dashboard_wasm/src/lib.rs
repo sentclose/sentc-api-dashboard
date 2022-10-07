@@ -285,8 +285,8 @@ pub async fn register(
 ) -> Result<String, JsValue>
 {
 	let company = match company.as_str() {
-		"" => Some(company),
-		_ => None,
+		"" => None,
+		_ => Some(company),
 	};
 
 	let out = customer::register(
