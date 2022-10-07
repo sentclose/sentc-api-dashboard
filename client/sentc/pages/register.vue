@@ -39,7 +39,7 @@
 
 							<v-text-field
 								v-model="company"
-								prepend-icon="mdi-account-circle"
+								prepend-icon="mdi-domain"
 								label="Company"
 								messages="Optional"
 							/>
