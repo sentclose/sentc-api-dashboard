@@ -357,7 +357,7 @@ checksum = "4501abdff3ae82a1c1b477a17252eb69cee9e66eb915c1abaa4f44d873df9f09"
 [[package]]
 name = "sentc-crypto"
 version = "0.1.0"
-source = "git+ssh://git@gitlab.com/sentclose/sentc/sdk.git#0edaa316fbc4dd8653e3926db307916584e5f20a"
+source = "git+ssh://git@gitlab.com/sentclose/sentc/sdk.git#7e0d5c50af80e005f89f499e5b43f30b39714fd0"
 dependencies = [
  "base64ct",
  "pem-rfc7468",
@@ -370,7 +370,7 @@ dependencies = [
 [[package]]
 name = "sentc-crypto-common"
 version = "0.1.0"
-source = "git+ssh://git@gitlab.com/sentclose/sentc/backend/sentc-api#eed040b5c2f8c6cbaa087f67b0a0193c75ba5f3c"
+source = "git+ssh://git@gitlab.com/sentclose/sentc/backend/sentc-api#b292d575d09960c282db5d9ce20359ce4f254d54"
 dependencies = [
  "serde",
  "serde_json",
@@ -379,7 +379,7 @@ dependencies = [
 [[package]]
 name = "sentc-crypto-common"
 version = "0.1.0"
-source = "git+ssh://git@gitlab.com/sentclose/sentc/sdk.git#0edaa316fbc4dd8653e3926db307916584e5f20a"
+source = "git+ssh://git@gitlab.com/sentclose/sentc/sdk.git#7e0d5c50af80e005f89f499e5b43f30b39714fd0"
 dependencies = [
  "serde",
  "serde_json",
@@ -388,7 +388,7 @@ dependencies = [
 [[package]]
 name = "sentc-crypto-core"
 version = "0.1.0"
-source = "git+ssh://git@gitlab.com/sentclose/sentc/sdk.git#0edaa316fbc4dd8653e3926db307916584e5f20a"
+source = "git+ssh://git@gitlab.com/sentclose/sentc/sdk.git#7e0d5c50af80e005f89f499e5b43f30b39714fd0"
 dependencies = [
  "aes-gcm",
  "argon2",
@@ -403,7 +403,7 @@ dependencies = [
 [[package]]
 name = "sentc-crypto-full"
 version = "0.1.0"
-source = "git+ssh://git@gitlab.com/sentclose/sentc/sdk.git#0edaa316fbc4dd8653e3926db307916584e5f20a"
+source = "git+ssh://git@gitlab.com/sentclose/sentc/sdk.git#7e0d5c50af80e005f89f499e5b43f30b39714fd0"
 dependencies = [
  "base64ct",
  "js-sys",
@@ -450,7 +450,7 @@ dependencies = [
 [[package]]
 name = "server_api_common"
 version = "0.1.0"
-source = "git+ssh://git@gitlab.com/sentclose/sentc/backend/sentc-api#eed040b5c2f8c6cbaa087f67b0a0193c75ba5f3c"
+source = "git+ssh://git@gitlab.com/sentclose/sentc/backend/sentc-api#b292d575d09960c282db5d9ce20359ce4f254d54"
 dependencies = [
  "sentc-crypto-common 0.1.0 (git+ssh://git@gitlab.com/sentclose/sentc/backend/sentc-api)",
  "serde",
