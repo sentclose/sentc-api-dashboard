@@ -326,7 +326,7 @@ export default class extends Vue
 		try {
 			const jwt = await this.getJwt();
 
-			await update_data(process.env.NUXT_ENV_BASE_URL, jwt, this.customer_name, this.first_name, this.company);
+			await update_data(process.env.NUXT_ENV_BASE_URL, process.env.NUXT_ENV_APP_PUBLIC_TOKEN, jwt, this.customer_name, this.first_name, this.company);
 
 			await this.setCustomerData({name: this.customer_name, first_name: this.first_name, company: this.company});
 		} catch (e) {

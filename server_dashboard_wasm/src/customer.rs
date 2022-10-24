@@ -70,7 +70,7 @@ pub async fn register(
 	Ok(out.customer_id)
 }
 
-pub async fn done_register(base_url: String, jwt: &str, token: String) -> Result<(), String>
+pub async fn done_register(base_url: String, auth_token: &str, jwt: &str, token: String) -> Result<(), String>
 {
 	//call this for update email too
 
@@ -82,7 +82,7 @@ pub async fn done_register(base_url: String, jwt: &str, token: String) -> Result
 
 	let url = base_url + "/api/v1/customer/register_validation";
 
-	let res = make_req(HttpMethod::POST, url.as_str(), "", Some(input), Some(jwt)).await?;
+	let res = make_req(HttpMethod::POST, url.as_str(), auth_token, Some(input), Some(jwt)).await?;
 
 	handle_general_server_response(res.as_str())
 }
@@ -145,7 +145,14 @@ pub async fn update(base_url: String, auth_token: &str, jwt: &str, new_email: St
 	Ok(handle_general_server_response(res.as_str())?)
 }
 
-pub async fn update_data(base_url: String, jwt: &str, name: String, first_name: String, company: Option<String>) -> Result<(), String>
+pub async fn update_data(
+	base_url: String,
+	auth_token: &str,
+	jwt: &str,
+	name: String,
+	first_name: String,
+	company: Option<String>,
+) -> Result<(), String>
 {
 	let url = base_url + "/api/v1/customer/data";
 
@@ -156,7 +163,7 @@ pub async fn update_data(base_url: String, jwt: &str, name: String, first_name: 
 	};
 	let input = utils::to_string(&input)?;
 
-	let res = make_req(HttpMethod::PUT, url.as_str(), "", Some(input), Some(jwt)).await?;
+	let res = make_req(HttpMethod::PUT, url.as_str(), auth_token, Some(input), Some(jwt)).await?;
 
 	handle_general_server_response(res.as_str())
 }

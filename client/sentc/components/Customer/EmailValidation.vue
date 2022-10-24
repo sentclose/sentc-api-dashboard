@@ -233,7 +233,7 @@ export default class EmailValidation extends Vue
 		try {
 			const jwt = await this.getJwt();
 
-			await done_register(process.env.NUXT_ENV_BASE_URL, jwt, this.token);
+			await done_register(process.env.NUXT_ENV_BASE_URL, process.env.NUXT_ENV_APP_PUBLIC_TOKEN, jwt, this.token);
 		} catch (e) {
 			try {
 				const err: SentcError = JSON.parse(e);

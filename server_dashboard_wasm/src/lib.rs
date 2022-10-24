@@ -283,9 +283,9 @@ pub async fn register(
 }
 
 #[wasm_bindgen]
-pub async fn done_register(base_url: String, jwt: String, token: String) -> Result<(), JsValue>
+pub async fn done_register(base_url: String, auth_token: String, jwt: String, token: String) -> Result<(), JsValue>
 {
-	Ok(customer::done_register(base_url, jwt.as_str(), token).await?)
+	Ok(customer::done_register(base_url, auth_token.as_str(), jwt.as_str(), token).await?)
 }
 
 #[wasm_bindgen]
@@ -315,14 +315,15 @@ pub async fn update(base_url: String, auth_token: String, jwt: String, new_email
 }
 
 #[wasm_bindgen]
-pub async fn update_data(base_url: String, jwt: String, name: String, first_name: String, company: String) -> Result<(), JsValue>
+pub async fn update_data(base_url: String, auth_token: String, jwt: String, name: String, first_name: String, company: String)
+	-> Result<(), JsValue>
 {
 	let company = match company.as_str() {
 		"" => None,
 		_ => Some(company),
 	};
 
-	Ok(customer::update_data(base_url, jwt.as_str(), name, first_name, company).await?)
+	Ok(customer::update_data(base_url, auth_token.as_str(), jwt.as_str(), name, first_name, company).await?)
 }
 
 #[wasm_bindgen]
