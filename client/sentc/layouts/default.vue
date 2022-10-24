@@ -51,7 +51,12 @@
 			:absolute="!fixed"
 			app
 		>
-			<span>&copy; {{ new Date().getFullYear() }} - Sentclose</span>
+			<v-card-text style="font-size: 1em;">
+				<span>&copy; {{ new Date().getFullYear() }} - Sentclose</span>
+
+				<a style="text-decoration: none" href="https://sentclose.com/impressum/" target="_blank"> Impressum </a>
+				<a style="text-decoration: none" href="https://sentclose.com/datenschutz/" target="_blank"> Privacy </a>
+			</v-card-text>
 		</v-footer>
 	</v-app>
 </template>
