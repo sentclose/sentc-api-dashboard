@@ -34,6 +34,7 @@ const config: NuxtConfig = {
 
 	// Global CSS: https://go.nuxtjs.dev/config-css
 	css: [
+		"@mdi/font/css/materialdesignicons.css"
 	],
 
 	// Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
@@ -51,7 +52,8 @@ const config: NuxtConfig = {
 		"@nuxt/typescript-build",
 		// https://go.nuxtjs.dev/vuetify
 		"@nuxtjs/vuetify",
-		"~/nuxt.build.ts"
+		"~/nuxt.build.ts",
+		"@nuxtjs/google-fonts"
 	],
 
 	// Modules: https://go.nuxtjs.dev/config-modules
@@ -70,8 +72,21 @@ const config: NuxtConfig = {
 		baseURL: "/"
 	},
 
+	googleFonts: {
+		families: {
+			// eslint-disable-next-line @typescript-eslint/naming-convention
+			Roboto: {
+				wght: [100, 300, 400, 500, 700, 900]
+			}
+		},
+		download: true,
+		base64: true,
+		inject: true
+	},
+
 	// Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
 	vuetify: {
+		defaultAssets: false,
 		//customVariables: ["~/assets/variables.scss"],
 		theme: {
 			//dark: true,
