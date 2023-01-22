@@ -27,3 +27,17 @@ wasm-bindgen-futures = "0.4.31"
 
 serde_json = {version = "1.0.81", default-features = false, features = ["alloc"]}
 serde = { version = "1.0", default-features = false, features = ["derive", "alloc"] }
+
+[profile.dev]
+# Must always use panic = "abort" to avoid needing to define the unstable eh_personality lang item.
+panic = "abort"
+
+[profile.release]
+lto = true
+panic = "abort"
+strip = true
+opt-level = "z"
+overflow-checks = true
+debug = 0
+debug-assertions = false
+codegen-units = 1

@@ -248,6 +248,7 @@ pub async fn captcha_req(base_url: String, auth_token: String) -> Result<Captcha
 	Ok(out.into())
 }
 
+#[allow(clippy::too_many_arguments)]
 #[wasm_bindgen]
 pub async fn register(
 	base_url: String,

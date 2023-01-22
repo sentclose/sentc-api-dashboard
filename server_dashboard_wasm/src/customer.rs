@@ -3,7 +3,7 @@ use alloc::vec;
 
 use sentc_crypto::util::public::{handle_general_server_response, handle_server_response};
 use sentc_crypto::SdkError;
-use sentc_crypto_full::util::{make_non_auth_req, make_req, HttpMethod};
+use sentc_crypto_full::util::{make_req, non_auth_req, HttpMethod};
 use server_api_common::customer::{CustomerData, CustomerDoneRegistrationInput, CustomerRegisterData, CustomerRegisterOutput, CustomerUpdateInput};
 use server_api_common::sdk_common::user::{
 	CaptchaCreateOutput,
@@ -24,13 +24,14 @@ pub async fn captcha_req(base_url: String, auth_token: &str) -> Result<CaptchaCr
 {
 	let url = base_url + "/api/v1/customer/captcha";
 
-	let res = make_non_auth_req(HttpMethod::GET, url.as_str(), auth_token, None).await?;
+	let res = non_auth_req(HttpMethod::GET, url.as_str(), auth_token, None).await?;
 
 	let out: CaptchaCreateOutput = handle_server_response(res.as_str())?;
 
 	Ok(out)
 }
 
+#[allow(clippy::too_many_arguments)]
 pub async fn register(
 	base_url: String,
 	auth_token: &str,
@@ -44,7 +45,7 @@ pub async fn register(
 ) -> Result<String, String>
 {
 	let register_data = sentc_crypto::user::register(email.as_str(), password)?;
-	let register_data = RegisterData::from_string(register_data.as_str()).map_err(|e| SdkError::JsonParseFailed(e))?;
+	let register_data = RegisterData::from_string(register_data.as_str()).map_err(SdkError::JsonParseFailed)?;
 
 	let input = CustomerRegisterData {
 		customer_data: CustomerData {
@@ -63,7 +64,7 @@ pub async fn register(
 
 	let url = base_url + "/api/v1/customer/register";
 
-	let res = make_non_auth_req(HttpMethod::POST, url.as_str(), auth_token, Some(input)).await?;
+	let res = non_auth_req(HttpMethod::POST, url.as_str(), auth_token, Some(input)).await?;
 
 	let out: CustomerRegisterOutput = handle_server_response(res.as_str())?;
 
@@ -82,9 +83,17 @@ pub async fn done_register(base_url: String, auth_token: &str, jwt: &str, token:
 
 	let url = base_url + "/api/v1/customer/register_validation";
 
-	let res = make_req(HttpMethod::POST, url.as_str(), auth_token, Some(input), Some(jwt)).await?;
+	let res = make_req(
+		HttpMethod::POST,
+		url.as_str(),
+		auth_token,
+		Some(input),
+		Some(jwt),
+		None,
+	)
+	.await?;
 
-	handle_general_server_response(res.as_str())
+	Ok(handle_general_server_response(res.as_str())?)
 }
 
 pub async fn refresh_jwt(base_url: String, auth_token: &str, old_jwt: &str, refresh_token: &str) -> Result<String, String>
@@ -93,7 +102,15 @@ pub async fn refresh_jwt(base_url: String, auth_token: &str, old_jwt: &str, refr
 
 	let input = sentc_crypto::user::prepare_refresh_jwt(refresh_token)?;
 
-	let res = make_req(HttpMethod::PUT, url.as_str(), auth_token, Some(input), Some(old_jwt)).await?;
+	let res = make_req(
+		HttpMethod::PUT,
+		url.as_str(),
+		auth_token,
+		Some(input),
+		Some(old_jwt),
+		None,
+	)
+	.await?;
 
 	let server_output: DoneLoginLightServerOutput = handle_server_response(res.as_str())?;
 
@@ -111,13 +128,13 @@ pub async fn login(
 
 	let prep_server_input = sentc_crypto::user::prepare_login_start(email)?;
 
-	let res = make_non_auth_req(HttpMethod::POST, url.as_str(), auth_token, Some(prep_server_input)).await?;
+	let res = non_auth_req(HttpMethod::POST, url.as_str(), auth_token, Some(prep_server_input)).await?;
 
 	let (auth_key, _derived_master_key) = sentc_crypto::user::prepare_login(email, password, res.as_str())?;
 
 	let url = base_url + "/api/v1/customer/done_login";
 
-	let res = make_non_auth_req(HttpMethod::POST, url.as_str(), auth_token, Some(auth_key)).await?;
+	let res = non_auth_req(HttpMethod::POST, url.as_str(), auth_token, Some(auth_key)).await?;
 
 	let out: server_api_common::customer::CustomerDoneLoginOutput = handle_server_response(res.as_str())?;
 
@@ -139,6 +156,7 @@ pub async fn update(base_url: String, auth_token: &str, jwt: &str, new_email: St
 		auth_token,
 		Some(update_data),
 		Some(jwt),
+		None,
 	)
 	.await?;
 
@@ -163,9 +181,17 @@ pub async fn update_data(
 	};
 	let input = utils::to_string(&input)?;
 
-	let res = make_req(HttpMethod::PUT, url.as_str(), auth_token, Some(input), Some(jwt)).await?;
+	let res = make_req(
+		HttpMethod::PUT,
+		url.as_str(),
+		auth_token,
+		Some(input),
+		Some(jwt),
+		None,
+	)
+	.await?;
 
-	handle_general_server_response(res.as_str())
+	Ok(handle_general_server_response(res.as_str())?)
 }
 
 pub async fn delete_customer(base_url: String, auth_token: &str, email: &str, pw: &str) -> Result<(), String>
@@ -175,13 +201,13 @@ pub async fn delete_customer(base_url: String, auth_token: &str, email: &str, pw
 	//get a fresh jwt
 	let url = base_url.clone() + "/api/v1/customer/prepare_login";
 
-	let res = make_non_auth_req(HttpMethod::POST, url.as_str(), auth_token, Some(prep_server_input)).await?;
+	let res = non_auth_req(HttpMethod::POST, url.as_str(), auth_token, Some(prep_server_input)).await?;
 
 	let (auth_key, _derived_master_key) = sentc_crypto::user::prepare_login(email, pw, res.as_str())?;
 
 	let url = base_url.clone() + "/api/v1/customer/done_login";
 
-	let res = make_non_auth_req(HttpMethod::POST, url.as_str(), auth_token, Some(auth_key)).await?;
+	let res = non_auth_req(HttpMethod::POST, url.as_str(), auth_token, Some(auth_key)).await?;
 
 	let out: server_api_common::customer::CustomerDoneLoginOutput = handle_server_response(res.as_str())?;
 
@@ -195,6 +221,7 @@ pub async fn delete_customer(base_url: String, auth_token: &str, email: &str, pw
 		auth_token,
 		None,
 		Some(fresh_jwt.as_str()),
+		None,
 	)
 	.await?;
 
@@ -220,7 +247,7 @@ pub async fn prepare_reset_password(
 
 	let url = base_url + "/api/v1/customer/password_reset";
 
-	let res = make_non_auth_req(HttpMethod::PUT, url.as_str(), auth_token, Some(input)).await?;
+	let res = non_auth_req(HttpMethod::PUT, url.as_str(), auth_token, Some(input)).await?;
 
 	Ok(handle_general_server_response(res.as_str())?)
 }
@@ -242,7 +269,7 @@ pub async fn done_reset_password(base_url: String, auth_token: &str, token: Stri
 		&user_key_data.device_keys.sign_key,
 	)?;
 	let reset_password_data =
-		server_api_common::sdk_common::user::ResetPasswordData::from_string(pw_reset_out.as_str()).map_err(|e| SdkError::JsonParseFailed(e))?;
+		server_api_common::sdk_common::user::ResetPasswordData::from_string(pw_reset_out.as_str()).map_err(SdkError::JsonParseFailed)?;
 
 	let input = server_api_common::customer::CustomerDonePasswordResetInput {
 		token, //token from the email
@@ -252,7 +279,7 @@ pub async fn done_reset_password(base_url: String, auth_token: &str, token: Stri
 
 	let url = base_url + "/api/v1/customer/password_reset_validation";
 
-	let res = make_non_auth_req(HttpMethod::PUT, url.as_str(), auth_token, Some(input)).await?;
+	let res = non_auth_req(HttpMethod::PUT, url.as_str(), auth_token, Some(input)).await?;
 
 	Ok(handle_general_server_response(res.as_str())?)
 }
@@ -263,7 +290,7 @@ pub async fn change_password(base_url: String, auth_token: &str, email: &str, ol
 
 	let url = base_url.clone() + "/api/v1/customer/prepare_login";
 
-	let res = make_non_auth_req(HttpMethod::POST, url.as_str(), auth_token, Some(prep_server_input)).await?;
+	let res = non_auth_req(HttpMethod::POST, url.as_str(), auth_token, Some(prep_server_input)).await?;
 
 	let (auth_key, _derived_master_key) = sentc_crypto::user::prepare_login(email, old_pw, res.as_str())?;
 
@@ -272,7 +299,7 @@ pub async fn change_password(base_url: String, auth_token: &str, email: &str, ol
 
 	let url = base_url.clone() + "/api/v1/customer/done_login";
 
-	let res = make_non_auth_req(HttpMethod::POST, url.as_str(), auth_token, Some(auth_key)).await?;
+	let res = non_auth_req(HttpMethod::POST, url.as_str(), auth_token, Some(auth_key)).await?;
 
 	let out: server_api_common::customer::CustomerDoneLoginOutput = handle_server_response(res.as_str())?;
 
@@ -287,6 +314,7 @@ pub async fn change_password(base_url: String, auth_token: &str, email: &str, ol
 		auth_token,
 		Some(pw_change_data),
 		Some(fresh_jwt.as_str()),
+		None,
 	)
 	.await?;
 
@@ -306,8 +334,8 @@ fn get_fake_pw_change_data(prepare_login_auth_key_input: &str, old_pw: &str, new
 		done_login_user_data.as_str(),
 	)?;
 
-	let mut pw_change_data = ChangePasswordData::from_string(pw_change_data.as_str()).map_err(|e| SdkError::JsonParseFailed(e))?;
-	let auth_key = DoneLoginServerInput::from_string(prepare_login_auth_key_input).map_err(|e| SdkError::JsonParseFailed(e))?;
+	let mut pw_change_data = ChangePasswordData::from_string(pw_change_data.as_str()).map_err(SdkError::JsonParseFailed)?;
+	let auth_key = DoneLoginServerInput::from_string(prepare_login_auth_key_input).map_err(SdkError::JsonParseFailed)?;
 
 	pw_change_data.old_auth_key = auth_key.auth_key;
 	let pw_change_data = pw_change_data
@@ -322,7 +350,7 @@ fn get_fake_login_data(old_pw: &str) -> Result<(String, String), String>
 	//use a fake master key to change the password,
 	// just register the user again with fake data but with the old password to decrypt the fake data!
 	let fake_key_data = sentc_crypto::user::register("abc", old_pw)?;
-	let fake_key_data = RegisterData::from_string(fake_key_data.as_str()).map_err(|e| SdkError::JsonParseFailed(e))?;
+	let fake_key_data = RegisterData::from_string(fake_key_data.as_str()).map_err(SdkError::JsonParseFailed)?;
 
 	//do the server prepare login again to get the salt (we need a salt to this fake register data)
 	let salt_string = sentc_crypto::util::server::generate_salt_from_base64_to_string(
@@ -356,6 +384,7 @@ fn get_fake_login_data(old_pw: &str) -> Result<(String, String), String>
 		jwt: "abc".to_string(),
 		refresh_token: "abc".to_string(),
 		user_keys: vec![],
+		hmac_keys: vec![],
 	};
 
 	let prepare_login_user_data = ServerOutput {
