@@ -699,6 +699,27 @@
 									Download a file part from the sentc api. It is recommended to use <b>Public</b>
 								</td>
 							</tr>
+
+							<!----------------------------------------------------------------------------------------->
+							<!--search endpoints-->
+
+							<!--File part download-->
+							<tr>
+								<td class="endpoint">
+									Search
+								</td>
+								<td class="options">
+									<v-radio-group v-model="options.file_part_download" row>
+										<v-radio label="Public" :value="1" />
+										<v-radio label="Secret" :value="2" />
+										<v-radio label="Block" :value="0" />
+									</v-radio-group>
+								</td>
+								<td class="des">
+									Search an searchable item. Use public if users should search directly from the client.
+									A second request is needed to fetch the data.
+								</td>
+							</tr>
 						</tbody>
 					</template>
 				</v-simple-table>
