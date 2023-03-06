@@ -142,7 +142,7 @@ import {delete_jwt_keys, new_jwt_keys, AppJwtRegisterOutput} from "server_dashbo
 		this.app_data = this.getAppDetails(this.app_id);
 
 		// eslint-disable-next-line eqeqeq
-		if (!this.app_data || this.app_data == {}) {
+		if (!this.app_data || this.app_data?.id == undefined) {
 			await this.fetchDetails(this.app_id);
 
 			this.app_data = this.getAppDetails(this.app_id);
@@ -152,7 +152,7 @@ import {delete_jwt_keys, new_jwt_keys, AppJwtRegisterOutput} from "server_dashbo
 		this.app_jwt_data = this.jwtData(this.app_id);
 
 		// eslint-disable-next-line eqeqeq
-		if (!this.app_jwt_data || this.app_jwt_data == {}) {
+		if (!this.app_jwt_data || this.app_jwt_data?.jwt_key_id == undefined) {
 			await this.fetchJwtData(this.app_id);
 
 			this.app_jwt_data = this.jwtData(this.app_id);

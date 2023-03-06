@@ -40,7 +40,7 @@ import {app_update_options} from "server_dashboard_wasm";
 		this.app_data = this.getAppDetails(this.app_id);
 
 		// eslint-disable-next-line eqeqeq
-		if (!this.app_data || this.app_data == {}) {
+		if (!this.app_data || this.app_data?.id == undefined) {
 			await this.fetchDetails(this.app_id);
 
 			this.app_data = this.getAppDetails(this.app_id);
