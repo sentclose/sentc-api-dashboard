@@ -50,7 +50,6 @@ pub struct Claims
 	sub: String, //the app id
 	exp: usize,
 	iat: usize,
-	group_id: String,
 	fresh: bool, //was this token from refresh jwt or from login
 }
 
@@ -77,11 +76,6 @@ impl Claims
 		self.iat
 	}
 
-	pub fn get_group_id(&self) -> String
-	{
-		self.group_id.clone()
-	}
-
 	pub fn get_fresh(&self) -> bool
 	{
 		self.fresh
@@ -97,7 +91,6 @@ impl From<sentc_crypto_full::jwt::Claims> for Claims
 			sub: claims.sub,
 			exp: claims.exp,
 			iat: claims.iat,
-			group_id: claims.group_id,
 			fresh: claims.fresh,
 		}
 	}
