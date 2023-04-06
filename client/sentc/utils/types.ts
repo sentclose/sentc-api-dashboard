@@ -105,6 +105,7 @@ export interface AppOptions
 	file_part_upload: number,
 	file_get: number,
 	file_part_download: number,
+	file_delete: number,
 
 	user_device_register: number,
 	user_device_delete: number,
@@ -113,4 +114,6 @@ export interface AppOptions
 	group_invite_stop: number,
 
 	user_key_update: number,
+
+	content_search: number,
 }

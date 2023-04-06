@@ -44,7 +44,7 @@
 									</v-radio-group>
 								</td>
 								<td class="des">
-									Registration of a user. Use secret if you must send more information's about the user.
+									Registration of a user. Use secret if you must send more information about the user.
 								</td>
 							</tr>
 
@@ -700,16 +700,32 @@
 								</td>
 							</tr>
 
+							<!--File delete download-->
+							<tr>
+								<td class="endpoint">
+									File delete
+								</td>
+								<td class="options">
+									<v-radio-group v-model="options.file_delete" row>
+										<v-radio label="Public" :value="1" />
+										<v-radio label="Secret" :value="2" />
+										<v-radio label="Block" :value="0" />
+									</v-radio-group>
+								</td>
+								<td class="des">
+									Delete a file from the sentc api. Use secret if you must send more information about the file.
+								</td>
+							</tr>
+
 							<!----------------------------------------------------------------------------------------->
 							<!--search endpoints-->
 
-							<!--File part download-->
 							<tr>
 								<td class="endpoint">
 									Search
 								</td>
 								<td class="options">
-									<v-radio-group v-model="options.file_part_download" row>
+									<v-radio-group v-model="options.content_search" row>
 										<v-radio label="Public" :value="1" />
 										<v-radio label="Secret" :value="2" />
 										<v-radio label="Block" :value="0" />
