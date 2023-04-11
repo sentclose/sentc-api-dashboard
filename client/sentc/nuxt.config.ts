@@ -53,7 +53,8 @@ const config: NuxtConfig = {
 		// https://go.nuxtjs.dev/vuetify
 		"@nuxtjs/vuetify",
 		"~/nuxt.build.ts",
-		"@nuxtjs/google-fonts"
+		"@nuxtjs/google-fonts",
+		"nuxt-compress"
 	],
 
 	// Modules: https://go.nuxtjs.dev/config-modules
