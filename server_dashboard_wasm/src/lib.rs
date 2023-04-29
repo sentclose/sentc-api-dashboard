@@ -378,7 +378,6 @@ pub fn app_options_lax() -> JsValue
 #[wasm_bindgen]
 pub struct AppJwtRegisterOutput
 {
-	customer_id: String,
 	app_id: String,
 	jwt_id: String,
 	jwt_verify_key: String,
@@ -391,7 +390,6 @@ impl From<server_api_common::app::AppJwtRegisterOutput> for AppJwtRegisterOutput
 	fn from(out: server_api_common::app::AppJwtRegisterOutput) -> Self
 	{
 		Self {
-			customer_id: out.customer_id,
 			app_id: out.app_id,
 			jwt_id: out.jwt_id,
 			jwt_verify_key: out.jwt_verify_key,
@@ -404,11 +402,6 @@ impl From<server_api_common::app::AppJwtRegisterOutput> for AppJwtRegisterOutput
 #[wasm_bindgen]
 impl AppJwtRegisterOutput
 {
-	pub fn get_customer_id(&self) -> String
-	{
-		self.customer_id.clone()
-	}
-
 	pub fn get_app_id(&self) -> String
 	{
 		self.app_id.clone()
@@ -438,7 +431,6 @@ impl AppJwtRegisterOutput
 #[wasm_bindgen]
 pub struct AppRegisterOutput
 {
-	customer_id: String,
 	app_id: String,
 	secret_token: String,
 	public_token: String,
@@ -448,11 +440,6 @@ pub struct AppRegisterOutput
 #[wasm_bindgen]
 impl AppRegisterOutput
 {
-	pub fn get_customer_id(&self) -> String
-	{
-		self.customer_id.clone()
-	}
-
 	pub fn get_app_id(&self) -> String
 	{
 		self.app_id.clone()
@@ -494,7 +481,6 @@ impl From<server_api_common::app::AppRegisterOutput> for AppRegisterOutput
 	fn from(out: server_api_common::app::AppRegisterOutput) -> Self
 	{
 		Self {
-			customer_id: out.customer_id,
 			app_id: out.app_id,
 			secret_token: out.secret_token,
 			public_token: out.public_token,
