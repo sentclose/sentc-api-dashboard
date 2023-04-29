@@ -5,6 +5,7 @@ use sentc_crypto::util::public::{handle_general_server_response, handle_server_r
 use sentc_crypto_full::util::{make_req, HttpMethod};
 use server_api_common::app::{AppFileOptionsInput, AppJwtData, AppOptions, AppRegisterInput, AppUpdateInput};
 use server_api_common::customer::CustomerAppList;
+use server_api_common::sdk_common::GroupId;
 
 use crate::utils;
 
@@ -14,6 +15,7 @@ pub async fn create(
 	identifier: Option<String>,
 	options: AppOptions,
 	file_options: AppFileOptionsInput,
+	group_id: Option<GroupId>,
 ) -> Result<server_api_common::app::AppRegisterOutput, String>
 {
 	let input = AppRegisterInput {
@@ -23,7 +25,11 @@ pub async fn create(
 	};
 	let input = utils::to_string(&input)?;
 
-	let url = base_url + "/api/v1/customer/app";
+	let url = if let Some(g) = group_id {
+		base_url + "/api/v1/customer/app/" + &g
+	} else {
+		base_url + "/api/v1/customer/app"
+	};
 
 	let res = make_req(HttpMethod::POST, url.as_str(), "", Some(input), Some(jwt), None).await?;
 
