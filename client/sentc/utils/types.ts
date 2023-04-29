@@ -34,7 +34,8 @@ export interface AppData
 {
 	id: string,
 	identifier: string,
-	time: number
+	time: number,
+	group_name?: string,
 }
 
 export interface AppDetails
