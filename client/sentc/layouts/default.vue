@@ -41,6 +41,11 @@
 
 		<v-main>
 			<v-container fluid :class="{'mx-0': $vuetify.breakpoint.smAndDown, 'px-0': $vuetify.breakpoint.smAndDown}">
+				<v-tabs>
+					<v-tab to="/">Apps</v-tab>
+					<v-tab to="/group">Groups</v-tab>
+				</v-tabs>
+
 				<Nuxt />
 			</v-container>
 		</v-main>
