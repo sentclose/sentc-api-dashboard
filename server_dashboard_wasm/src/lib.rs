@@ -2,11 +2,13 @@
 
 mod app;
 mod customer;
+mod group;
 mod utils;
 
 extern crate alloc;
 
 use alloc::string::{String, ToString};
+use alloc::vec::Vec;
 
 use server_api_common::app::{AppFileOptionsInput, AppOptions};
 use wasm_bindgen::prelude::*;
@@ -597,6 +599,7 @@ pub async fn app_create_app(
 	identifier: String,
 	options: JsValue,
 	file_options: JsValue,
+	group_id: Option<String>,
 ) -> Result<AppRegisterOutput, JsValue>
 {
 	let identifier = match identifier.as_str() {
@@ -607,7 +610,7 @@ pub async fn app_create_app(
 	let options: AppOptions = options.into_serde().unwrap();
 	let file_options: AppFileOptionsInput = file_options.into_serde().unwrap();
 
-	let out = app::create(base_url, jwt.as_str(), identifier, options, file_options).await?;
+	let out = app::create(base_url, jwt.as_str(), identifier, options, file_options, group_id).await?;
 
 	Ok(out.into())
 }
@@ -662,6 +665,27 @@ pub async fn get_all_apps(base_url: String, jwt: String, last_fetched_time: Stri
 }
 
 #[wasm_bindgen]
+pub async fn get_all_apps_in_group(
+	base_url: String,
+	jwt: String,
+	group_id: String,
+	last_fetched_time: String,
+	last_id: String,
+) -> Result<JsValue, JsValue>
+{
+	let out = app::get_all_apps_in_group(
+		base_url,
+		jwt.as_str(),
+		&group_id,
+		last_fetched_time.as_str(),
+		last_id.as_str(),
+	)
+	.await?;
+
+	Ok(JsValue::from_serde(&out).unwrap())
+}
+
+#[wasm_bindgen]
 pub async fn get_app(base_url: String, jwt: String, app_id: String) -> Result<AppDetails, JsValue>
 {
 	let out = app::get_app(base_url, jwt.as_str(), app_id.as_str()).await?;
@@ -689,4 +713,137 @@ pub async fn app_update_file_options(base_url: String, jwt: String, app_id: Stri
 pub async fn app_delete(base_url: String, jwt: String, app_id: String) -> Result<(), JsValue>
 {
 	Ok(app::delete_app(base_url, jwt.as_str(), app_id.as_str()).await?)
+}
+
+//__________________________________________________________________________________________________
+
+#[wasm_bindgen]
+pub struct CustomerGroupList
+{
+	id: String,
+	time: String,
+	rank: i32,
+	group_name: Option<String>,
+	des: Option<String>,
+}
+
+impl From<server_api_common::customer::CustomerGroupList> for CustomerGroupList
+{
+	fn from(value: server_api_common::customer::CustomerGroupList) -> Self
+	{
+		Self {
+			id: value.id,
+			time: value.time.to_string(),
+			rank: value.rank,
+			group_name: value.group_name,
+			des: value.des,
+		}
+	}
+}
+
+#[wasm_bindgen]
+pub struct CustomerGroupView
+{
+	data: CustomerGroupList,
+	apps: Vec<server_api_common::customer::CustomerAppList>,
+}
+
+impl From<server_api_common::customer::CustomerGroupView> for CustomerGroupView
+{
+	fn from(value: server_api_common::customer::CustomerGroupView) -> Self
+	{
+		Self {
+			data: value.data.into(),
+			apps: value.apps,
+		}
+	}
+}
+
+#[wasm_bindgen]
+impl CustomerGroupView
+{
+	pub fn get_id(&self) -> String
+	{
+		self.data.id.clone()
+	}
+
+	pub fn get_name(&self) -> Option<String>
+	{
+		self.data.group_name.clone()
+	}
+
+	pub fn get_time(&self) -> String
+	{
+		self.data.time.clone()
+	}
+
+	pub fn get_apps(&self) -> JsValue
+	{
+		JsValue::from_serde(&self.apps).unwrap()
+	}
+
+	pub fn get_des(&self) -> Option<String>
+	{
+		self.data.des.clone()
+	}
+
+	pub fn get_rank(&self) -> i32
+	{
+		self.data.rank
+	}
+}
+
+#[wasm_bindgen]
+pub async fn create_group(base_url: String, jwt: String, name: Option<String>, des: Option<String>) -> Result<String, JsValue>
+{
+	Ok(group::create_group(base_url, &jwt, name, des).await?)
+}
+
+#[wasm_bindgen]
+pub async fn get_all_groups(base_url: String, jwt: String, last_fetched_time: String, last_id: String) -> Result<JsValue, JsValue>
+{
+	let out = group::get_all_groups(base_url, &jwt, &last_fetched_time, &last_id).await?;
+
+	Ok(JsValue::from_serde(&out).unwrap())
+}
+
+#[wasm_bindgen]
+pub async fn get_group(base_url: String, jwt: String, group_id: String) -> Result<CustomerGroupView, JsValue>
+{
+	let out = group::get_group(base_url, &jwt, &group_id).await?;
+
+	Ok(out.into())
+}
+
+#[wasm_bindgen]
+pub async fn invite_member(base_url: String, jwt: String, group_id: String, user_id: String, rank: Option<i32>) -> Result<(), JsValue>
+{
+	Ok(group::invite_member(base_url, &jwt, &group_id, &user_id, rank).await?)
+}
+
+#[wasm_bindgen]
+pub async fn get_member_list(base_url: String, jwt: String, group_id: String, last_fetched_time: String, last_id: String)
+	-> Result<JsValue, JsValue>
+{
+	let out = group::get_member_list(base_url, &jwt, &group_id, &last_fetched_time, &last_id).await?;
+
+	Ok(JsValue::from_serde(&out).unwrap())
+}
+
+#[wasm_bindgen]
+pub async fn update_user_rank(base_url: String, jwt: String, group_id: String, user_id: String, new_rank: i32) -> Result<(), JsValue>
+{
+	Ok(group::update_user_rank(base_url, &jwt, &group_id, user_id, new_rank).await?)
+}
+
+#[wasm_bindgen]
+pub async fn kick_user(base_url: String, jwt: String, group_id: String, user_id: String) -> Result<(), JsValue>
+{
+	Ok(group::kick_user(base_url, &jwt, &group_id, &user_id).await?)
+}
+
+#[wasm_bindgen]
+pub async fn update_group(base_url: String, jwt: String, group_id: String, name: Option<String>, des: Option<String>) -> Result<(), JsValue>
+{
+	Ok(group::update_group(base_url, &jwt, &group_id, name, des).await?)
 }

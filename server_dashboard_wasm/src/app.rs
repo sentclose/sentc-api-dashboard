@@ -105,6 +105,23 @@ pub async fn get_all_apps(base_url: String, jwt: &str, last_fetched_time: &str, 
 	Ok(out)
 }
 
+pub async fn get_all_apps_in_group(
+	base_url: String,
+	jwt: &str,
+	group_id: &str,
+	last_fetched_time: &str,
+	last_id: &str,
+) -> Result<Vec<CustomerAppList>, String>
+{
+	let url = base_url + "/api/v1/customer/group/" + group_id + "/apps/" + last_fetched_time + "/" + last_id;
+
+	let res = make_req(HttpMethod::GET, url.as_str(), "", None, Some(jwt), None).await?;
+
+	let out: Vec<CustomerAppList> = handle_server_response(res.as_str())?;
+
+	Ok(out)
+}
+
 pub async fn get_app(base_url: String, jwt: &str, app_id: &str) -> Result<server_api_common::app::AppDetails, String>
 {
 	let url = base_url + "/api/v1/customer/app/" + app_id;
