@@ -139,7 +139,7 @@ export default class AppCreate extends Vue
 	private getJwt: () => Promise<string>;
 
 	@Mutation("app/App/setApp")
-	private setApp: (data: AppData) => void;
+	private setApp: (data: { app: AppData, group_id?: string }) => void;
 
 	private identifier = "";
 
@@ -185,7 +185,7 @@ export default class AppCreate extends Vue
 				id: out.get_app_id()
 			};
 
-			this.setApp(app_data);
+			this.setApp({app: app_data, group_id: this.group_id});
 		} catch (e) {
 			try {
 				const err: SentcError = JSON.parse(e);

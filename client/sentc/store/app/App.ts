@@ -69,12 +69,22 @@ export default class App extends VuexModule
 	}
 
 	@Mutation
-	public setApp(data: AppData)
+	public setApp(data: { app: AppData, group_id?: string })
 	{
-		//push a new app to the front
-		this.app_list.unshift(data.id);
+		const {group_id, app} = data;
 
-		this.app_data.set(data.id, data);
+		//push a new app to the front
+		this.app_list.unshift(app.id);
+
+		this.app_data.set(app.id, app);
+
+		if (group_id) {
+			if (!this.app_group_list.has(group_id)) {
+				return;
+			}
+
+			this.app_group_list.get(group_id).app_ids.unshift(app.id);
+		}
 	}
 
 	@Mutation
