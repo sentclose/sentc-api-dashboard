@@ -10,7 +10,7 @@
 				<v-col v-for="(item, i) in appList" :key="i" cols="12" md="6" lg="4">
 					<v-hover v-slot="{hover}">
 						<v-card v-if="app(item) !== undefined" exact :to="'/app/'+item" :elevation="hover ? 12 : 2">
-							<v-card-title>{{ app(item).identifier ? app(item).identifier : "unnamed" }}</v-card-title>
+							<v-card-title>{{ app(item).group_name ? app(item).group_name + "/" : "" }}{{ app(item).identifier ? app(item).identifier : "unnamed" }}</v-card-title>
 							<v-card-text>
 								Created: {{ ts(app(item).time) }}
 							</v-card-text>
