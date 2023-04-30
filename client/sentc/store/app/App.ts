@@ -1,11 +1,16 @@
 import {Action, Module, Mutation, VuexModule} from "vuex-module-decorators";
 import {AppData, AppDetails, AppFileOptions, AppJwtData, AppOptions, SentcError} from "~/utils/types";
-import {get_all_apps, get_app, get_app_jwt_data} from "server_dashboard_wasm";
+import {get_all_apps, get_all_apps_in_group, get_app, get_app_jwt_data} from "server_dashboard_wasm";
 
 /**
  * @author Jörn Heinemann <joernheinemann@gmx.de>
  * @since 2022/09/27
  */
+
+export interface AppGroupList {
+	app_ids: string[],
+	end: boolean
+}
 
 @Module({
 	stateFactory: true
@@ -22,8 +27,23 @@ export default class App extends VuexModule
 
 	private app_list_end = false;
 
+	private app_group_list: Map<string, AppGroupList> = new Map();
+	
 	get appList() {
 		return this.app_list;
+	}
+
+	get appGroupList() {
+		return (group_id: string) => {
+			if (!this.app_group_list.has(group_id)) {
+				this.app_group_list.set(group_id, {
+					app_ids: [],
+					end: false
+				});
+			}
+
+			return this.app_group_list.get(group_id);
+		};
 	}
 
 	get appListEnd() {
@@ -129,6 +149,38 @@ export default class App extends VuexModule
 	}
 
 	@Mutation
+	public setAppsGroup(data: { apps: AppData[], group_id: string })
+	{
+		const {group_id, apps} = data;
+
+		if (!this.app_group_list.has(group_id)) {
+			this.app_group_list.set(group_id, {
+				end: false,
+				app_ids: []
+			});
+		}
+
+		const list = this.app_group_list.get(group_id);
+
+		if (apps.length === 0) {
+			list.end = true;
+			return;
+		}
+
+		if (apps.length < 20) {
+			list.end = true;
+		}
+
+		for (let i = 0; i < apps.length; i++) {
+			const datum = apps[i];
+
+			list.app_ids.push(datum.id);
+
+			this.app_data.set(datum.id, datum);
+		}
+	}
+
+	@Mutation
 	public setAppJwtData(data: {jwt_data: AppJwtData[], id: string})
 	{
 		const {id, jwt_data} = data;
@@ -202,6 +254,31 @@ export default class App extends VuexModule
 		}
 
 		this.context.commit("setApps", apps);
+	}
+
+	@Action({rawError: true})
+	public async fetchAppsInGroup(group_id: string)
+	{
+		const list = this.app_group_list.get(group_id);
+
+		if (list?.end) {
+			return;
+		}
+
+		const last = this.app_group_list.get(group_id)[this.app_list.length - 1] ?? "none";
+		const last_time = this.app_data.get(last)?.time.toString() ?? "0";
+
+		let apps: AppData[] = [];
+
+		try {
+			const jwt = await this.context.dispatch("customer/Customer/getJwt", {}, {root: true});
+
+			apps = await get_all_apps_in_group(process.env.NUXT_ENV_BASE_URL, jwt, group_id, last_time, last);
+		} catch (e) {
+			//no need to set error
+		}
+
+		this.context.commit("setAppsGroup", {apps, group_id});
 	}
 
 	@Action({rawError: true})
