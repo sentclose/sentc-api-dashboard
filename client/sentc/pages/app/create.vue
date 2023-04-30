@@ -1,5 +1,5 @@
 <template>
-	<AppCreate :create="true" />
+	<AppCreate :create="true" :group_id="undefined" />
 </template>
 
 <script lang="ts">

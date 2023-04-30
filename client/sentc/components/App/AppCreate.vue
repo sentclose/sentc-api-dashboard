@@ -129,6 +129,9 @@ export default class AppCreate extends Vue
 	@Prop({required: true})
 	private create: boolean;
 
+	@Prop({required: true})
+	private group_id: string | undefined;
+
 	@Mutation("event/ErrorEvent/setMsg")
 	private setMsg: (msg: string) => void;
 
@@ -167,7 +170,7 @@ export default class AppCreate extends Vue
 		try {
 			const jwt = await this.getJwt();
 
-			const out: AppRegisterOutput = await app_create_app(process.env.NUXT_ENV_BASE_URL, jwt, this.identifier, options, file_options);
+			const out: AppRegisterOutput = await app_create_app(process.env.NUXT_ENV_BASE_URL, jwt, this.identifier, options, file_options, this.group_id);
 
 			this.secret_token = out.get_secret_token();
 			this.public_token = out.get_public_token();
