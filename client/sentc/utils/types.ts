@@ -118,3 +118,24 @@ export interface AppOptions
 
 	content_search: number,
 }
+
+//______________________________________________________________________________________________________________________
+
+export interface GroupData
+{
+	id: string,
+	time: string,
+	rank: number,
+	group_name?: string,
+	des?: string,
+}
+
+export interface CustomerGroupMemberListItem
+{
+	user_id: string,
+	rank: number,
+	joined_time: number,
+	first_name: string,
+	name: string,
+	email: string,
+}
