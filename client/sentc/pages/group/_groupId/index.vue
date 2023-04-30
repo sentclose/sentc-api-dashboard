@@ -2,7 +2,7 @@
 	<v-row justify="center" :class="{'mx-0': $vuetify.breakpoint.smAndDown, 'px-0': $vuetify.breakpoint.smAndDown}">
 		<v-col sm="12" md="12" lg="12" :class="{'mx-0': $vuetify.breakpoint.smAndDown, 'px-0': $vuetify.breakpoint.smAndDown}" style="max-width: 1300px">
 			<v-row class="mx-3 mt-3 mb-3" :class="{'mx-0': $vuetify.breakpoint.smAndDown, 'px-0': $vuetify.breakpoint.smAndDown}">
-				<h1 class="display-1">Apps in {{ getGroup($route.params.groupId) }}</h1> <v-spacer />
+				<h1 class="display-1">Apps in {{ getGroup($route.params.groupId).group_name ? getGroup($route.params.groupId).group_name : "unnamed group" }}</h1> <v-spacer />
 				<v-btn color="primary" :to="`/group/${$route.params.groupId}/create_app`">New app in group</v-btn>
 			</v-row>
 			
