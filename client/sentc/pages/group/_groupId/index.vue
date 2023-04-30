@@ -5,6 +5,10 @@
 				<h1 class="display-1">Apps in {{ getGroup($route.params.groupId).group_name ? getGroup($route.params.groupId).group_name : "unnamed group" }}</h1> <v-spacer />
 				<v-btn color="primary" :to="`/group/${$route.params.groupId}/create_app`">New app in group</v-btn>
 			</v-row>
+
+			<v-row class="mx-3 mt-3 mb-3" :class="{'mx-0': $vuetify.breakpoint.smAndDown, 'px-0': $vuetify.breakpoint.smAndDown}">
+				<h2 v-if="getGroup($route.params.groupId).des" class="headline">{{ getGroup($route.params.groupId).des }}</h2>
+			</v-row>
 			
 			<v-row :class="{'mx-0': $vuetify.breakpoint.smAndDown, 'px-0': $vuetify.breakpoint.smAndDown}" class="mb-5">
 				<v-col v-for="(item, i) in list.app_ids" :key="i" cols="12" md="6" lg="4">
