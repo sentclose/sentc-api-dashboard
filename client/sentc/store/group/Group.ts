@@ -31,6 +31,15 @@ export default class Group extends VuexModule
 	}
 
 	@Mutation
+	public setGroup(data: GroupData)
+	{
+		//push new group
+		this.groups.unshift(data.id);
+
+		this.group_data.set(data.id, data);
+	}
+
+	@Mutation
 	public setGroupData(data: GroupData)
 	{
 		this.group_data.set(data.id, data);
@@ -75,7 +84,7 @@ export default class Group extends VuexModule
 			};
 			
 			this.context.commit("setGroupData", group_data);
-			this.context.commit("app/App/setAppsGroup", {group_id, apps});
+			this.context.commit("app/App/setAppsGroup", {group_id, apps}, {root: true});
 		} catch (e) {
 			//no need to set error
 		}
