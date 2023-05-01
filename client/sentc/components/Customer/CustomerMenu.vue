@@ -31,6 +31,10 @@
 					</v-list-item-content>
 				</v-list-item>
 
+				<v-divider />
+
+				<v-divider />
+
 				<v-list-item to="/customer/billing" router exact>
 					<v-list-item-icon>
 						<v-icon>mdi-apps</v-icon>
