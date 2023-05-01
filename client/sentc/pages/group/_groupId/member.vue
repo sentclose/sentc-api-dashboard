@@ -69,6 +69,51 @@
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
+
+		<v-dialog v-model="member_update_dialog" max-width="700">
+			<v-card>
+				<v-card-title class="headline">Update: {{ member_update_name }}</v-card-title>
+
+				<v-card-text>
+					<v-autocomplete
+						ref="rank"
+						v-model="member_update_rank"
+						:items="group_ranks"
+						label="New rank"
+						prepend-icon="mdi-account-circle"
+						:rules="[rules.required]"
+					/>
+				</v-card-text>
+
+				<v-card-actions>
+					<v-spacer />
+					<v-btn text color="success" @click="changeRank">Change rank</v-btn>
+				</v-card-actions>
+
+				<v-divider />
+
+				<v-card-actions>
+					<v-btn text color="error" @click="delete_dialog=!delete_dialog">Kick member</v-btn>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
+
+		<v-bottom-sheet v-model="delete_dialog" persistent>
+			<v-sheet
+				class="text-center"
+				height="200px"
+			>
+				<div class="pa-3">
+					<h1 class="display-5">Kick {{ member_update_name }}</h1>
+					<br>
+
+					Do you really want to kick this member?
+				</div>
+
+				<v-btn class="mt-6" text color="error" @click="kickMember">Kick</v-btn>
+				<v-btn class="mt-6" text color="primary" @click="delete_dialog = false">Cancel</v-btn>
+			</v-sheet>
+		</v-bottom-sheet>
 	</div>
 </template>
 
@@ -78,10 +123,10 @@ import Component from "vue-class-component";
 import groupAccess from "~/middleware/groupAccess";
 import {GroupMember} from "~/store/group/Group";
 import {Action, Getter, Mutation} from "nuxt-property-decorator";
-import {getTime} from "~/utils/utils";
+import {getTime, p} from "~/utils/utils";
 import ErrorEvent from "~/components/ErrorEvent.vue";
 import {CustomerGroupMemberListItem, SentcError} from "~/utils/types";
-import {invite_member} from "server_dashboard_wasm";
+import {invite_member, kick_user, update_user_rank} from "server_dashboard_wasm";
 
 @Component({
 	// eslint-disable-next-line @typescript-eslint/naming-convention
@@ -107,13 +152,10 @@ import {invite_member} from "server_dashboard_wasm";
 })
 export default class extends Vue
 {
-	//TODO
-	//TODO change member rank
-	//TODO kick member
-
 	list: GroupMember = {member: [], end: false};
 
 	inviteDialog = false;
+	delete_dialog = false;
 
 	user_to_invite_id = "";
 	user_rank: string | null = null;
@@ -133,11 +175,22 @@ export default class extends Vue
 		{text: "Action", value: "action"}
 	];
 
+	member_update_id = "";
+	member_update_name = "";
+	member_update_rank = null;
+	member_update_dialog = false;
+
 	@Getter("group/Group/groupMember")
 	private groupMember: (id: string) => GroupMember;
 
 	@Mutation("event/ErrorEvent/setMsg")
 	private setMsg: (msg: string) => void;
+
+	@Mutation("group/Group/changeRank")
+	private changeRankStore: (data:{id: string, user_id: string, new_rank: number}) => void;
+
+	@Mutation("group/Group/removeMember")
+	private removeMember: (data: {id: string, user_id: string}) => void;
 
 	@Action("group/Group/fetchMember")
 	private fetchMember: (id: string) => Promise<void>;
@@ -164,11 +217,11 @@ export default class extends Vue
 		try {
 			const jwt = await this.getJwt();
 
-			await invite_member(process.env.NUXT_ENV_BASE_URL, jwt, this.$route.params.groupId, this.user_to_invite_id, this.getRankNumber());
+			await invite_member(process.env.NUXT_ENV_BASE_URL, jwt, this.$route.params.groupId, this.user_to_invite_id, this.getRankNumber(this.user_rank));
 
 			this.inviteDialog = false;
 
-			this.$forceUpdate();
+			location.replace(p(`group/${this.$route.params.groupId}/member`));
 		} catch (e) {
 			try {
 				const err: SentcError = JSON.parse(e);
@@ -181,12 +234,59 @@ export default class extends Vue
 
 	private editMember(item: CustomerGroupMemberListItem)
 	{
-		console.log(item.user_id);
+		this.member_update_id = item.user_id;
+		this.member_update_rank = this.getRankFromNumber(item.rank);
+		this.member_update_name = item.first_name + " " + item.name + " - " + item.email;
+
+		this.member_update_dialog = true;
 	}
 
-	private getRankNumber()
+	private async changeRank()
 	{
-		switch (this.user_rank) {
+		const rank_number = this.getRankNumber(this.member_update_rank);
+
+		try {
+			const jwt = await this.getJwt();
+
+			await update_user_rank(process.env.NUXT_ENV_BASE_URL, jwt, this.$route.params.groupId, this.member_update_id, rank_number);
+
+			this.changeRankStore({id: this.$route.params.groupId, new_rank: rank_number, user_id: this.member_update_id});
+
+			this.member_update_dialog = false;
+		} catch (e) {
+			try {
+				const err: SentcError = JSON.parse(e);
+				this.setMsg(err.error_message);
+			} catch (e) {
+				this.setMsg("An undefined error");
+			}
+		}
+	}
+
+	private async kickMember()
+	{
+		try {
+			const jwt = await this.getJwt();
+
+			await kick_user(process.env.NUXT_ENV_BASE_URL, jwt, this.$route.params.groupId, this.member_update_id);
+
+			this.removeMember({id: this.$route.params.groupId, user_id: this.member_update_id});
+
+			this.delete_dialog = false;
+			this.member_update_dialog = false;
+		} catch (e) {
+			try {
+				const err: SentcError = JSON.parse(e);
+				this.setMsg(err.error_message);
+			} catch (e) {
+				this.setMsg("An undefined error");
+			}
+		}
+	}
+
+	private getRankNumber(rank: string)
+	{
+		switch (rank) {
 			case "admin": return 1;
 			case "moderator": return 2;
 			case "member": return 4;

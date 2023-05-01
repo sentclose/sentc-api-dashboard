@@ -139,6 +139,40 @@ export default class Group extends VuexModule
 		group_member.member.push(...member);
 	}
 
+	@Mutation
+	public changeRank(data: {id: string, user_id: string, new_rank: number})
+	{
+		const {id, new_rank, user_id} = data;
+
+		const group_member = this.group_member.get(id);
+
+		for (let i = 0; i < group_member.member.length; i++) {
+			const item = group_member.member[i];
+
+			if (item.user_id === user_id) {
+				item.rank = new_rank;
+				return;
+			}
+		}
+	}
+
+	@Mutation
+	public removeMember(data: {id: string, user_id: string})
+	{
+		const {id, user_id} = data;
+
+		const group_member = this.group_member.get(id);
+
+		for (let i = 0; i < group_member.member.length; i++) {
+			const item = group_member.member[i];
+
+			if (item.user_id === user_id) {
+				group_member.member.splice(i, 1);
+				return;
+			}
+		}
+	}
+
 	@Action({rawError: true})
 	public async fetchGroup(group_id: string)
 	{
