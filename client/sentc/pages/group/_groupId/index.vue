@@ -3,7 +3,37 @@
 		<v-col sm="12" md="12" lg="12" :class="{'mx-0': $vuetify.breakpoint.smAndDown, 'px-0': $vuetify.breakpoint.smAndDown}" style="max-width: 1300px">
 			<v-row class="mx-3 mt-3 mb-3" :class="{'mx-0': $vuetify.breakpoint.smAndDown, 'px-0': $vuetify.breakpoint.smAndDown}">
 				<h1 class="display-1">{{ getGroup($route.params.groupId).group_name ? getGroup($route.params.groupId).group_name : "Unnamed group" }}</h1> <v-spacer />
-				<v-btn icon :to="`/group/${$route.params.groupId}/update`"><v-icon>mdi-pencil</v-icon></v-btn>
+
+				<v-tooltip bottom>
+					<template #activator="{on,attrs}">
+						<v-btn
+							class="mr-3"
+							v-bind="attrs"
+							right
+							icon
+							:to="`/group/${$route.params.groupId}/member`"
+							v-on="on"
+						>
+							<v-icon>mdi-account-group</v-icon>
+						</v-btn>
+					</template>
+					<span>Group member</span>
+				</v-tooltip>
+
+				<v-tooltip bottom>
+					<template #activator="{on,attrs}">
+						<v-btn
+							v-bind="attrs"
+							right
+							icon
+							:to="`/group/${$route.params.groupId}/update`"
+							v-on="on"
+						>
+							<v-icon>mdi-pencil</v-icon>
+						</v-btn>
+					</template>
+					<span>Edit group</span>
+				</v-tooltip>
 			</v-row>
 
 			<v-row class="mx-3 mt-3 mb-3" :class="{'mx-0': $vuetify.breakpoint.smAndDown, 'px-0': $vuetify.breakpoint.smAndDown}">
