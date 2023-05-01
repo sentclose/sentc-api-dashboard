@@ -130,6 +130,22 @@ export interface GroupData
 	des?: string,
 }
 
+export interface GroupUserListItem
+{
+	user_id: string,
+	rank: number,
+	joined_time: number,
+	user_type: number,
+}
+
+export interface CustomerList
+{
+	id: string,
+	first_name: string,
+	name: string,
+	email: string,
+}
+
 export interface CustomerGroupMemberListItem
 {
 	user_id: string,

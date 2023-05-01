@@ -3,8 +3,13 @@
  * @since 2023/04/30
  */
 import {Action, Module, Mutation, VuexModule} from "vuex-module-decorators";
-import {AppData, GroupData} from "~/utils/types";
-import {get_all_groups, get_group} from "server_dashboard_wasm";
+import {AppData, CustomerGroupMemberListItem, CustomerList, GroupData, GroupUserListItem} from "~/utils/types";
+import {get_all_groups, get_group, get_member_list} from "server_dashboard_wasm";
+
+export interface GroupMember {
+	member: CustomerGroupMemberListItem[],
+	end: boolean
+}
 
 @Module({
 	stateFactory: true
@@ -13,12 +18,27 @@ export default class Group extends VuexModule
 {
 	private group_data: Map<string, GroupData> = new Map();
 
+	private group_member: Map<string, GroupMember> = new Map();
+
 	private groups: string[] = [];
 	private group_list_end = false;
 
 	get group() {
 		return (id: string) => {
 			return this.group_data.get(id);
+		};
+	}
+
+	get groupMember() {
+		return (id: string) => {
+			if (!this.group_member.has(id)) {
+				this.group_member.set(id, {
+					member: [],
+					end: false
+				});
+			}
+
+			return this.group_member.get(id);
 		};
 	}
 	
@@ -92,6 +112,32 @@ export default class Group extends VuexModule
 			this.group_data.set(datum.id, datum);
 		}
 	}
+	
+	@Mutation
+	public setMember(data: {id: string, member: CustomerGroupMemberListItem[]})
+	{
+		const {member, id} = data;
+
+		if (!this.group_member.has(id)) {
+			this.group_member.set(id, {
+				member: [],
+				end: false
+			});
+		}
+
+		const group_member = this.group_member.get(id);
+
+		if (member.length === 0) {
+			group_member.end = true;
+			return;
+		}
+
+		if (member.length < 20) {
+			group_member.end = true;
+		}
+
+		group_member.member.push(...member);
+	}
 
 	@Action({rawError: true})
 	public async fetchGroup(group_id: string)
@@ -138,5 +184,52 @@ export default class Group extends VuexModule
 		}
 
 		this.context.commit("setGroups", groups);
+	}
+
+	@Action({rawError: true})
+	public async fetchMember(id: string)
+	{
+		const member: GroupMember = this.context.getters["groupMember"](id);
+
+		if (member.end) {
+			return;
+		}
+
+		const member_fetch: CustomerGroupMemberListItem[] = [];
+
+		try {
+			const jwt = await this.context.dispatch("customer/Customer/getJwt", {}, {root: true});
+
+			const last = member.member[member.member.length - 1];
+			const last_time = last?.joined_time ?? "0";
+			const last_id = last?.user_id ?? "none";
+
+			//@ts-ignore
+			const fetch = await get_member_list(process.env.NUXT_ENV_BASE_URL, jwt, id, last_time, last_id);
+
+			const customer_data: CustomerList[] = fetch.get_customer();
+			const group_member: GroupUserListItem[] = fetch.get_member();
+
+			for (let i = 0; i < customer_data.length; i++) {
+				const item = customer_data[i];
+
+				const find = group_member.find((value) => {
+					return value.user_id === item.id;
+				});
+
+				member_fetch.push({
+					user_id: item.id,
+					name: item.name,
+					first_name: item.first_name,
+					email: item.email,
+					rank: find.rank,
+					joined_time: find.joined_time
+				});
+			}
+		} catch (e) {
+			//no need to set error
+		}
+
+		this.context.commit("setMember", {id, member: member_fetch});
 	}
 }
