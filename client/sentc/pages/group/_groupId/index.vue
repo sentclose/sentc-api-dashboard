@@ -2,12 +2,19 @@
 	<v-row justify="center" :class="{'mx-0': $vuetify.breakpoint.smAndDown, 'px-0': $vuetify.breakpoint.smAndDown}">
 		<v-col sm="12" md="12" lg="12" :class="{'mx-0': $vuetify.breakpoint.smAndDown, 'px-0': $vuetify.breakpoint.smAndDown}" style="max-width: 1300px">
 			<v-row class="mx-3 mt-3 mb-3" :class="{'mx-0': $vuetify.breakpoint.smAndDown, 'px-0': $vuetify.breakpoint.smAndDown}">
-				<h1 class="display-1">Apps in {{ getGroup($route.params.groupId).group_name ? getGroup($route.params.groupId).group_name : "unnamed group" }}</h1> <v-spacer />
-				<v-btn color="primary" :to="`/group/${$route.params.groupId}/create_app`">New app in group</v-btn>
+				<h1 class="display-1">{{ getGroup($route.params.groupId).group_name ? getGroup($route.params.groupId).group_name : "Unnamed group" }}</h1> <v-spacer />
+				<v-btn icon :to="`/group/${$route.params.groupId}/update`"><v-icon>mdi-pencil</v-icon></v-btn>
 			</v-row>
 
 			<v-row class="mx-3 mt-3 mb-3" :class="{'mx-0': $vuetify.breakpoint.smAndDown, 'px-0': $vuetify.breakpoint.smAndDown}">
-				<h2 v-if="getGroup($route.params.groupId).des" class="headline">{{ getGroup($route.params.groupId).des }}</h2>
+				<v-card-text v-if="getGroup($route.params.groupId).des">{{ getGroup($route.params.groupId).des }}</v-card-text>
+			</v-row>
+
+			<v-divider class="my-4" />
+
+			<v-row class="mx-3 mt-3 mb-3" :class="{'mx-0': $vuetify.breakpoint.smAndDown, 'px-0': $vuetify.breakpoint.smAndDown}">
+				<h1 class="headline">Apps in the group</h1> <v-spacer />
+				<v-btn color="primary" :to="`/group/${$route.params.groupId}/create_app`">New app in group</v-btn>
 			</v-row>
 			
 			<v-row :class="{'mx-0': $vuetify.breakpoint.smAndDown, 'px-0': $vuetify.breakpoint.smAndDown}" class="mb-5">
