@@ -11,6 +11,8 @@ use alloc::string::{String, ToString};
 use alloc::vec::Vec;
 
 use server_api_common::app::{AppFileOptionsInput, AppOptions};
+use server_api_common::customer::CustomerList;
+use server_api_common::sdk_common::group::GroupUserListItem;
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
@@ -822,12 +824,49 @@ pub async fn invite_member(base_url: String, jwt: String, group_id: String, user
 }
 
 #[wasm_bindgen]
-pub async fn get_member_list(base_url: String, jwt: String, group_id: String, last_fetched_time: String, last_id: String)
-	-> Result<JsValue, JsValue>
+pub struct CustomerGroupMemberFetch
+{
+	group_member: Vec<GroupUserListItem>,
+	customer_data: Vec<CustomerList>,
+}
+
+#[wasm_bindgen]
+impl CustomerGroupMemberFetch
+{
+	pub fn get_member(&self) -> JsValue
+	{
+		JsValue::from_serde(&self.group_member).unwrap()
+	}
+
+	pub fn get_customer(&self) -> JsValue
+	{
+		JsValue::from_serde(&self.customer_data).unwrap()
+	}
+}
+
+impl From<server_api_common::customer::CustomerGroupMemberFetch> for CustomerGroupMemberFetch
+{
+	fn from(value: server_api_common::customer::CustomerGroupMemberFetch) -> Self
+	{
+		Self {
+			group_member: value.group_member,
+			customer_data: value.customer_data,
+		}
+	}
+}
+
+#[wasm_bindgen]
+pub async fn get_member_list(
+	base_url: String,
+	jwt: String,
+	group_id: String,
+	last_fetched_time: String,
+	last_id: String,
+) -> Result<CustomerGroupMemberFetch, JsValue>
 {
 	let out = group::get_member_list(base_url, &jwt, &group_id, &last_fetched_time, &last_id).await?;
 
-	Ok(JsValue::from_serde(&out).unwrap())
+	Ok(out.into())
 }
 
 #[wasm_bindgen]

@@ -72,56 +72,19 @@ pub struct CustomerGroupMemberListItem
 	pub email: String,
 }
 
-/**
-Merge both lists together.
-
-The server just returned it as two lists because there are two db fetches.
-*/
 pub async fn get_member_list(
 	base_url: String,
 	jwt: &str,
 	group_id: &str,
 	last_fetched_time: &str,
 	last_id: &str,
-) -> Result<Vec<CustomerGroupMemberListItem>, String>
+) -> Result<CustomerGroupMemberFetch, String>
 {
 	let url = base_url + "/api/v1/customer/group/" + group_id + "/member/" + last_fetched_time + "/" + last_id;
 
 	let res = make_req(HttpMethod::GET, url.as_str(), "", None, Some(jwt), None).await?;
 
-	let out: CustomerGroupMemberFetch = handle_server_response(&res)?;
-
-	if out.group_member.is_empty() {
-		return Ok(Vec::new());
-	}
-
-	let len = out.group_member.len();
-	let mut list = Vec::with_capacity(out.group_member.len());
-
-	let mut group_user = out.group_member.into_iter();
-	let mut user_info = out.customer_data.into_iter();
-
-	for i in 0..len {
-		let group_member_info = group_user.nth(i);
-
-		let user_info = user_info.nth(i);
-
-		match (group_member_info, user_info) {
-			(Some(g), Some(u)) => {
-				list.push(CustomerGroupMemberListItem {
-					user_id: g.user_id,
-					rank: g.rank,
-					joined_time: g.joined_time,
-					first_name: u.first_name,
-					name: u.name,
-					email: u.email,
-				})
-			},
-			_ => continue,
-		}
-	}
-
-	Ok(list)
+	Ok(handle_server_response(&res)?)
 }
 
 pub async fn update_user_rank(base_url: String, jwt: &str, group_id: &str, user_id: String, new_rank: i32) -> Result<(), String>
