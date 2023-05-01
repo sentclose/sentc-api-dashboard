@@ -55,7 +55,8 @@ import {Action, Mutation} from "nuxt-property-decorator";
 
 @Component({
 	// eslint-disable-next-line @typescript-eslint/naming-convention
-	components: {ErrorEvent}
+	components: {ErrorEvent},
+	layout: "default_non_login"
 })
 export default class extends Vue
 {

@@ -123,6 +123,7 @@ import Captcha from "~/components/Customer/Captcha.vue";
 @Component({
 	// eslint-disable-next-line @typescript-eslint/naming-convention
 	components: {Captcha, Login, ErrorEvent},
+	layout: "default_non_login",
 	computed: {
 		score() {
 			if (this.password.length < 6) {
