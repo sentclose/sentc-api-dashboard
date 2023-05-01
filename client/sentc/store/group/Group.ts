@@ -40,6 +40,33 @@ export default class Group extends VuexModule
 	}
 
 	@Mutation
+	public updateGroup(data: {id: string, name?: string, des?: string})
+	{
+		const {id, name, des} = data;
+
+		const group = this.group_data.get(id);
+
+		if (!group) {
+			return;
+		}
+
+		group.group_name = name;
+		group.des = des;
+	}
+
+	@Mutation
+	public removeGroup(id: string)
+	{
+		for (let i = 0; i < this.groups.length; i++) {
+			if (this.groups[i] === id) {
+				this.groups.splice(i, 1);
+			}
+		}
+
+		this.group_data.delete(id);
+	}
+
+	@Mutation
 	public setGroupData(data: GroupData)
 	{
 		this.group_data.set(data.id, data);
