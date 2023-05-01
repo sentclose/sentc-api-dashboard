@@ -162,3 +162,12 @@ pub async fn update_group(base_url: String, jwt: &str, group_id: &str, name: Opt
 
 	Ok(handle_general_server_response(&res)?)
 }
+
+pub async fn delete_group(base_url: String, jwt: &str, group_id: &str) -> Result<(), String>
+{
+	let url = base_url + "/api/v1/customer/group/" + group_id;
+
+	let res = make_req(HttpMethod::DELETE, url.as_str(), "", None, Some(jwt), None).await?;
+
+	Ok(handle_general_server_response(&res)?)
+}

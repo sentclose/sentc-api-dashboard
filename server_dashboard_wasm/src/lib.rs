@@ -847,3 +847,9 @@ pub async fn update_group(base_url: String, jwt: String, group_id: String, name:
 {
 	Ok(group::update_group(base_url, &jwt, &group_id, name, des).await?)
 }
+
+#[wasm_bindgen]
+pub async fn delete_group(base_url: String, jwt: String, group_id: String) -> Result<(), JsValue>
+{
+	Ok(group::delete_group(base_url, &jwt, &group_id).await?)
+}
