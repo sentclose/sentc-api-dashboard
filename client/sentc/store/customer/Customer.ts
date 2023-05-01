@@ -39,7 +39,7 @@ export default class Customer extends VuexModule
 	private company?: string = "";
 
 	//use a var because if anyone tries to access the public or private keys without init the store -> error
-	//0 = can't login not login data
+	//0 = can't log in not login data
 	//1 = is log in
 	//2 = can try to log in with refresh token
 	private isLoggedIn = 2;

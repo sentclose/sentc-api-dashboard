@@ -7,19 +7,43 @@
 			fixed
 		>
 			<v-list>
+				<v-list-item two-line>
+					<v-list-item-icon>
+						<v-icon>mdi-account</v-icon>
+					</v-list-item-icon>
+					<v-list-item-content>
+						<v-list-item-title>{{ getFirstName }} {{ getName }}</v-list-item-title>
+						<v-list-item-subtitle>
+							{{ getEmail }}
+						</v-list-item-subtitle>
+					</v-list-item-content>
+				</v-list-item>
+
+				<v-list-item three-line>
+					<v-list-item-icon>
+						<v-icon>mdi-account</v-icon>
+					</v-list-item-icon>
+					<v-list-item-content>
+						<v-list-item-title>Id:</v-list-item-title>
+						<v-list-item-subtitle>
+							{{ getUserId }}
+						</v-list-item-subtitle>
+					</v-list-item-content>
+				</v-list-item>
+
 				<v-list-item to="/customer/billing" router exact>
-					<v-list-item-action>
+					<v-list-item-icon>
 						<v-icon>mdi-apps</v-icon>
-					</v-list-item-action>
+					</v-list-item-icon>
 					<v-list-item-content>
 						<v-list-item-title v-text="'Billing'" />
 					</v-list-item-content>
 				</v-list-item>
 
 				<v-list-item to="/customer/update" router exact>
-					<v-list-item-action>
+					<v-list-item-icon>
 						<v-icon>mdi-account</v-icon>
-					</v-list-item-action>
+					</v-list-item-icon>
 					<v-list-item-content>
 						<v-list-item-title v-text="'Settings'" />
 					</v-list-item-content>
@@ -30,9 +54,9 @@
 				<v-divider />
 
 				<v-list-item @click="logOut">
-					<v-list-item-action>
+					<v-list-item-icon>
 						<v-icon>mdi-logout</v-icon>
-					</v-list-item-action>
+					</v-list-item-icon>
 					<v-list-item-content>
 						<v-list-item-title v-text="'Logout'" />
 					</v-list-item-content>
@@ -45,7 +69,7 @@
 <script lang="ts">
 import Vue from "vue";
 import Component from "vue-class-component";
-import {Action, Prop} from "nuxt-property-decorator";
+import {Action, Getter, Prop} from "nuxt-property-decorator";
 import {p} from "~/utils/utils";
 
 @Component({
@@ -68,6 +92,18 @@ export default class CustomerMenu extends Vue
 	private value: boolean;
 
 	private model = false;
+
+	@Getter("customer/Customer/getName")
+	private getName: string;
+
+	@Getter("customer/Customer/getFirstName")
+	private getFirstName: string;
+
+	@Getter("customer/Customer/getUserId")
+	private getUserId: string;
+
+	@Getter("customer/Customer/getEmail")
+	private getEmail: string;
 
 	@Action("customer/Customer/logout")
 	private logout: () => Promise<void>;
