@@ -718,6 +718,26 @@
 							</tr>
 
 							<!----------------------------------------------------------------------------------------->
+							<!--content endpoints-->
+
+							<tr>
+								<td class="endpoint">
+									Content management
+								</td>
+								<td class="options">
+									<v-radio-group v-model="options.content" row>
+										<v-radio label="Public" :value="1" />
+										<v-radio label="Secret" :value="2" />
+										<v-radio label="Block" :value="0" />
+									</v-radio-group>
+								</td>
+								<td class="des">
+									Fetch content identifier. Use public if users should fetch directly from the client.
+									A second request is needed to fetch the data.
+								</td>
+							</tr>
+
+							<!----------------------------------------------------------------------------------------->
 							<!--search endpoints-->
 
 							<tr>
