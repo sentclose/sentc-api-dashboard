@@ -117,7 +117,13 @@ export interface AppOptions
 	user_key_update: number,
 
 	content_search: number,
-	content: number
+
+	content: number,
+
+	content_small: number,
+	content_med: number,
+	content_large: number,
+	content_x_large: number,
 }
 
 //______________________________________________________________________________________________________________________

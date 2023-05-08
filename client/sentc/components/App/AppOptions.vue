@@ -722,7 +722,7 @@
 
 							<tr>
 								<td class="endpoint">
-									Content management
+									Content access
 								</td>
 								<td class="options">
 									<v-radio-group v-model="options.content" row>
@@ -732,7 +732,78 @@
 									</v-radio-group>
 								</td>
 								<td class="des">
-									Fetch content identifier. Use public if users should fetch directly from the client.
+									Check the access to content. Use public if users should check directly from the client.
+									A second request is needed to fetch the data.
+								</td>
+							</tr>
+
+							<!----------------------------------------------------------------------------------------->
+							<!--content endpoints-->
+
+							<tr>
+								<td class="endpoint">
+									Content fetch small
+								</td>
+								<td class="options">
+									<v-radio-group v-model="options.content_small" row>
+										<v-radio label="Public" :value="1" />
+										<v-radio label="Secret" :value="2" />
+										<v-radio label="Block" :value="0" />
+									</v-radio-group>
+								</td>
+								<td class="des">
+									Fetch content with a limit of <b>20 items</b>. Use public if users should fetch directly from the client.
+									A second request is needed to fetch the data.
+								</td>
+							</tr>
+
+							<tr>
+								<td class="endpoint">
+									Content fetch medium
+								</td>
+								<td class="options">
+									<v-radio-group v-model="options.content_med" row>
+										<v-radio label="Public" :value="1" />
+										<v-radio label="Secret" :value="2" />
+										<v-radio label="Block" :value="0" />
+									</v-radio-group>
+								</td>
+								<td class="des">
+									Fetch content with a limit of <b>50 items</b>. Use public if users should fetch directly from the client.
+									A second request is needed to fetch the data.
+								</td>
+							</tr>
+
+							<tr>
+								<td class="endpoint">
+									Content fetch large
+								</td>
+								<td class="options">
+									<v-radio-group v-model="options.content_large" row>
+										<v-radio label="Public" :value="1" />
+										<v-radio label="Secret" :value="2" />
+										<v-radio label="Block" :value="0" />
+									</v-radio-group>
+								</td>
+								<td class="des">
+									Fetch content with a limit of <b>70 items</b>. Use public if users should fetch directly from the client.
+									A second request is needed to fetch the data.
+								</td>
+							</tr>
+
+							<tr>
+								<td class="endpoint">
+									Content fetch x-large
+								</td>
+								<td class="options">
+									<v-radio-group v-model="options.content_x_large" row>
+										<v-radio label="Public" :value="1" />
+										<v-radio label="Secret" :value="2" />
+										<v-radio label="Block" :value="0" />
+									</v-radio-group>
+								</td>
+								<td class="des">
+									Fetch content with a limit of <b>100 items</b>. Use public if users should fetch directly from the client.
 									A second request is needed to fetch the data.
 								</td>
 							</tr>
