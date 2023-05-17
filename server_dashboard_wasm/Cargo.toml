@@ -9,13 +9,13 @@ edition = "2021"
 crate-type = ["cdylib"]
 
 [dependencies]
-server_api_common = {version = "0.1.0", git="ssh://git@gitlab.com/sentclose/sentc/backend/sentc-api", rev = "e34d79b633b7a1587882e75993ef256c78a9f6ff"}
+server_api_common = {version = "0.1.0", git="ssh://git@github.com/sentclose/sentc-api.git", rev = "c5b744a8741c8aaef35ab832b5943988fb9b2899"}
 
 # to get it from ssh: write this in your ~/.cargo/config.toml:
 # [net]
 # git-fetch-with-cli = true
-sentc-crypto = {version = "0.1.0", git = "ssh://git@gitlab.com/sentclose/sentc/sdk.git", features = ["server"]}
-sentc-crypto-full = {version = "0.1.0", git = "ssh://git@gitlab.com/sentclose/sentc/sdk.git", default-features = false, features = ["wasm"]}
+sentc-crypto = {version = "0.1.0", git = "ssh://git@github.com/sentclose/sentc.git", rev="8c181a68aa8d82d1729d8895f06de4d888eb248a", features = ["server"]}
+sentc-crypto-full = {version = "0.1.0", git = "ssh://git@github.com/sentclose/sentc.git", rev="8c181a68aa8d82d1729d8895f06de4d888eb248a", default-features = false, features = ["wasm"]}
 
 # wasm dep
 getrandom = { version = "0.2", features = ["js"] }
