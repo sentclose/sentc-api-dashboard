@@ -141,6 +141,11 @@ export default class extends Vue
 			icon: "mdi-file",
 			title: "File options",
 			to: "/app/" + this.$route.params?.appId + "/file_options"
+		},
+		{
+			icon: "mdi-account-group",
+			title: "Group options",
+			to: "/app/" + this.$route.params?.appId + "/group_options"
 		}
 	];
 }

@@ -46,6 +46,14 @@
 									<AppFileOptions ref="file_options" />
 								</v-expansion-panel-content>
 							</v-expansion-panel>
+							<v-expansion-panel>
+								<v-expansion-panel-header expand-icon="mdi-chevron-down">
+									<span><v-icon>mdi-account-group</v-icon> App group options</span>
+								</v-expansion-panel-header>
+								<v-expansion-panel-content eager>
+									<AppGroupOptions ref="group_options" />
+								</v-expansion-panel-content>
+							</v-expansion-panel>
 						</v-expansion-panels>
 
 						<v-divider class="mt-5" />
@@ -114,15 +122,22 @@ import Vue from "vue";
 import Component from "vue-class-component";
 import AppOptions from "~/components/App/AppOptions.vue";
 import {Action, Mutation, Prop} from "nuxt-property-decorator";
-import {AppData, AppFileOptions as AppFileOptionsType, AppOptions as AppOptionsType, SentcError} from "~/utils/types";
+import {
+	AppData,
+	AppFileOptions as AppFileOptionsType,
+	AppGroupOptions as AppGroupOptionsType,
+	AppOptions as AppOptionsType,
+	SentcError
+} from "~/utils/types";
 import AppFileOptions from "~/components/App/AppFileOptions.vue";
 import {app_create_app, AppRegisterOutput} from "server_dashboard_wasm";
 import ErrorEvent from "~/components/ErrorEvent.vue";
 import {p} from "~/utils/utils";
+import AppGroupOptions from "~/components/App/AppGroupOptions.vue";
 
 @Component({
 	// eslint-disable-next-line @typescript-eslint/naming-convention
-	components: {ErrorEvent, AppFileOptions, AppOptions}
+	components: {AppGroupOptions, ErrorEvent, AppFileOptions, AppOptions}
 })
 export default class AppCreate extends Vue
 {
@@ -167,10 +182,13 @@ export default class AppCreate extends Vue
 			return;
 		}
 
+		//@ts-ignore
+		const group_options: AppGroupOptionsType = this.$refs.group_options.getOptions();
+
 		try {
 			const jwt = await this.getJwt();
 
-			const out: AppRegisterOutput = await app_create_app(process.env.NUXT_ENV_BASE_URL, jwt, this.identifier, options, file_options, this.group_id);
+			const out: AppRegisterOutput = await app_create_app(process.env.NUXT_ENV_BASE_URL, jwt, this.identifier, options, file_options, group_options, this.group_id);
 
 			this.secret_token = out.get_secret_token();
 			this.public_token = out.get_public_token();
