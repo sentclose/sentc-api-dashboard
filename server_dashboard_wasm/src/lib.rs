@@ -10,7 +10,7 @@ extern crate alloc;
 use alloc::string::{String, ToString};
 use alloc::vec::Vec;
 
-use server_api_common::app::{AppFileOptionsInput, AppOptions};
+use server_api_common::app::{AppFileOptionsInput, AppGroupOption, AppOptions};
 use server_api_common::customer::CustomerList;
 use server_api_common::sdk_common::group::GroupUserListItem;
 use wasm_bindgen::prelude::*;
@@ -550,6 +550,7 @@ pub struct AppDetails
 {
 	options: AppOptions,
 	file_options: AppFileOptionsInput,
+	group_options: AppGroupOption,
 	details: AppList,
 }
 
@@ -560,6 +561,7 @@ impl From<server_api_common::app::AppDetails> for AppDetails
 		Self {
 			options: d.options,
 			file_options: d.file_options,
+			group_options: d.group_options,
 			details: d.details.into(),
 		}
 	}
@@ -592,6 +594,11 @@ impl AppDetails
 	{
 		JsValue::from_serde(&self.file_options).unwrap()
 	}
+
+	pub fn get_group_options(&self) -> JsValue
+	{
+		JsValue::from_serde(&self.group_options).unwrap()
+	}
 }
 
 #[wasm_bindgen]
@@ -601,6 +608,7 @@ pub async fn app_create_app(
 	identifier: String,
 	options: JsValue,
 	file_options: JsValue,
+	group_options: JsValue,
 	group_id: Option<String>,
 ) -> Result<AppRegisterOutput, JsValue>
 {
@@ -611,8 +619,18 @@ pub async fn app_create_app(
 
 	let options: AppOptions = options.into_serde().unwrap();
 	let file_options: AppFileOptionsInput = file_options.into_serde().unwrap();
+	let group_options: AppGroupOption = group_options.into_serde().unwrap();
 
-	let out = app::create(base_url, jwt.as_str(), identifier, options, file_options, group_id).await?;
+	let out = app::create(
+		base_url,
+		jwt.as_str(),
+		identifier,
+		options,
+		file_options,
+		group_options,
+		group_id,
+	)
+	.await?;
 
 	Ok(out.into())
 }
@@ -709,6 +727,14 @@ pub async fn app_update_file_options(base_url: String, jwt: String, app_id: Stri
 	let options: AppFileOptionsInput = file_options.into_serde().unwrap();
 
 	Ok(app::update_file_options(base_url, jwt.as_str(), app_id.as_str(), options).await?)
+}
+
+#[wasm_bindgen]
+pub async fn app_update_group_options(base_url: String, jwt: String, app_id: String, group_options: JsValue) -> Result<(), JsValue>
+{
+	let options: AppGroupOption = group_options.into_serde().unwrap();
+
+	Ok(app::update_group_options(base_url, &jwt, &app_id, options).await?)
 }
 
 #[wasm_bindgen]

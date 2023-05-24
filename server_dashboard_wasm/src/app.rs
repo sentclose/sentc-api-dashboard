@@ -3,7 +3,7 @@ use alloc::vec::Vec;
 
 use sentc_crypto::util::public::{handle_general_server_response, handle_server_response};
 use sentc_crypto_full::util::{make_req, HttpMethod};
-use server_api_common::app::{AppFileOptionsInput, AppJwtData, AppOptions, AppRegisterInput, AppUpdateInput};
+use server_api_common::app::{AppFileOptionsInput, AppGroupOption, AppJwtData, AppOptions, AppRegisterInput, AppUpdateInput};
 use server_api_common::customer::CustomerAppList;
 use server_api_common::sdk_common::GroupId;
 
@@ -15,6 +15,7 @@ pub async fn create(
 	identifier: Option<String>,
 	options: AppOptions,
 	file_options: AppFileOptionsInput,
+	group_options: AppGroupOption,
 	group_id: Option<GroupId>,
 ) -> Result<server_api_common::app::AppRegisterOutput, String>
 {
@@ -22,6 +23,7 @@ pub async fn create(
 		identifier,
 		options,
 		file_options,
+		group_options,
 	};
 	let input = utils::to_string(&input)?;
 
@@ -147,6 +149,17 @@ pub async fn update_options(base_url: String, jwt: &str, app_id: &str, options: 
 pub async fn update_file_options(base_url: String, jwt: &str, app_id: &str, options: AppFileOptionsInput) -> Result<(), String>
 {
 	let url = base_url + "/api/v1/customer/app/" + app_id + "/file_options";
+
+	let input = utils::to_string(&options)?;
+
+	let res = make_req(HttpMethod::PUT, url.as_str(), "", Some(input), Some(jwt), None).await?;
+
+	Ok(handle_general_server_response(res.as_str())?)
+}
+
+pub async fn update_group_options(base_url: String, jwt: &str, app_id: &str, options: AppGroupOption) -> Result<(), String>
+{
+	let url = base_url + "/api/v1/customer/app/" + app_id + "/group_options";
 
 	let input = utils::to_string(&options)?;
 
