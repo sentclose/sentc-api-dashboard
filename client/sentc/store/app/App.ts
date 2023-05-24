@@ -1,5 +1,5 @@
 import {Action, Module, Mutation, VuexModule} from "vuex-module-decorators";
-import {AppData, AppDetails, AppFileOptions, AppJwtData, AppOptions, SentcError} from "~/utils/types";
+import {AppData, AppDetails, AppFileOptions, AppGroupOptions, AppJwtData, AppOptions, SentcError} from "~/utils/types";
 import {get_all_apps, get_all_apps_in_group, get_app, get_app_jwt_data} from "server_dashboard_wasm";
 
 /**
@@ -135,6 +135,18 @@ export default class App extends VuexModule
 		}
 
 		app.file_options = data.options;
+	}
+
+	@Mutation
+	public setGroupOptions(data:{id: string, options: AppGroupOptions})
+	{
+		const app = this.app_details.get(data.id);
+
+		if (!app) {
+			return;
+		}
+
+		app.group_options = data.options;
 	}
 
 	@Mutation
@@ -322,7 +334,8 @@ export default class App extends VuexModule
 				identifier: data.get_identifier(),
 				time: data.get_time() as unknown as number,
 				file_options: data.get_file_options(),
-				options: data.get_options()
+				options: data.get_options(),
+				group_options: data.get_group_options()
 			};
 
 			this.context.commit("setAppDetails", details);

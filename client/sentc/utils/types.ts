@@ -44,7 +44,8 @@ export interface AppDetails
 	identifier: string,
 	time: number,
 	options: AppOptions,
-	file_options: AppFileOptions
+	file_options: AppFileOptions,
+	group_options: AppGroupOptions
 }
 
 export interface AppJwtData {
@@ -59,6 +60,11 @@ export interface AppFileOptions {
 	file_storage: number,
 	storage_url?: string,
 	auth_token?: string
+}
+
+export interface AppGroupOptions {
+	max_key_rotation_month: number,
+	min_rank_key_rotation: number
 }
 
 export interface AppOptions
