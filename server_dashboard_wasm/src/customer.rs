@@ -20,11 +20,11 @@ use server_api_common::sdk_common::ServerOutput;
 
 use crate::utils;
 
-pub async fn captcha_req(base_url: String, auth_token: &str) -> Result<CaptchaCreateOutput, String>
+pub async fn captcha_req(base_url: String) -> Result<CaptchaCreateOutput, String>
 {
 	let url = base_url + "/api/v1/customer/captcha";
 
-	let res = non_auth_req(HttpMethod::GET, url.as_str(), auth_token, None).await?;
+	let res = non_auth_req(HttpMethod::GET, url.as_str(), "", None).await?;
 
 	let out: CaptchaCreateOutput = handle_server_response(res.as_str())?;
 
@@ -34,7 +34,6 @@ pub async fn captcha_req(base_url: String, auth_token: &str) -> Result<CaptchaCr
 #[allow(clippy::too_many_arguments)]
 pub async fn register(
 	base_url: String,
-	auth_token: &str,
 	email: String,
 	password: &str,
 	name: String,
@@ -64,14 +63,14 @@ pub async fn register(
 
 	let url = base_url + "/api/v1/customer/register";
 
-	let res = non_auth_req(HttpMethod::POST, url.as_str(), auth_token, Some(input)).await?;
+	let res = non_auth_req(HttpMethod::POST, url.as_str(), "", Some(input)).await?;
 
 	let out: CustomerRegisterOutput = handle_server_response(res.as_str())?;
 
 	Ok(out.customer_id)
 }
 
-pub async fn done_register(base_url: String, auth_token: &str, jwt: &str, token: String) -> Result<(), String>
+pub async fn done_register(base_url: String, jwt: &str, token: String) -> Result<(), String>
 {
 	//call this for update email too
 
@@ -83,65 +82,44 @@ pub async fn done_register(base_url: String, auth_token: &str, jwt: &str, token:
 
 	let url = base_url + "/api/v1/customer/register_validation";
 
-	let res = make_req(
-		HttpMethod::POST,
-		url.as_str(),
-		auth_token,
-		Some(input),
-		Some(jwt),
-		None,
-	)
-	.await?;
+	let res = make_req(HttpMethod::POST, url.as_str(), "", Some(input), Some(jwt), None).await?;
 
 	Ok(handle_general_server_response(res.as_str())?)
 }
 
-pub async fn refresh_jwt(base_url: String, auth_token: &str, old_jwt: &str, refresh_token: &str) -> Result<String, String>
+pub async fn refresh_jwt(base_url: String, old_jwt: &str, refresh_token: &str) -> Result<String, String>
 {
 	let url = base_url + "/api/v1/customer/refresh";
 
 	let input = sentc_crypto::user::prepare_refresh_jwt(refresh_token)?;
 
-	let res = make_req(
-		HttpMethod::PUT,
-		url.as_str(),
-		auth_token,
-		Some(input),
-		Some(old_jwt),
-		None,
-	)
-	.await?;
+	let res = make_req(HttpMethod::PUT, url.as_str(), "", Some(input), Some(old_jwt), None).await?;
 
 	let server_output: DoneLoginLightServerOutput = handle_server_response(res.as_str())?;
 
 	Ok(server_output.jwt)
 }
 
-pub async fn login(
-	base_url: String,
-	auth_token: &str,
-	email: &str,
-	password: &str,
-) -> Result<server_api_common::customer::CustomerDoneLoginOutput, String>
+pub async fn login(base_url: String, email: &str, password: &str) -> Result<server_api_common::customer::CustomerDoneLoginOutput, String>
 {
 	let url = base_url.clone() + "/api/v1/customer/prepare_login";
 
 	let prep_server_input = sentc_crypto::user::prepare_login_start(email)?;
 
-	let res = non_auth_req(HttpMethod::POST, url.as_str(), auth_token, Some(prep_server_input)).await?;
+	let res = non_auth_req(HttpMethod::POST, url.as_str(), "", Some(prep_server_input)).await?;
 
 	let (auth_key, _derived_master_key) = sentc_crypto::user::prepare_login(email, password, res.as_str())?;
 
 	let url = base_url + "/api/v1/customer/done_login";
 
-	let res = non_auth_req(HttpMethod::POST, url.as_str(), auth_token, Some(auth_key)).await?;
+	let res = non_auth_req(HttpMethod::POST, url.as_str(), "", Some(auth_key)).await?;
 
 	let out: server_api_common::customer::CustomerDoneLoginOutput = handle_server_response(res.as_str())?;
 
 	Ok(out)
 }
 
-pub async fn update(base_url: String, auth_token: &str, jwt: &str, new_email: String) -> Result<(), String>
+pub async fn update(base_url: String, jwt: &str, new_email: String) -> Result<(), String>
 {
 	let update_data = CustomerUpdateInput {
 		new_email,
@@ -150,27 +128,12 @@ pub async fn update(base_url: String, auth_token: &str, jwt: &str, new_email: St
 
 	let url = base_url + "/api/v1/customer";
 
-	let res = make_req(
-		HttpMethod::PUT,
-		url.as_str(),
-		auth_token,
-		Some(update_data),
-		Some(jwt),
-		None,
-	)
-	.await?;
+	let res = make_req(HttpMethod::PUT, url.as_str(), "", Some(update_data), Some(jwt), None).await?;
 
 	Ok(handle_general_server_response(res.as_str())?)
 }
 
-pub async fn update_data(
-	base_url: String,
-	auth_token: &str,
-	jwt: &str,
-	name: String,
-	first_name: String,
-	company: Option<String>,
-) -> Result<(), String>
+pub async fn update_data(base_url: String, jwt: &str, name: String, first_name: String, company: Option<String>) -> Result<(), String>
 {
 	let url = base_url + "/api/v1/customer/data";
 
@@ -181,33 +144,25 @@ pub async fn update_data(
 	};
 	let input = utils::to_string(&input)?;
 
-	let res = make_req(
-		HttpMethod::PUT,
-		url.as_str(),
-		auth_token,
-		Some(input),
-		Some(jwt),
-		None,
-	)
-	.await?;
+	let res = make_req(HttpMethod::PUT, url.as_str(), "", Some(input), Some(jwt), None).await?;
 
 	Ok(handle_general_server_response(res.as_str())?)
 }
 
-pub async fn delete_customer(base_url: String, auth_token: &str, email: &str, pw: &str) -> Result<(), String>
+pub async fn delete_customer(base_url: String, email: &str, pw: &str) -> Result<(), String>
 {
 	let prep_server_input = sentc_crypto::user::prepare_login_start(email)?;
 
 	//get a fresh jwt
 	let url = base_url.clone() + "/api/v1/customer/prepare_login";
 
-	let res = non_auth_req(HttpMethod::POST, url.as_str(), auth_token, Some(prep_server_input)).await?;
+	let res = non_auth_req(HttpMethod::POST, url.as_str(), "", Some(prep_server_input)).await?;
 
 	let (auth_key, _derived_master_key) = sentc_crypto::user::prepare_login(email, pw, res.as_str())?;
 
 	let url = base_url.clone() + "/api/v1/customer/done_login";
 
-	let res = non_auth_req(HttpMethod::POST, url.as_str(), auth_token, Some(auth_key)).await?;
+	let res = non_auth_req(HttpMethod::POST, url.as_str(), "", Some(auth_key)).await?;
 
 	let out: server_api_common::customer::CustomerDoneLoginOutput = handle_server_response(res.as_str())?;
 
@@ -218,7 +173,7 @@ pub async fn delete_customer(base_url: String, auth_token: &str, email: &str, pw
 	let res = make_req(
 		HttpMethod::DELETE,
 		url.as_str(),
-		auth_token,
+		"",
 		None,
 		Some(fresh_jwt.as_str()),
 		None,
@@ -228,13 +183,7 @@ pub async fn delete_customer(base_url: String, auth_token: &str, email: &str, pw
 	Ok(handle_general_server_response(res.as_str())?)
 }
 
-pub async fn prepare_reset_password(
-	base_url: String,
-	auth_token: &str,
-	email: String,
-	captcha_solution: String,
-	captcha_id: String,
-) -> Result<(), String>
+pub async fn prepare_reset_password(base_url: String, email: String, captcha_solution: String, captcha_id: String) -> Result<(), String>
 {
 	let input = server_api_common::customer::CustomerResetPasswordInput {
 		email,
@@ -247,12 +196,12 @@ pub async fn prepare_reset_password(
 
 	let url = base_url + "/api/v1/customer/password_reset";
 
-	let res = non_auth_req(HttpMethod::PUT, url.as_str(), auth_token, Some(input)).await?;
+	let res = non_auth_req(HttpMethod::PUT, url.as_str(), "", Some(input)).await?;
 
 	Ok(handle_general_server_response(res.as_str())?)
 }
 
-pub async fn done_reset_password(base_url: String, auth_token: &str, token: String, email: &str, new_pw: &str) -> Result<(), String>
+pub async fn done_reset_password(base_url: String, token: String, email: &str, new_pw: &str) -> Result<(), String>
 {
 	//call this fn from the email token link
 
@@ -279,18 +228,18 @@ pub async fn done_reset_password(base_url: String, auth_token: &str, token: Stri
 
 	let url = base_url + "/api/v1/customer/password_reset_validation";
 
-	let res = non_auth_req(HttpMethod::PUT, url.as_str(), auth_token, Some(input)).await?;
+	let res = non_auth_req(HttpMethod::PUT, url.as_str(), "", Some(input)).await?;
 
 	Ok(handle_general_server_response(res.as_str())?)
 }
 
-pub async fn change_password(base_url: String, auth_token: &str, email: &str, old_pw: &str, new_pw: &str) -> Result<(), String>
+pub async fn change_password(base_url: String, email: &str, old_pw: &str, new_pw: &str) -> Result<(), String>
 {
 	let prep_server_input = sentc_crypto::user::prepare_login_start(email)?;
 
 	let url = base_url.clone() + "/api/v1/customer/prepare_login";
 
-	let res = non_auth_req(HttpMethod::POST, url.as_str(), auth_token, Some(prep_server_input)).await?;
+	let res = non_auth_req(HttpMethod::POST, url.as_str(), "", Some(prep_server_input)).await?;
 
 	let (auth_key, _derived_master_key) = sentc_crypto::user::prepare_login(email, old_pw, res.as_str())?;
 
@@ -299,7 +248,7 @@ pub async fn change_password(base_url: String, auth_token: &str, email: &str, ol
 
 	let url = base_url.clone() + "/api/v1/customer/done_login";
 
-	let res = non_auth_req(HttpMethod::POST, url.as_str(), auth_token, Some(auth_key)).await?;
+	let res = non_auth_req(HttpMethod::POST, url.as_str(), "", Some(auth_key)).await?;
 
 	let out: server_api_common::customer::CustomerDoneLoginOutput = handle_server_response(res.as_str())?;
 
@@ -311,7 +260,7 @@ pub async fn change_password(base_url: String, auth_token: &str, email: &str, ol
 	let res = make_req(
 		HttpMethod::PUT,
 		url.as_str(),
-		auth_token,
+		"",
 		Some(pw_change_data),
 		Some(fresh_jwt.as_str()),
 		None,

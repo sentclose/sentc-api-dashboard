@@ -238,9 +238,9 @@ pub fn decode_jwt(jwt: &str) -> Result<Claims, JsValue>
 }
 
 #[wasm_bindgen]
-pub async fn captcha_req(base_url: String, auth_token: String) -> Result<CaptchaCreateOutput, JsValue>
+pub async fn captcha_req(base_url: String) -> Result<CaptchaCreateOutput, JsValue>
 {
-	let out = customer::captcha_req(base_url, auth_token.as_str()).await?;
+	let out = customer::captcha_req(base_url).await?;
 
 	Ok(out.into())
 }
@@ -249,7 +249,6 @@ pub async fn captcha_req(base_url: String, auth_token: String) -> Result<Captcha
 #[wasm_bindgen]
 pub async fn register(
 	base_url: String,
-	auth_token: String,
 	email: String,
 	password: String,
 	name: String,
@@ -266,7 +265,6 @@ pub async fn register(
 
 	let out = customer::register(
 		base_url,
-		auth_token.as_str(),
 		email,
 		password.as_str(),
 		name,
@@ -281,84 +279,64 @@ pub async fn register(
 }
 
 #[wasm_bindgen]
-pub async fn done_register(base_url: String, auth_token: String, jwt: String, token: String) -> Result<(), JsValue>
+pub async fn done_register(base_url: String, jwt: String, token: String) -> Result<(), JsValue>
 {
-	Ok(customer::done_register(base_url, auth_token.as_str(), jwt.as_str(), token).await?)
+	Ok(customer::done_register(base_url, jwt.as_str(), token).await?)
 }
 
 #[wasm_bindgen]
-pub async fn refresh_jwt(base_url: String, auth_token: String, old_jwt: String, refresh_token: String) -> Result<String, JsValue>
+pub async fn refresh_jwt(base_url: String, old_jwt: String, refresh_token: String) -> Result<String, JsValue>
 {
-	Ok(customer::refresh_jwt(
-		base_url,
-		auth_token.as_str(),
-		old_jwt.as_str(),
-		refresh_token.as_str(),
-	)
-	.await?)
+	Ok(customer::refresh_jwt(base_url, old_jwt.as_str(), refresh_token.as_str()).await?)
 }
 
 #[wasm_bindgen]
-pub async fn login(base_url: String, auth_token: String, email: String, password: String) -> Result<CustomerDoneLoginOutput, JsValue>
+pub async fn login(base_url: String, email: String, password: String) -> Result<CustomerDoneLoginOutput, JsValue>
 {
-	let out = customer::login(base_url, auth_token.as_str(), email.as_str(), password.as_str()).await?;
+	let out = customer::login(base_url, email.as_str(), password.as_str()).await?;
 
 	Ok(out.into())
 }
 
 #[wasm_bindgen]
-pub async fn update(base_url: String, auth_token: String, jwt: String, new_email: String) -> Result<(), JsValue>
+pub async fn update(base_url: String, jwt: String, new_email: String) -> Result<(), JsValue>
 {
-	Ok(customer::update(base_url, auth_token.as_str(), jwt.as_str(), new_email).await?)
+	Ok(customer::update(base_url, jwt.as_str(), new_email).await?)
 }
 
 #[wasm_bindgen]
-pub async fn update_data(base_url: String, auth_token: String, jwt: String, name: String, first_name: String, company: String)
-	-> Result<(), JsValue>
+pub async fn update_data(base_url: String, jwt: String, name: String, first_name: String, company: String) -> Result<(), JsValue>
 {
 	let company = match company.as_str() {
 		"" => None,
 		_ => Some(company),
 	};
 
-	Ok(customer::update_data(base_url, auth_token.as_str(), jwt.as_str(), name, first_name, company).await?)
+	Ok(customer::update_data(base_url, jwt.as_str(), name, first_name, company).await?)
 }
 
 #[wasm_bindgen]
-pub async fn delete_customer(base_url: String, auth_token: String, email: String, pw: String) -> Result<(), JsValue>
+pub async fn delete_customer(base_url: String, email: String, pw: String) -> Result<(), JsValue>
 {
-	Ok(customer::delete_customer(base_url, auth_token.as_str(), email.as_str(), pw.as_str()).await?)
+	Ok(customer::delete_customer(base_url, email.as_str(), pw.as_str()).await?)
 }
 
 #[wasm_bindgen]
-pub async fn prepare_reset_password(
-	base_url: String,
-	auth_token: String,
-	email: String,
-	captcha_solution: String,
-	captcha_id: String,
-) -> Result<(), JsValue>
+pub async fn prepare_reset_password(base_url: String, email: String, captcha_solution: String, captcha_id: String) -> Result<(), JsValue>
 {
-	Ok(customer::prepare_reset_password(base_url, auth_token.as_str(), email, captcha_solution, captcha_id).await?)
+	Ok(customer::prepare_reset_password(base_url, email, captcha_solution, captcha_id).await?)
 }
 
 #[wasm_bindgen]
-pub async fn done_reset_password(base_url: String, auth_token: String, token: String, email: String, new_pw: String) -> Result<(), JsValue>
+pub async fn done_reset_password(base_url: String, token: String, email: String, new_pw: String) -> Result<(), JsValue>
 {
-	Ok(customer::done_reset_password(base_url, auth_token.as_str(), token, email.as_str(), new_pw.as_str()).await?)
+	Ok(customer::done_reset_password(base_url, token, email.as_str(), new_pw.as_str()).await?)
 }
 
 #[wasm_bindgen]
-pub async fn change_password(base_url: String, auth_token: String, email: String, old_pw: String, new_pw: String) -> Result<(), JsValue>
+pub async fn change_password(base_url: String, email: String, old_pw: String, new_pw: String) -> Result<(), JsValue>
 {
-	Ok(customer::change_password(
-		base_url,
-		auth_token.as_str(),
-		email.as_str(),
-		old_pw.as_str(),
-		new_pw.as_str(),
-	)
-	.await?)
+	Ok(customer::change_password(base_url, email.as_str(), old_pw.as_str(), new_pw.as_str()).await?)
 }
 
 //__________________________________________________________________________________________________
