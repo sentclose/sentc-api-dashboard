@@ -225,7 +225,7 @@ export default class extends Vue
 				return;
 			}
 
-			await register(process.env.NUXT_ENV_BASE_URL, process.env.NUXT_ENV_APP_PUBLIC_TOKEN, this.email, this.password, this.customer_name, this.first_name, this.company, captcha[0], captcha[1]);
+			await register(process.env.NUXT_ENV_BASE_URL, this.email, this.password, this.customer_name, this.first_name, this.company, captcha[0], captcha[1]);
 		} catch (e) {
 			try {
 				const err: SentcError = JSON.parse(e);

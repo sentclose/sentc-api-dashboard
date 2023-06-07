@@ -96,7 +96,7 @@ export default class extends Vue
 		}
 
 		try {
-			const data: CustomerDoneLoginOutput = await login(process.env.NUXT_ENV_BASE_URL, process.env.NUXT_ENV_APP_PUBLIC_TOKEN, email, password);
+			const data: CustomerDoneLoginOutput = await login(process.env.NUXT_ENV_BASE_URL, email, password);
 
 			await this.saveData({
 				email_status: data.get_email_status(),

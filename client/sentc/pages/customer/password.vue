@@ -99,7 +99,7 @@ export default class extends Vue
 				return;
 			}
 
-			await prepare_reset_password(process.env.NUXT_ENV_BASE_URL, process.env.NUXT_ENV_APP_PUBLIC_TOKEN, this.email, captcha[0], captcha[1]);
+			await prepare_reset_password(process.env.NUXT_ENV_BASE_URL, this.email, captcha[0], captcha[1]);
 
 			this.dialog = true;
 		} catch (e) {

@@ -282,7 +282,7 @@ export default class extends Vue
 	private pw_change_loading = false;
 	private delete_sheet = false;
 
-	private rules = {
+	rules = {
 		required: (value) => { return !!value || "Required."; },
 		email: (value) => {
 			const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -298,7 +298,7 @@ export default class extends Vue
 
 		try {
 			const jwt = await this.getJwt();
-			await update(process.env.NUXT_ENV_BASE_URL, process.env.NUXT_ENV_APP_PUBLIC_TOKEN, jwt, this.email);
+			await update(process.env.NUXT_ENV_BASE_URL, jwt, this.email);
 
 			await this.setEmail(this.email);
 
@@ -326,7 +326,7 @@ export default class extends Vue
 		try {
 			const jwt = await this.getJwt();
 
-			await update_data(process.env.NUXT_ENV_BASE_URL, process.env.NUXT_ENV_APP_PUBLIC_TOKEN, jwt, this.customer_name, this.first_name, this.company);
+			await update_data(process.env.NUXT_ENV_BASE_URL, jwt, this.customer_name, this.first_name, this.company);
 
 			await this.setCustomerData({name: this.customer_name, first_name: this.first_name, company: this.company});
 		} catch (e) {
@@ -353,7 +353,7 @@ export default class extends Vue
 		this.pw_change_loading = true;
 
 		try {
-			await change_password(process.env.NUXT_ENV_BASE_URL, process.env.NUXT_ENV_APP_PUBLIC_TOKEN, this.getEmail, this.old_pw, this.new_pw);
+			await change_password(process.env.NUXT_ENV_BASE_URL, this.getEmail, this.old_pw, this.new_pw);
 
 			this.pw_change_dialog = true;
 		} catch (e) {
@@ -380,7 +380,7 @@ export default class extends Vue
 		}
 
 		try {
-			await delete_customer(process.env.NUXT_ENV_BASE_URL, process.env.NUXT_ENV_APP_PUBLIC_TOKEN, this.getEmail, this.delete_pw);
+			await delete_customer(process.env.NUXT_ENV_BASE_URL, this.getEmail, this.delete_pw);
 		} catch (e) {
 			try {
 				const err: SentcError = JSON.parse(e);

@@ -1,7 +1,6 @@
 import {Action, Module, Mutation, VuexModule} from "vuex-module-decorators";
 import {CustomerLoginData, USER_KEY_STORAGE_NAMES} from "~/utils/types";
-import {decode_jwt, refresh_jwt} from "server_dashboard_wasm/server_dashboard_wasm_cjs";
-import {Claims} from "server_dashboard_wasm/server_dashboard_wasm";
+import {decode_jwt, refresh_jwt, Claims} from "server_dashboard_wasm";
 import {Storage} from "~/utils/FileStorage";
 
 /**
@@ -187,7 +186,7 @@ export default class Customer extends VuexModule
 		const exp = jwt_data.get_exp();
 
 		if (exp <= Date.now() / 1000 + 30) {
-			const jwt = await refresh_jwt(process.env.NUXT_ENV_BASE_URL, process.env.NUXT_ENV_APP_PUBLIC_TOKEN, this.jwt, this.refresh_token);
+			const jwt = await refresh_jwt(process.env.NUXT_ENV_BASE_URL, this.jwt, this.refresh_token);
 
 			this.context.commit("setJwt", jwt);
 

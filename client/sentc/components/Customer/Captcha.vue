@@ -48,7 +48,7 @@ export default class Captcha extends Vue
 	public async getCaptcha()
 	{
 		try {
-			const out = await captcha_req(process.env.NUXT_ENV_BASE_URL, process.env.NUXT_ENV_APP_PUBLIC_TOKEN);
+			const out = await captcha_req(process.env.NUXT_ENV_BASE_URL);
 
 			this.png = out.get_png();
 			this.captcha_id = out.get_captcha_id();
