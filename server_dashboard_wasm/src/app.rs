@@ -176,3 +176,12 @@ pub async fn delete_app(base_url: String, jwt: &str, app_id: &str) -> Result<(),
 
 	Ok(handle_general_server_response(res.as_str())?)
 }
+
+pub async fn reset_app(base_url: String, jwt: &str, app_id: &str) -> Result<(), String>
+{
+	let url = base_url + "/api/v1/customer/app/" + app_id + "/reset";
+
+	let res = make_req(HttpMethod::DELETE, url.as_str(), "", None, Some(jwt), None).await?;
+
+	Ok(handle_general_server_response(res.as_str())?)
+}

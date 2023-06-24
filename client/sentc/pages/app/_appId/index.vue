@@ -76,6 +76,9 @@
 				<v-expansion-panel>
 					<v-expansion-panel-header>Danger Zone</v-expansion-panel-header>
 					<v-expansion-panel-content eager>
+						<v-btn text color="error" @click="reset_sheet = !reset_sheet">Reset app</v-btn>
+					</v-expansion-panel-content>
+					<v-expansion-panel-content eager>
 						<v-btn text color="error" @click="delete_sheet = !delete_sheet">Delete app</v-btn>
 					</v-expansion-panel-content>
 				</v-expansion-panel>
@@ -98,6 +101,23 @@
 				<v-btn class="mt-6" text color="primary" @click="delete_sheet = false">Cancel</v-btn>
 			</v-sheet>
 		</v-bottom-sheet>
+
+		<v-bottom-sheet v-model="reset_sheet" persistent>
+			<v-sheet
+				class="text-center"
+				height="200px"
+			>
+				<div class="pa-3">
+					<h1 class="display-5">Reset app</h1>
+					<br>
+
+					Do you really want to reset this app?
+				</div>
+
+				<v-btn class="mt-6" text color="error" @click="resetApp">Reset</v-btn>
+				<v-btn class="mt-6" text color="primary" @click="reset_sheet = false">Cancel</v-btn>
+			</v-sheet>
+		</v-bottom-sheet>
 	</div>
 </template>
 
@@ -108,7 +128,7 @@ import {Action, Getter, Mutation} from "nuxt-property-decorator";
 import {AppDetails, SentcError} from "~/utils/types";
 import ErrorEvent from "~/components/ErrorEvent.vue";
 import {getTime} from "~/utils/utils";
-import {app_delete, app_update} from "server_dashboard_wasm";
+import {app_delete, app_reset, app_update} from "server_dashboard_wasm";
 
 @Component({
 	// eslint-disable-next-line @typescript-eslint/naming-convention
@@ -145,6 +165,7 @@ export default class extends Vue
 	private new_identifier = "";
 
 	private delete_sheet = false;
+	private reset_sheet = false;
 
 	@Getter("app/App/appDetails")
 	private getAppDetails: (id: string) => AppDetails;
@@ -205,6 +226,24 @@ export default class extends Vue
 			await app_delete(process.env.NUXT_ENV_BASE_URL, jwt, this.app_id);
 
 			this.removeApp(this.app_id);
+
+			return this.$router.push("/");
+		} catch (e) {
+			try {
+				const err: SentcError = JSON.parse(e);
+				this.setMsg(err.error_message);
+			} catch (e) {
+				this.setMsg("An undefined error");
+			}
+		}
+	}
+
+	private async resetApp()
+	{
+		try {
+			const jwt = await this.getJwt();
+
+			await app_reset(process.env.NUXT_ENV_BASE_URL, jwt, this.app_id);
 
 			return this.$router.push("/");
 		} catch (e) {

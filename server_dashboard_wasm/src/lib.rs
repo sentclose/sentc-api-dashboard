@@ -721,6 +721,12 @@ pub async fn app_delete(base_url: String, jwt: String, app_id: String) -> Result
 	Ok(app::delete_app(base_url, jwt.as_str(), app_id.as_str()).await?)
 }
 
+#[wasm_bindgen]
+pub async fn app_reset(base_url: String, jwt: String, app_id: String) -> Result<(), JsValue>
+{
+	Ok(app::reset_app(base_url, jwt.as_str(), app_id.as_str()).await?)
+}
+
 //__________________________________________________________________________________________________
 
 #[wasm_bindgen]
