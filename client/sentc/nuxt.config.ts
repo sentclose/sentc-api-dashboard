@@ -11,7 +11,7 @@ const config: NuxtConfig = {
 	target: "static",
 
 	generate: {
-		dir: path.resolve(__dirname, "../../dist")
+		dir: path.resolve(__dirname, process.env.NUXT_ENV_DIST)
 	},
 
 	// Global page headers: https://go.nuxtjs.dev/config-head
