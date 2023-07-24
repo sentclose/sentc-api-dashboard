@@ -1,8 +1,8 @@
 use alloc::string::String;
 use alloc::vec::Vec;
 
-use sentc_crypto::util::public::{handle_general_server_response, handle_server_response};
-use sentc_crypto_full::util::{make_req, HttpMethod};
+use sentc_crypto_utils::http::{make_req, HttpMethod};
+use sentc_crypto_utils::{handle_general_server_response, handle_server_response};
 use server_api_common::app::{AppFileOptionsInput, AppGroupOption, AppJwtData, AppOptions, AppRegisterInput, AppUpdateInput};
 use server_api_common::customer::CustomerAppList;
 use server_api_common::sdk_common::GroupId;

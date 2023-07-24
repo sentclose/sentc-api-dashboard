@@ -86,9 +86,9 @@ impl Claims
 	}
 }
 
-impl From<sentc_crypto_full::jwt::Claims> for Claims
+impl From<sentc_crypto_utils::jwt::Claims> for Claims
 {
-	fn from(claims: sentc_crypto_full::jwt::Claims) -> Self
+	fn from(claims: sentc_crypto_utils::jwt::Claims) -> Self
 	{
 		Self {
 			aud: claims.aud,
@@ -232,7 +232,7 @@ impl CustomerDoneLoginOutput
 #[wasm_bindgen]
 pub fn decode_jwt(jwt: &str) -> Result<Claims, JsValue>
 {
-	let claims = sentc_crypto_full::jwt::decode_jwt(jwt)?;
+	let claims = sentc_crypto_utils::jwt::decode_jwt(jwt).map_err(Into::<String>::into)?;
 
 	Ok(claims.into())
 }
@@ -287,7 +287,7 @@ pub async fn done_register(base_url: String, jwt: String, token: String) -> Resu
 #[wasm_bindgen]
 pub async fn refresh_jwt(base_url: String, old_jwt: String, refresh_token: String) -> Result<String, JsValue>
 {
-	Ok(customer::refresh_jwt(base_url, old_jwt.as_str(), refresh_token.as_str()).await?)
+	Ok(customer::refresh_jwt(base_url, old_jwt.as_str(), refresh_token).await?)
 }
 
 #[wasm_bindgen]
