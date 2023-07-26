@@ -49,7 +49,7 @@ import Vue from "vue";
 import Component from "vue-class-component";
 import {p} from "~/utils/utils";
 import {CustomerLoginData, SentcError} from "~/utils/types";
-import {login, CustomerDoneLoginOutput} from "server_dashboard_wasm";
+import {login} from "server_dashboard_wasm";
 import ErrorEvent from "~/components/ErrorEvent.vue";
 import {Action, Mutation} from "nuxt-property-decorator";
 
@@ -96,7 +96,7 @@ export default class extends Vue
 		}
 
 		try {
-			const data: CustomerDoneLoginOutput = await login(process.env.NUXT_ENV_BASE_URL, email, password);
+			const data = await login(process.env.NUXT_ENV_BASE_URL, email, password);
 
 			await this.saveData({
 				email_status: data.get_email_status(),
