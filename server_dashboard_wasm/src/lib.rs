@@ -11,7 +11,6 @@ use alloc::string::{String, ToString};
 use alloc::vec::Vec;
 
 use server_api_common::app::{AppFileOptionsInput, AppGroupOption, AppOptions};
-use server_api_common::customer::CustomerList;
 use server_api_common::sdk_common::group::GroupUserListItem;
 use wasm_bindgen::prelude::*;
 
@@ -131,47 +130,31 @@ impl From<server_api_common::customer::CustomerDataOutput> for CustomerEmailData
 }
 
 #[wasm_bindgen]
-pub struct DoneLoginLightOutput
+pub struct CustomerVerifyLoginOutput
 {
-	user_id: String,
 	jwt: String,
-	device_id: String,
 	refresh_token: String,
-}
-
-impl From<server_api_common::sdk_common::user::DoneLoginLightOutput> for DoneLoginLightOutput
-{
-	fn from(key: server_api_common::sdk_common::user::DoneLoginLightOutput) -> Self
-	{
-		Self {
-			user_id: key.user_id,
-			jwt: key.jwt,
-			device_id: key.device_id,
-			refresh_token: key.refresh_token,
-		}
-	}
-}
-
-#[wasm_bindgen]
-pub struct CustomerDoneLoginOutput
-{
-	user_keys: DoneLoginLightOutput,
+	user_id: String,
+	device_id: String,
 	email_data: CustomerEmailData,
 }
 
-impl From<server_api_common::customer::CustomerDoneLoginOutput> for CustomerDoneLoginOutput
+impl From<customer::CustomerVerifyLoginOutput> for CustomerVerifyLoginOutput
 {
-	fn from(data: server_api_common::customer::CustomerDoneLoginOutput) -> Self
+	fn from(data: customer::CustomerVerifyLoginOutput) -> Self
 	{
 		Self {
-			user_keys: data.user_keys.into(),
+			jwt: data.jwt,
+			refresh_token: data.refresh_token,
+			user_id: data.user_id,
+			device_id: data.device_id,
 			email_data: data.email_data.into(),
 		}
 	}
 }
 
 #[wasm_bindgen]
-impl CustomerDoneLoginOutput
+impl CustomerVerifyLoginOutput
 {
 	pub fn get_email(&self) -> String
 	{
@@ -195,22 +178,22 @@ impl CustomerDoneLoginOutput
 
 	pub fn get_user_id(&self) -> String
 	{
-		self.user_keys.user_id.clone()
+		self.user_id.clone()
 	}
 
 	pub fn get_jwt(&self) -> String
 	{
-		self.user_keys.jwt.clone()
+		self.jwt.clone()
 	}
 
 	pub fn get_device_id(&self) -> String
 	{
-		self.user_keys.device_id.clone()
+		self.device_id.clone()
 	}
 
 	pub fn get_refresh_token(&self) -> String
 	{
-		self.user_keys.refresh_token.clone()
+		self.refresh_token.clone()
 	}
 
 	pub fn get_name(&self) -> String
@@ -291,7 +274,7 @@ pub async fn refresh_jwt(base_url: String, old_jwt: String, refresh_token: Strin
 }
 
 #[wasm_bindgen]
-pub async fn login(base_url: String, email: String, password: String) -> Result<CustomerDoneLoginOutput, JsValue>
+pub async fn login(base_url: String, email: String, password: String) -> Result<CustomerVerifyLoginOutput, JsValue>
 {
 	let out = customer::login(base_url, email.as_str(), password.as_str()).await?;
 
@@ -837,7 +820,7 @@ pub async fn invite_member(base_url: String, jwt: String, group_id: String, user
 pub struct CustomerGroupMemberFetch
 {
 	group_member: Vec<GroupUserListItem>,
-	customer_data: Vec<CustomerList>,
+	customer_data: Vec<server_api_common::customer::CustomerList>,
 }
 
 #[wasm_bindgen]

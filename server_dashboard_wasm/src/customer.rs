@@ -1,13 +1,31 @@
-use alloc::string::String;
+use alloc::string::{String, ToString};
 
 use sentc_crypto_utils::error::SdkUtilError;
 use sentc_crypto_utils::http::{make_req, non_auth_req, HttpMethod};
 use sentc_crypto_utils::{handle_general_server_response, handle_server_response};
-use server_api_common::customer::{CustomerData, CustomerDoneRegistrationInput, CustomerRegisterData, CustomerRegisterOutput, CustomerUpdateInput};
+use serde::{Deserialize, Serialize};
+use server_api_common::customer::{
+	CustomerData,
+	CustomerDataOutput,
+	CustomerDoneRegistrationInput,
+	CustomerRegisterData,
+	CustomerRegisterOutput,
+	CustomerUpdateInput,
+};
 use server_api_common::sdk_common::user::{CaptchaCreateOutput, CaptchaInput, DoneLoginLightServerOutput, UserDeviceRegisterInput};
-use server_api_common::sdk_common::ServerOutput;
+use server_api_common::sdk_common::{DeviceId, UserId};
 
 use crate::utils;
+
+#[derive(Serialize, Deserialize)]
+pub struct CustomerVerifyLoginOutput
+{
+	pub email_data: CustomerDataOutput,
+	pub jwt: String,
+	pub refresh_token: String,
+	pub user_id: UserId,
+	pub device_id: DeviceId,
+}
 
 pub async fn captcha_req(base_url: String) -> Result<CaptchaCreateOutput, String>
 {
@@ -89,7 +107,7 @@ pub async fn refresh_jwt(base_url: String, old_jwt: &str, refresh_token: String)
 	Ok(server_output.jwt)
 }
 
-pub async fn login(base_url: String, email: &str, password: &str) -> Result<server_api_common::customer::CustomerDoneLoginOutput, String>
+pub async fn login(base_url: String, email: &str, password: &str) -> Result<CustomerVerifyLoginOutput, String>
 {
 	let url = base_url.clone() + "/api/v1/customer/prepare_login";
 
@@ -97,15 +115,26 @@ pub async fn login(base_url: String, email: &str, password: &str) -> Result<serv
 
 	let res = non_auth_req(HttpMethod::POST, url.as_str(), "", Some(prep_server_input)).await?;
 
-	let (auth_key, _derived_master_key) = sentc_crypto_light::user::prepare_login(email, password, res.as_str())?;
+	let (input, auth_key, derived_master_key) = sentc_crypto_light::user::prepare_login(email, password, res.as_str())?;
 
-	let url = base_url + "/api/v1/customer/done_login";
+	let url = base_url.clone() + "/api/v1/customer/done_login";
 
-	let res = non_auth_req(HttpMethod::POST, url.as_str(), "", Some(auth_key)).await?;
+	let res = non_auth_req(HttpMethod::POST, url.as_str(), "", Some(input)).await?;
 
-	let out: server_api_common::customer::CustomerDoneLoginOutput = handle_server_response(res.as_str())?;
+	let keys = sentc_crypto_light::user::done_login(&derived_master_key, auth_key, email.to_string(), &res)?;
 
-	Ok(out)
+	let url = base_url + "/api/v1/customer/verify_login";
+	let server_out = non_auth_req(HttpMethod::POST, url.as_str(), "", Some(keys.challenge)).await?;
+
+	let out: server_api_common::customer::CustomerDoneLoginOutput = handle_server_response(&server_out)?;
+
+	Ok(CustomerVerifyLoginOutput {
+		email_data: out.email_data,
+		jwt: out.verify.jwt,
+		refresh_token: out.verify.refresh_token,
+		user_id: keys.user_id,
+		device_id: keys.device_id,
+	})
 }
 
 pub async fn update(base_url: String, jwt: &str, new_email: String) -> Result<(), String>
@@ -147,15 +176,20 @@ pub async fn delete_customer(base_url: String, email: &str, pw: &str) -> Result<
 
 	let res = non_auth_req(HttpMethod::POST, url.as_str(), "", Some(prep_server_input)).await?;
 
-	let (auth_key, _derived_master_key) = sentc_crypto_light::user::prepare_login(email, pw, res.as_str())?;
+	let (input, auth_key, derived_master_key) = sentc_crypto_light::user::prepare_login(email, pw, res.as_str())?;
 
 	let url = base_url.clone() + "/api/v1/customer/done_login";
 
-	let res = non_auth_req(HttpMethod::POST, url.as_str(), "", Some(auth_key)).await?;
+	let res = non_auth_req(HttpMethod::POST, url.as_str(), "", Some(input)).await?;
 
-	let out: server_api_common::customer::CustomerDoneLoginOutput = handle_server_response(res.as_str())?;
+	let keys = sentc_crypto_light::user::done_login(&derived_master_key, auth_key, email.to_string(), &res)?;
 
-	let fresh_jwt = out.user_keys.jwt;
+	let url = base_url.clone() + "/api/v1/customer/verify_login";
+	let server_out = non_auth_req(HttpMethod::POST, url.as_str(), "", Some(keys.challenge)).await?;
+
+	let out: server_api_common::customer::CustomerDoneLoginOutput = handle_server_response(&server_out)?;
+
+	let fresh_jwt = out.verify.jwt;
 
 	let url = base_url + "/api/v1/customer";
 
@@ -218,28 +252,22 @@ pub async fn change_password(base_url: String, email: &str, old_pw: &str, new_pw
 
 	let res = non_auth_req(HttpMethod::POST, url.as_str(), "", Some(prep_server_input)).await?;
 
-	let (auth_key, _derived_master_key) = sentc_crypto_light::user::prepare_login(email, old_pw, res.as_str())?;
+	let (input, auth_key, derived_master_key) = sentc_crypto_light::user::prepare_login(email, old_pw, res.as_str())?;
 
 	let url = base_url.clone() + "/api/v1/customer/done_login";
 
-	let res2 = non_auth_req(HttpMethod::POST, url.as_str(), "", Some(auth_key)).await?;
+	let res2 = non_auth_req(HttpMethod::POST, url.as_str(), "", Some(input)).await?;
 
-	let out: server_api_common::customer::CustomerDoneLoginOutput = handle_server_response(&res2)?;
+	let keys = sentc_crypto_light::user::done_login(&derived_master_key, auth_key, email.to_string(), &res2)?;
 
-	let fresh_jwt = out.user_keys.jwt.clone();
+	let url = base_url.clone() + "/api/v1/customer/verify_login";
+	let server_out = non_auth_req(HttpMethod::POST, url.as_str(), "", Some(keys.challenge)).await?;
 
-	let input = sentc_crypto_light::user::change_password(
-		old_pw,
-		new_pw,
-		&res,
-		&serde_json::to_string(&ServerOutput {
-			status: true,
-			err_msg: None,
-			err_code: None,
-			result: Some(out.user_keys),
-		})
-		.map_err(SdkUtilError::JsonParseFailed)?,
-	)?;
+	let out: server_api_common::customer::CustomerDoneLoginOutput = handle_server_response(&server_out)?;
+
+	let fresh_jwt = out.verify.jwt.clone();
+
+	let input = sentc_crypto_light::user::change_password(old_pw, new_pw, &res, &res2)?;
 
 	//now change the pw
 	let url = base_url + "/api/v1/customer/password";
