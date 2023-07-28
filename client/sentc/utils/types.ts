@@ -122,8 +122,6 @@ export interface AppOptions
 
 	user_key_update: number,
 
-	content_search: number,
-
 	content: number,
 
 	content_small: number,
