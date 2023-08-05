@@ -8,7 +8,7 @@ yarn-debug.log*
 yarn-error.log*
 
 # wasm file
-server_dashboard_wasm_bg.wasm
+server_dashboard_wasm_bg.wasm*
 
 # Runtime data
 pids

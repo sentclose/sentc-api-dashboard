@@ -11,9 +11,15 @@ const wasmOutDir = path.resolve(__dirname, "node_modules/server_dashboard_wasm")
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const copyWebpackPlugin = require("copy-webpack-plugin");
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const compressionPlugin = require("compression-webpack-plugin");
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const zlib = require("zlib");
 
 export default function() {
 	this.extendBuild(({plugins}) => {
+		//copy the wasm file to static folder
+
 		// eslint-disable-next-line new-cap
 		plugins.push(new copyWebpackPlugin({
 			patterns: [
@@ -23,5 +29,31 @@ export default function() {
 				}
 			]
 		}));
+
+		//compress plugin for wasm
+
+		const test = /\.(wasm)$/;
+
+		// eslint-disable-next-line new-cap
+		const gzipCompressionPlugin = new compressionPlugin({
+			test,
+			algorithm: "gzip",
+			compressionOptions: {level: zlib.constants.Z_BEST_COMPRESSION}
+		});
+
+		// eslint-disable-next-line new-cap
+		const brotliCompressionPlugin = new compressionPlugin({
+			test,
+			filename: "[path][base].br",
+			algorithm: "brotliCompress",
+			compressionOptions: {
+				params: {
+					[zlib.constants.BROTLI_PARAM_QUALITY]:
+					zlib.constants.BROTLI_MAX_QUALITY
+				}
+			}
+		});
+
+		plugins.push(gzipCompressionPlugin, brotliCompressionPlugin);
 	});
 }
