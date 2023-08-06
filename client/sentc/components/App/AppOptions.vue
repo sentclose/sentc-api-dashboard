@@ -154,6 +154,76 @@
 							</tr>
 
 							<!----------------------------------------------------------------------------------------->
+							<!--User mfa endpoints-->
+
+							<tr>
+								<td class="endpoint">
+									User create two factor auth totp
+								</td>
+								<td class="options">
+									<v-radio-group v-model="options.user_register_otp" row>
+										<v-radio label="Public" :value="1" />
+										<v-radio label="Secret" :value="2" />
+										<v-radio label="Block" :value="0" />
+									</v-radio-group>
+								</td>
+								<td class="des">
+									User can enable 2fa with totp. Now users can use an auth app to login with the password.
+									It is recommended to use <b>Public</b>
+								</td>
+							</tr>
+
+							<tr>
+								<td class="endpoint">
+									User reset two factor auth totp
+								</td>
+								<td class="options">
+									<v-radio-group v-model="options.user_reset_otp" row>
+										<v-radio label="Public" :value="1" />
+										<v-radio label="Secret" :value="2" />
+										<v-radio label="Block" :value="0" />
+									</v-radio-group>
+								</td>
+								<td class="des">
+									User can reset the totp, maybe if all recover keys are used or the device it broken.
+									It is recommended to use <b>Public</b>
+								</td>
+							</tr>
+
+							<tr>
+								<td class="endpoint">
+									User disable Totp
+								</td>
+								<td class="options">
+									<v-radio-group v-model="options.user_disable_otp" row>
+										<v-radio label="Public" :value="1" />
+										<v-radio label="Secret" :value="2" />
+										<v-radio label="Block" :value="0" />
+									</v-radio-group>
+								</td>
+								<td class="des">
+									User can disable the multi factor auth.
+									It is recommended to use <b>Public</b>
+								</td>
+							</tr>
+
+							<tr>
+								<td class="endpoint">
+									User get all totp keys
+								</td>
+								<td class="options">
+									<v-radio-group v-model="options.user_get_otp_recovery_keys" row>
+										<v-radio label="Public" :value="1" />
+										<v-radio label="Secret" :value="2" />
+										<v-radio label="Block" :value="0" />
+									</v-radio-group>
+								</td>
+								<td class="des">
+									Return a list of all available recover keys for the totp. It is recommended to use <b>Public</b>
+								</td>
+							</tr>
+
+							<!----------------------------------------------------------------------------------------->
 							<!--User device endpoints-->
 
 							<!--User identifier update-->

@@ -128,6 +128,11 @@ export interface AppOptions
 	content_med: number,
 	content_large: number,
 	content_x_large: number,
+
+	user_register_otp: number,
+	user_reset_otp: number,
+	user_disable_otp: number,
+	user_get_otp_recovery_keys: number,
 }
 
 //______________________________________________________________________________________________________________________
