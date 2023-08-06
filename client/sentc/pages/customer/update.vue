@@ -264,6 +264,9 @@ export default class extends Vue
 	@Action("customer/Customer/setCustomerData")
 	private setCustomerData: (data: {name: string, first_name: string, company?: string})=> Promise<void>;
 
+	@Action("customer/Customer/getFreshJwt")
+	private getFreshJwt: (password: string, mfa_token?: string, mfa_recovery?: boolean) => Promise<string>;
+
 	private email = "";
 
 	private customer_name = "";
@@ -353,6 +356,7 @@ export default class extends Vue
 		this.pw_change_loading = true;
 
 		try {
+			//FixMe mfa
 			await change_password(process.env.NUXT_ENV_BASE_URL, this.getEmail, this.old_pw, this.new_pw);
 
 			this.pw_change_dialog = true;
@@ -380,7 +384,10 @@ export default class extends Vue
 		}
 
 		try {
-			await delete_customer(process.env.NUXT_ENV_BASE_URL, this.getEmail, this.delete_pw);
+			//FixMe mfa
+			const fresh_jwt = await this.getFreshJwt(this.delete_pw);
+
+			await delete_customer(process.env.NUXT_ENV_BASE_URL, fresh_jwt);
 		} catch (e) {
 			try {
 				const err: SentcError = JSON.parse(e);

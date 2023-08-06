@@ -53,7 +53,7 @@ import ErrorEvent from "~/components/ErrorEvent.vue";
 import {p} from "~/utils/utils";
 import {Action, Mutation} from "nuxt-property-decorator";
 import {CustomerLoginData, SentcError} from "~/utils/types";
-import {prepare_reset_password} from "../../../../server_dashboard_wasm/pkg";
+import {prepare_reset_password} from "server_dashboard_wasm";
 import Captcha from "~/components/Customer/Captcha.vue";
 
 @Component({

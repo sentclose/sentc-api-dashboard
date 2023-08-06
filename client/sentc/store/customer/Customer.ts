@@ -1,6 +1,6 @@
 import {Action, Module, Mutation, VuexModule} from "vuex-module-decorators";
 import {CustomerLoginData, USER_KEY_STORAGE_NAMES} from "~/utils/types";
-import {decode_jwt, refresh_jwt, Claims} from "server_dashboard_wasm";
+import {decode_jwt, refresh_jwt, Claims, get_fresh_jwt} from "server_dashboard_wasm";
 import {Storage} from "~/utils/FileStorage";
 
 /**
@@ -36,6 +36,8 @@ export default class Customer extends VuexModule
 	private first_name = "";
 
 	private company?: string = "";
+
+	private mfa = false;
 
 	//use a var because if anyone tries to access the public or private keys without init the store -> error
 	//0 = can't log in not login data
@@ -200,5 +202,12 @@ export default class Customer extends VuexModule
 		}
 
 		return this.jwt;
+	}
+
+	@Action({rawError: true})
+	public getFreshJwt(password: string, mfa_token?: string, mfa_recovery?: boolean)
+	{
+		//FixMe mfa
+		return get_fresh_jwt(process.env.NUXT_ENV_BASE_URL, this.email, password, mfa_token, mfa_recovery);
 	}
 }

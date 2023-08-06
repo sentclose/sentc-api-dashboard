@@ -98,6 +98,14 @@ export default class extends Vue
 		try {
 			const data = await login(process.env.NUXT_ENV_BASE_URL, email, password);
 
+			//FixMe mfa
+			const mfa_master_key = data.get_mfa_master_key();
+			const mfa_auth_key = data.get_mfa_auth_key();
+
+			if (mfa_master_key !== undefined && mfa_auth_key !== undefined) {
+				return this.setMsg("Mfa enabled, mut be handled");
+			}
+
 			await this.saveData({
 				email_status: data.get_email_status(),
 				validate_email: data.get_validate_email(),
