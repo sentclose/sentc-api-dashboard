@@ -102,6 +102,128 @@ impl From<sentc_crypto_utils::jwt::Claims> for Claims
 //__________________________________________________________________________________________________
 
 #[wasm_bindgen]
+pub struct PrepareLoginOtpOutput
+{
+	master_key: String,
+	auth_key: String,
+}
+
+impl From<customer::PrepareLoginOtpOutput> for PrepareLoginOtpOutput
+{
+	fn from(value: customer::PrepareLoginOtpOutput) -> Self
+	{
+		Self {
+			master_key: value.master_key,
+			auth_key: value.auth_key,
+		}
+	}
+}
+
+#[wasm_bindgen]
+pub struct UserLoginOut
+{
+	user_data: Option<CustomerVerifyLoginOutput>,
+
+	mfa: Option<PrepareLoginOtpOutput>,
+}
+
+impl From<customer::PreLoginOut> for UserLoginOut
+{
+	fn from(value: customer::PreLoginOut) -> Self
+	{
+		match value {
+			customer::PreLoginOut::Direct(d) => {
+				Self {
+					mfa: None,
+					user_data: Some(d.into()),
+				}
+			},
+			customer::PreLoginOut::Otp(d) => {
+				Self {
+					user_data: None,
+					mfa: Some(d.into()),
+				}
+			},
+		}
+	}
+}
+
+#[wasm_bindgen]
+impl UserLoginOut
+{
+	pub fn get_email(&self) -> Option<String>
+	{
+		self.user_data.as_ref().map(|o| o.email_data.email.clone())
+	}
+
+	pub fn get_validate_email(&self) -> Option<bool>
+	{
+		self.user_data.as_ref().map(|o| o.email_data.validate_email)
+	}
+
+	pub fn get_email_send(&self) -> Option<String>
+	{
+		self.user_data
+			.as_ref()
+			.map(|o| o.email_data.email_send.to_string())
+	}
+
+	pub fn get_email_status(&self) -> Option<i32>
+	{
+		self.user_data.as_ref().map(|o| o.email_data.email_status)
+	}
+
+	pub fn get_user_id(&self) -> Option<String>
+	{
+		self.user_data.as_ref().map(|o| o.user_id.clone())
+	}
+
+	pub fn get_jwt(&self) -> Option<String>
+	{
+		self.user_data.as_ref().map(|o| o.jwt.clone())
+	}
+
+	pub fn get_device_id(&self) -> Option<String>
+	{
+		self.user_data.as_ref().map(|o| o.device_id.clone())
+	}
+
+	pub fn get_refresh_token(&self) -> Option<String>
+	{
+		self.user_data.as_ref().map(|o| o.refresh_token.clone())
+	}
+
+	pub fn get_name(&self) -> Option<String>
+	{
+		self.user_data.as_ref().map(|o| o.email_data.name.clone())
+	}
+
+	pub fn get_first_name(&self) -> Option<String>
+	{
+		self.user_data
+			.as_ref()
+			.map(|o| o.email_data.first_name.clone())
+	}
+
+	pub fn get_company(&self) -> Option<String>
+	{
+		self.user_data
+			.as_ref()
+			.and_then(|o| o.email_data.company.clone())
+	}
+
+	pub fn get_mfa_master_key(&self) -> Option<String>
+	{
+		self.mfa.as_ref().map(|o| o.master_key.clone())
+	}
+
+	pub fn get_mfa_auth_key(&self) -> Option<String>
+	{
+		self.mfa.as_ref().map(|o| o.auth_key.clone())
+	}
+}
+
+#[wasm_bindgen]
 pub struct CustomerEmailData
 {
 	validate_email: bool,
@@ -274,11 +396,46 @@ pub async fn refresh_jwt(base_url: String, old_jwt: String, refresh_token: Strin
 }
 
 #[wasm_bindgen]
-pub async fn login(base_url: String, email: String, password: String) -> Result<CustomerVerifyLoginOutput, JsValue>
+pub async fn get_fresh_jwt(
+	base_url: String,
+	user_identifier: String,
+	password: String,
+	mfa_token: Option<String>,
+	mfa_recovery: Option<bool>,
+) -> Result<String, JsValue>
+{
+	Ok(customer::get_fresh_jwt(base_url, &user_identifier, &password, mfa_token, mfa_recovery).await?)
+}
+
+#[wasm_bindgen]
+pub async fn login(base_url: String, email: String, password: String) -> Result<UserLoginOut, JsValue>
 {
 	let out = customer::login(base_url, email.as_str(), password.as_str()).await?;
 
 	Ok(out.into())
+}
+
+#[wasm_bindgen]
+pub async fn mfa_login(
+	base_url: String,
+	master_key_encryption: String,
+	auth_key: String,
+	user_identifier: String,
+	token: String,
+	recovery: bool,
+) -> Result<CustomerVerifyLoginOutput, JsValue>
+{
+	let data = customer::mfa_login(
+		base_url,
+		&master_key_encryption,
+		auth_key,
+		user_identifier,
+		token,
+		recovery,
+	)
+	.await?;
+
+	Ok(data.into())
 }
 
 #[wasm_bindgen]
@@ -299,9 +456,9 @@ pub async fn update_data(base_url: String, jwt: String, name: String, first_name
 }
 
 #[wasm_bindgen]
-pub async fn delete_customer(base_url: String, email: String, pw: String) -> Result<(), JsValue>
+pub async fn delete_customer(base_url: String, fresh_jwt: String) -> Result<(), JsValue>
 {
-	Ok(customer::delete_customer(base_url, email.as_str(), pw.as_str()).await?)
+	Ok(customer::delete_customer(base_url, &fresh_jwt).await?)
 }
 
 #[wasm_bindgen]
@@ -317,9 +474,24 @@ pub async fn done_reset_password(base_url: String, token: String, email: String,
 }
 
 #[wasm_bindgen]
-pub async fn change_password(base_url: String, email: String, old_pw: String, new_pw: String) -> Result<(), JsValue>
+pub async fn change_password(
+	base_url: String,
+	email: String,
+	old_pw: String,
+	new_pw: String,
+	mfa_token: Option<String>,
+	mfa_recovery: Option<bool>,
+) -> Result<(), JsValue>
 {
-	Ok(customer::change_password(base_url, email.as_str(), old_pw.as_str(), new_pw.as_str()).await?)
+	Ok(customer::change_password(
+		base_url,
+		email.as_str(),
+		old_pw.as_str(),
+		new_pw.as_str(),
+		mfa_token,
+		mfa_recovery,
+	)
+	.await?)
 }
 
 //__________________________________________________________________________________________________
