@@ -494,6 +494,63 @@ pub async fn change_password(
 	.await?)
 }
 
+#[wasm_bindgen]
+pub struct OtpRegisterUrl
+{
+	url: String,
+	recover: Vec<String>,
+}
+
+#[wasm_bindgen]
+impl OtpRegisterUrl
+{
+	pub fn get_url(&self) -> String
+	{
+		self.url.clone()
+	}
+
+	pub fn get_recover(&self) -> JsValue
+	{
+		JsValue::from_serde(&self.recover).unwrap()
+	}
+}
+
+#[wasm_bindgen]
+pub async fn register_otp(base_url: String, issuer: String, audience: String, fresh_jwt: String) -> Result<OtpRegisterUrl, JsValue>
+{
+	let (url, recover) = customer::register_otp(base_url, &issuer, &audience, &fresh_jwt).await?;
+
+	Ok(OtpRegisterUrl {
+		url,
+		recover,
+	})
+}
+
+#[wasm_bindgen]
+pub async fn reset_otp(base_url: String, issuer: String, audience: String, fresh_jwt: String) -> Result<OtpRegisterUrl, JsValue>
+{
+	let (url, recover) = customer::reset_otp(base_url, &issuer, &audience, &fresh_jwt).await?;
+
+	Ok(OtpRegisterUrl {
+		url,
+		recover,
+	})
+}
+
+#[wasm_bindgen]
+pub async fn get_otp_recover_keys(base_url: String, jwt: String) -> Result<JsValue, JsValue>
+{
+	let out = customer::get_otp_recover_keys(base_url, &jwt).await?;
+
+	Ok(JsValue::from_serde(&out.keys).unwrap())
+}
+
+#[wasm_bindgen]
+pub async fn disable_otp(base_url: String, fresh_jwt: String) -> Result<(), JsValue>
+{
+	Ok(customer::disable_otp(base_url, &fresh_jwt).await?)
+}
+
 //__________________________________________________________________________________________________
 
 #[wasm_bindgen]

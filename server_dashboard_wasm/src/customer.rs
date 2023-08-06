@@ -1,7 +1,8 @@
 use alloc::string::{String, ToString};
+use alloc::vec::Vec;
 
 use sentc_crypto_utils::error::SdkUtilError;
-use sentc_crypto_utils::http::{make_req, non_auth_req, HttpMethod};
+use sentc_crypto_utils::http::{auth_req, make_req, non_auth_req, HttpMethod};
 use sentc_crypto_utils::user::UserPreVerifyLogin;
 use sentc_crypto_utils::{handle_general_server_response, handle_server_response};
 use serde::{Deserialize, Serialize};
@@ -13,7 +14,14 @@ use server_api_common::customer::{
 	CustomerRegisterOutput,
 	CustomerUpdateInput,
 };
-use server_api_common::sdk_common::user::{CaptchaCreateOutput, CaptchaInput, DoneLoginLightServerOutput, UserDeviceRegisterInput};
+use server_api_common::sdk_common::user::{
+	CaptchaCreateOutput,
+	CaptchaInput,
+	DoneLoginLightServerOutput,
+	OtpRecoveryKeysOutput,
+	OtpRegister,
+	UserDeviceRegisterInput,
+};
 use server_api_common::sdk_common::{DeviceId, UserId};
 
 use crate::utils;
@@ -406,6 +414,63 @@ pub async fn change_password(
 
 	//keys.jwt is the fresh jwt
 	let res = make_req(HttpMethod::PUT, &url, "", Some(input), Some(&keys.jwt), None).await?;
+
+	Ok(handle_general_server_response(&res)?)
+}
+
+//__________________________________________________________________________________________________
+//Otp
+fn create_otp_url(issuer: &str, audience: &str, secret: &str) -> String
+{
+	"otpauth://totp/".to_string() + issuer + ":" + audience + "?secret=" + secret + "&algorithm=SHA256&issuer=" + issuer
+}
+
+async fn register_raw_otp(base_url: String, jwt: &str) -> Result<OtpRegister, String>
+{
+	let url = base_url + "/api/v1/customer/register_otp";
+
+	let res = auth_req(HttpMethod::PATCH, &url, "", None, jwt).await?;
+
+	Ok(handle_server_response(&res)?)
+}
+
+pub async fn register_otp(base_url: String, issuer: &str, audience: &str, fresh_jwt: &str) -> Result<(String, Vec<String>), String>
+{
+	let out = register_raw_otp(base_url, fresh_jwt).await?;
+
+	Ok((create_otp_url(issuer, audience, &out.secret), out.recover))
+}
+
+pub async fn get_otp_recover_keys(base_url: String, jwt: &str) -> Result<OtpRecoveryKeysOutput, String>
+{
+	let url = base_url + "/api/v1/customer/otp_recovery_keys";
+
+	let res = auth_req(HttpMethod::GET, &url, "", None, jwt).await?;
+
+	Ok(handle_server_response(&res)?)
+}
+
+async fn reset_raw_otp(base_url: String, jwt: &str) -> Result<OtpRegister, String>
+{
+	let url = base_url + "/api/v1/customer/reset_otp";
+
+	let res = auth_req(HttpMethod::PATCH, &url, "", None, jwt).await?;
+
+	Ok(handle_server_response(&res)?)
+}
+
+pub async fn reset_otp(base_url: String, issuer: &str, audience: &str, fresh_jwt: &str) -> Result<(String, Vec<String>), String>
+{
+	let out = reset_raw_otp(base_url, fresh_jwt).await?;
+
+	Ok((create_otp_url(issuer, audience, &out.secret), out.recover))
+}
+
+pub async fn disable_otp(base_url: String, fresh_jwt: &str) -> Result<(), String>
+{
+	let url = base_url + "/api/v1/customer/disable_otp";
+
+	let res = auth_req(HttpMethod::PATCH, &url, "", None, fresh_jwt).await?;
 
 	Ok(handle_general_server_response(&res)?)
 }
