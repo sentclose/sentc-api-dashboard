@@ -10,8 +10,8 @@ extern crate alloc;
 use alloc::string::{String, ToString};
 use alloc::vec::Vec;
 
-use server_api_common::app::{AppFileOptionsInput, AppGroupOption, AppOptions};
-use server_api_common::sdk_common::group::GroupUserListItem;
+use server_dashboard_common::app::{AppFileOptionsInput, AppGroupOption, AppOptions};
+use server_dashboard_common::sdk_common::group::GroupUserListItem;
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
@@ -21,9 +21,9 @@ pub struct CaptchaCreateOutput
 	png: String,
 }
 
-impl From<server_api_common::sdk_common::user::CaptchaCreateOutput> for CaptchaCreateOutput
+impl From<server_dashboard_common::sdk_common::user::CaptchaCreateOutput> for CaptchaCreateOutput
 {
-	fn from(o: server_api_common::sdk_common::user::CaptchaCreateOutput) -> Self
+	fn from(o: server_dashboard_common::sdk_common::user::CaptchaCreateOutput) -> Self
 	{
 		Self {
 			captcha_id: o.captcha_id,
@@ -235,9 +235,9 @@ pub struct CustomerEmailData
 	company: Option<String>,
 }
 
-impl From<server_api_common::customer::CustomerDataOutput> for CustomerEmailData
+impl From<server_dashboard_common::customer::CustomerDataOutput> for CustomerEmailData
 {
-	fn from(data: server_api_common::customer::CustomerDataOutput) -> Self
+	fn from(data: server_dashboard_common::customer::CustomerDataOutput) -> Self
 	{
 		Self {
 			validate_email: data.validate_email,
@@ -579,9 +579,9 @@ pub struct AppJwtRegisterOutput
 	jwt_alg: String,
 }
 
-impl From<server_api_common::app::AppJwtRegisterOutput> for AppJwtRegisterOutput
+impl From<server_dashboard_common::app::AppJwtRegisterOutput> for AppJwtRegisterOutput
 {
-	fn from(out: server_api_common::app::AppJwtRegisterOutput) -> Self
+	fn from(out: server_dashboard_common::app::AppJwtRegisterOutput) -> Self
 	{
 		Self {
 			app_id: out.app_id,
@@ -670,9 +670,9 @@ impl AppRegisterOutput
 	}
 }
 
-impl From<server_api_common::app::AppRegisterOutput> for AppRegisterOutput
+impl From<server_dashboard_common::app::AppRegisterOutput> for AppRegisterOutput
 {
-	fn from(out: server_api_common::app::AppRegisterOutput) -> Self
+	fn from(out: server_dashboard_common::app::AppRegisterOutput) -> Self
 	{
 		Self {
 			app_id: out.app_id,
@@ -690,9 +690,9 @@ pub struct AppTokenRenewOutput
 	public_token: String,
 }
 
-impl From<server_api_common::app::AppTokenRenewOutput> for AppTokenRenewOutput
+impl From<server_dashboard_common::app::AppTokenRenewOutput> for AppTokenRenewOutput
 {
-	fn from(out: server_api_common::app::AppTokenRenewOutput) -> Self
+	fn from(out: server_dashboard_common::app::AppTokenRenewOutput) -> Self
 	{
 		Self {
 			secret_token: out.secret_token,
@@ -723,9 +723,9 @@ pub struct AppList
 	time: u128,
 }
 
-impl From<server_api_common::customer::CustomerAppList> for AppList
+impl From<server_dashboard_common::customer::CustomerAppList> for AppList
 {
-	fn from(d: server_api_common::customer::CustomerAppList) -> Self
+	fn from(d: server_dashboard_common::customer::CustomerAppList) -> Self
 	{
 		Self {
 			id: d.id,
@@ -744,9 +744,9 @@ pub struct AppDetails
 	details: AppList,
 }
 
-impl From<server_api_common::app::AppDetails> for AppDetails
+impl From<server_dashboard_common::app::AppDetails> for AppDetails
 {
-	fn from(d: server_api_common::app::AppDetails) -> Self
+	fn from(d: server_dashboard_common::app::AppDetails) -> Self
 	{
 		Self {
 			options: d.options,
@@ -951,9 +951,9 @@ pub struct CustomerGroupList
 	des: Option<String>,
 }
 
-impl From<server_api_common::customer::CustomerGroupList> for CustomerGroupList
+impl From<server_dashboard_common::customer::CustomerGroupList> for CustomerGroupList
 {
-	fn from(value: server_api_common::customer::CustomerGroupList) -> Self
+	fn from(value: server_dashboard_common::customer::CustomerGroupList) -> Self
 	{
 		Self {
 			id: value.id,
@@ -969,12 +969,12 @@ impl From<server_api_common::customer::CustomerGroupList> for CustomerGroupList
 pub struct CustomerGroupView
 {
 	data: CustomerGroupList,
-	apps: Vec<server_api_common::customer::CustomerAppList>,
+	apps: Vec<server_dashboard_common::customer::CustomerAppList>,
 }
 
-impl From<server_api_common::customer::CustomerGroupView> for CustomerGroupView
+impl From<server_dashboard_common::customer::CustomerGroupView> for CustomerGroupView
 {
-	fn from(value: server_api_common::customer::CustomerGroupView) -> Self
+	fn from(value: server_dashboard_common::customer::CustomerGroupView) -> Self
 	{
 		Self {
 			data: value.data.into(),
@@ -1049,7 +1049,7 @@ pub async fn invite_member(base_url: String, jwt: String, group_id: String, user
 pub struct CustomerGroupMemberFetch
 {
 	group_member: Vec<GroupUserListItem>,
-	customer_data: Vec<server_api_common::customer::CustomerList>,
+	customer_data: Vec<server_dashboard_common::customer::CustomerList>,
 }
 
 #[wasm_bindgen]
@@ -1066,9 +1066,9 @@ impl CustomerGroupMemberFetch
 	}
 }
 
-impl From<server_api_common::customer::CustomerGroupMemberFetch> for CustomerGroupMemberFetch
+impl From<server_dashboard_common::customer::CustomerGroupMemberFetch> for CustomerGroupMemberFetch
 {
-	fn from(value: server_api_common::customer::CustomerGroupMemberFetch) -> Self
+	fn from(value: server_dashboard_common::customer::CustomerGroupMemberFetch) -> Self
 	{
 		Self {
 			group_member: value.group_member,

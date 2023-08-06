@@ -6,7 +6,7 @@ use sentc_crypto_utils::http::{auth_req, make_req, non_auth_req, HttpMethod};
 use sentc_crypto_utils::user::UserPreVerifyLogin;
 use sentc_crypto_utils::{handle_general_server_response, handle_server_response};
 use serde::{Deserialize, Serialize};
-use server_api_common::customer::{
+use server_dashboard_common::customer::{
 	CustomerData,
 	CustomerDataOutput,
 	CustomerDoneRegistrationInput,
@@ -14,7 +14,7 @@ use server_api_common::customer::{
 	CustomerRegisterOutput,
 	CustomerUpdateInput,
 };
-use server_api_common::sdk_common::user::{
+use server_dashboard_common::sdk_common::user::{
 	CaptchaCreateOutput,
 	CaptchaInput,
 	DoneLoginLightServerOutput,
@@ -22,7 +22,7 @@ use server_api_common::sdk_common::user::{
 	OtpRegister,
 	UserDeviceRegisterInput,
 };
-use server_api_common::sdk_common::{DeviceId, UserId};
+use server_dashboard_common::sdk_common::{DeviceId, UserId};
 
 use crate::utils;
 
@@ -180,7 +180,7 @@ async fn verify_login(base_url: String, pre_verify: UserPreVerifyLogin) -> Resul
 	let url = base_url + "/api/v1/customer/verify_login";
 	let server_out = non_auth_req(HttpMethod::POST, url.as_str(), "", Some(pre_verify.challenge)).await?;
 
-	let out: server_api_common::customer::CustomerDoneLoginOutput = handle_server_response(&server_out)?;
+	let out: server_dashboard_common::customer::CustomerDoneLoginOutput = handle_server_response(&server_out)?;
 
 	Ok(CustomerVerifyLoginOutput {
 		email_data: out.email_data,
@@ -358,7 +358,7 @@ pub async fn delete_customer(base_url: String, fresh_jwt: &str) -> Result<(), St
 
 pub async fn prepare_reset_password(base_url: String, email: String, captcha_solution: String, captcha_id: String) -> Result<(), String>
 {
-	let input = server_api_common::customer::CustomerResetPasswordInput {
+	let input = server_dashboard_common::customer::CustomerResetPasswordInput {
 		email,
 		captcha_input: CaptchaInput {
 			captcha_solution,
@@ -381,7 +381,7 @@ pub async fn done_reset_password(base_url: String, token: String, email: &str, n
 	let reset_password_data = sentc_crypto_light::user::register(email, new_pw)?;
 	let reset_password_data: UserDeviceRegisterInput = serde_json::from_str(&reset_password_data).map_err(SdkUtilError::JsonParseFailed)?;
 
-	let input = server_api_common::customer::CustomerDonePasswordResetInput {
+	let input = server_dashboard_common::customer::CustomerDonePasswordResetInput {
 		token, //token from the email
 		reset_password_data,
 	};

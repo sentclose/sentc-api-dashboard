@@ -453,7 +453,7 @@ checksum = "4501abdff3ae82a1c1b477a17252eb69cee9e66eb915c1abaa4f44d873df9f09"
 [[package]]
 name = "sentc-crypto-common"
 version = "0.9.4"
-source = "git+ssh://git@github.com/sentclose/sentc-api.git?rev=0b997cc2b1ddd018204a6e15a365a374eaafd4eb#0b997cc2b1ddd018204a6e15a365a374eaafd4eb"
+source = "git+https://github.com/sentclose/sentc-common.git?rev=46f582557017a2510d454d3781a2087659a6a776#46f582557017a2510d454d3781a2087659a6a776"
 dependencies = [
  "serde",
  "serde_json",
@@ -462,7 +462,7 @@ dependencies = [
 [[package]]
 name = "sentc-crypto-common"
 version = "0.9.4"
-source = "git+https://github.com/sentclose/sentc-common.git?rev=46f582557017a2510d454d3781a2087659a6a776#46f582557017a2510d454d3781a2087659a6a776"
+source = "git+ssh://git@github.com/sentclose/sentc-api.git?rev=8c300a84c67fb5bcc998ab350799c23705b76279#8c300a84c67fb5bcc998ab350799c23705b76279"
 dependencies = [
  "serde",
  "serde_json",
@@ -548,11 +548,11 @@ dependencies = [
 ]
 
 [[package]]
-name = "server_api_common"
+name = "server_dashboard_common"
 version = "0.1.0"
-source = "git+ssh://git@github.com/sentclose/sentc-api.git?rev=0b997cc2b1ddd018204a6e15a365a374eaafd4eb#0b997cc2b1ddd018204a6e15a365a374eaafd4eb"
+source = "git+ssh://git@github.com/sentclose/sentc-api.git?rev=8c300a84c67fb5bcc998ab350799c23705b76279#8c300a84c67fb5bcc998ab350799c23705b76279"
 dependencies = [
- "sentc-crypto-common 0.9.4 (git+ssh://git@github.com/sentclose/sentc-api.git?rev=0b997cc2b1ddd018204a6e15a365a374eaafd4eb)",
+ "sentc-crypto-common 0.9.4 (git+ssh://git@github.com/sentclose/sentc-api.git?rev=8c300a84c67fb5bcc998ab350799c23705b76279)",
  "serde",
  "serde_json",
 ]
@@ -566,7 +566,7 @@ dependencies = [
  "sentc-crypto-utils",
  "serde",
  "serde_json",
- "server_api_common",
+ "server_dashboard_common",
  "sha2 0.10.5",
  "wasm-bindgen",
  "wasm-bindgen-futures",

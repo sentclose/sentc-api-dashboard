@@ -3,9 +3,9 @@ use alloc::vec::Vec;
 
 use sentc_crypto_utils::http::{make_req, HttpMethod};
 use sentc_crypto_utils::{handle_general_server_response, handle_server_response};
-use server_api_common::app::{AppFileOptionsInput, AppGroupOption, AppJwtData, AppOptions, AppRegisterInput, AppUpdateInput};
-use server_api_common::customer::CustomerAppList;
-use server_api_common::sdk_common::GroupId;
+use server_dashboard_common::app::{AppFileOptionsInput, AppGroupOption, AppJwtData, AppOptions, AppRegisterInput, AppUpdateInput};
+use server_dashboard_common::customer::CustomerAppList;
+use server_dashboard_common::sdk_common::GroupId;
 
 use crate::utils;
 
@@ -17,7 +17,7 @@ pub async fn create(
 	file_options: AppFileOptionsInput,
 	group_options: AppGroupOption,
 	group_id: Option<GroupId>,
-) -> Result<server_api_common::app::AppRegisterOutput, String>
+) -> Result<server_dashboard_common::app::AppRegisterOutput, String>
 {
 	let input = AppRegisterInput {
 		identifier,
@@ -35,7 +35,7 @@ pub async fn create(
 
 	let res = make_req(HttpMethod::POST, url.as_str(), "", Some(input), Some(jwt), None).await?;
 
-	let out: server_api_common::app::AppRegisterOutput = handle_server_response(res.as_str())?;
+	let out: server_dashboard_common::app::AppRegisterOutput = handle_server_response(res.as_str())?;
 
 	Ok(out)
 }
@@ -54,24 +54,24 @@ pub async fn update(base_url: String, jwt: &str, app_id: &str, identifier: Optio
 	Ok(handle_general_server_response(res.as_str())?)
 }
 
-pub async fn renew_token(base_url: String, jwt: &str, app_id: &str) -> Result<server_api_common::app::AppTokenRenewOutput, String>
+pub async fn renew_token(base_url: String, jwt: &str, app_id: &str) -> Result<server_dashboard_common::app::AppTokenRenewOutput, String>
 {
 	let url = base_url + "/api/v1/customer/app/" + app_id + "/token_renew";
 
 	let res = make_req(HttpMethod::PATCH, url.as_str(), "", None, Some(jwt), None).await?;
 
-	let out: server_api_common::app::AppTokenRenewOutput = handle_server_response(res.as_str())?;
+	let out: server_dashboard_common::app::AppTokenRenewOutput = handle_server_response(res.as_str())?;
 
 	Ok(out)
 }
 
-pub async fn new_jwt_keys(base_url: String, jwt: &str, app_id: &str) -> Result<server_api_common::app::AppJwtRegisterOutput, String>
+pub async fn new_jwt_keys(base_url: String, jwt: &str, app_id: &str) -> Result<server_dashboard_common::app::AppJwtRegisterOutput, String>
 {
 	let url = base_url + "/api/v1/customer/app/" + app_id + "/new_jwt_keys";
 
 	let res = make_req(HttpMethod::PATCH, url.as_str(), "", None, Some(jwt), None).await?;
 
-	let out: server_api_common::app::AppJwtRegisterOutput = handle_server_response(res.as_str())?;
+	let out: server_dashboard_common::app::AppJwtRegisterOutput = handle_server_response(res.as_str())?;
 
 	Ok(out)
 }
@@ -124,13 +124,13 @@ pub async fn get_all_apps_in_group(
 	Ok(out)
 }
 
-pub async fn get_app(base_url: String, jwt: &str, app_id: &str) -> Result<server_api_common::app::AppDetails, String>
+pub async fn get_app(base_url: String, jwt: &str, app_id: &str) -> Result<server_dashboard_common::app::AppDetails, String>
 {
 	let url = base_url + "/api/v1/customer/app/" + app_id;
 
 	let res = make_req(HttpMethod::GET, url.as_str(), "", None, Some(jwt), None).await?;
 
-	let out: server_api_common::app::AppDetails = handle_server_response(res.as_str())?;
+	let out: server_dashboard_common::app::AppDetails = handle_server_response(res.as_str())?;
 
 	Ok(out)
 }

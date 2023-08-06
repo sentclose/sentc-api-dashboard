@@ -4,8 +4,8 @@ use alloc::vec::Vec;
 use sentc_crypto_utils::http::{make_req, HttpMethod};
 use sentc_crypto_utils::{handle_general_server_response, handle_server_response};
 use serde::Serialize;
-use server_api_common::customer::{CustomerGroupCreateInput, CustomerGroupList, CustomerGroupMemberFetch, CustomerGroupView};
-use server_api_common::sdk_common::group::{GroupChangeRankServerInput, GroupCreateOutput, GroupNewMemberLightInput};
+use server_dashboard_common::customer::{CustomerGroupCreateInput, CustomerGroupList, CustomerGroupMemberFetch, CustomerGroupView};
+use server_dashboard_common::sdk_common::group::{GroupChangeRankServerInput, GroupCreateOutput, GroupNewMemberLightInput};
 
 use crate::utils;
 

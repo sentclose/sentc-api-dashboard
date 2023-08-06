@@ -9,8 +9,8 @@ edition = "2021"
 crate-type = ["cdylib"]
 
 [dependencies]
-server_api_common = {git="ssh://git@github.com/sentclose/sentc-api.git", rev = "0b997cc2b1ddd018204a6e15a365a374eaafd4eb"}
-#server_api_common = {path = "../../sentc-api/server_crates/server_api_common"} # for local dev
+server_dashboard_common = {git="ssh://git@github.com/sentclose/sentc-api.git", rev = "8c300a84c67fb5bcc998ab350799c23705b76279"}
+#server_dashboard_common = {path = "../../sentc-api/server_crates/server_dashboard_common"} # for local dev
 
 # to get it from ssh: write this in your ~/.cargo/config.toml:
 # [net]
