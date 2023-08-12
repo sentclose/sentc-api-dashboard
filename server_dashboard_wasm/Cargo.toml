@@ -9,14 +9,14 @@ edition = "2021"
 crate-type = ["cdylib"]
 
 [dependencies]
-server_dashboard_common = {git="ssh://git@github.com/sentclose/sentc-api.git", rev = "8c300a84c67fb5bcc998ab350799c23705b76279"}
+server_dashboard_common = {git="ssh://git@github.com/sentclose/sentc-api.git", rev = "222bc6efb6606b0621dbd59ea4214bbf7ecb93c7"}
 #server_dashboard_common = {path = "../../sentc-api/server_crates/server_dashboard_common"} # for local dev
 
 # to get it from ssh: write this in your ~/.cargo/config.toml:
 # [net]
 # git-fetch-with-cli = true
-sentc-crypto-light = {git = "ssh://git@github.com/sentclose/sentc.git", rev="2317ea01a846490fe64ae41a8069bd5cfdad679f", features = ["server_test"]}
-sentc-crypto-utils = {git = "ssh://git@github.com/sentclose/sentc.git", rev="2317ea01a846490fe64ae41a8069bd5cfdad679f", features = ["wasm"]}
+sentc-crypto-light = {git = "ssh://git@github.com/sentclose/sentc.git", rev="ad3a44c59bae5867c5a2a95a7f066890673904ca", features = ["server_test"]}
+sentc-crypto-utils = {git = "ssh://git@github.com/sentclose/sentc.git", rev="ad3a44c59bae5867c5a2a95a7f066890673904ca", features = ["wasm"]}
 
 # wasm dep
 getrandom = { version = "0.2", features = ["js"] }
