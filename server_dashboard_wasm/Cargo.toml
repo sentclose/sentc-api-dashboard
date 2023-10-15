@@ -3,6 +3,9 @@ name = "server_dashboard_wasm"
 version = "0.1.0"
 edition = "2021"
 
+[package.metadata.wasm-pack.profile.release]
+wasm-opt = false
+
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [lib]
@@ -15,15 +18,15 @@ server_dashboard_common = {git="ssh://git@github.com/sentclose/sentc-api.git", r
 # to get it from ssh: write this in your ~/.cargo/config.toml:
 # [net]
 # git-fetch-with-cli = true
-sentc-crypto-light = {git = "ssh://git@github.com/sentclose/sentc.git", rev="ad3a44c59bae5867c5a2a95a7f066890673904ca", features = ["server_test"]}
-sentc-crypto-utils = {git = "ssh://git@github.com/sentclose/sentc.git", rev="ad3a44c59bae5867c5a2a95a7f066890673904ca", features = ["wasm"]}
+sentc-crypto-light = {git = "ssh://git@github.com/sentclose/sentc.git", rev="56215f87b735b170e34e5a2d43c4ffbeafb9f022", features = ["server_test"]}
+sentc-crypto-utils = {git = "ssh://git@github.com/sentclose/sentc.git", rev="56215f87b735b170e34e5a2d43c4ffbeafb9f022", features = ["wasm"]}
 
 # wasm dep
 getrandom = { version = "0.2", features = ["js"] }
 sha2 = { version = "0.10", default-features = false }
 
 # use the exact version
-wasm-bindgen = {version = "=0.2.81", features = ["serde-serialize"]}
+wasm-bindgen = {version = "=0.2.83", features = ["serde-serialize"]}
 wasm-bindgen-futures = "0.4.31"
 
 serde_json = {version = "1.0.81", default-features = false, features = ["alloc"]}
