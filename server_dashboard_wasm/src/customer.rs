@@ -1,9 +1,9 @@
 use alloc::string::{String, ToString};
 use alloc::vec::Vec;
 
+use sentc_crypto_light::StdUserPreVerifyLogin;
 use sentc_crypto_utils::error::SdkUtilError;
 use sentc_crypto_utils::http::{auth_req, make_req, non_auth_req, HttpMethod};
-use sentc_crypto_utils::user::UserPreVerifyLogin;
 use sentc_crypto_utils::{handle_general_server_response, handle_server_response};
 use serde::{Deserialize, Serialize};
 use server_dashboard_common::customer::{
@@ -138,7 +138,7 @@ async fn prepare_user_fresh_jwt(
 ) -> Result<
 	(
 		String,
-		UserPreVerifyLogin,
+		StdUserPreVerifyLogin,
 		sentc_crypto_light::sdk_common::user::DoneLoginServerOutput,
 	),
 	String,
@@ -175,7 +175,7 @@ pub async fn get_fresh_jwt(
 	Ok(keys.jwt)
 }
 
-async fn verify_login(base_url: String, pre_verify: UserPreVerifyLogin) -> Result<CustomerVerifyLoginOutput, String>
+async fn verify_login(base_url: String, pre_verify: StdUserPreVerifyLogin) -> Result<CustomerVerifyLoginOutput, String>
 {
 	let url = base_url + "/api/v1/customer/verify_login";
 	let server_out = non_auth_req(HttpMethod::POST, url.as_str(), "", Some(pre_verify.challenge)).await?;
@@ -213,7 +213,7 @@ async fn done_login_internally(
 	mfa_recovery: Option<bool>,
 ) -> Result<
 	(
-		UserPreVerifyLogin,
+		StdUserPreVerifyLogin,
 		sentc_crypto_light::sdk_common::user::DoneLoginServerOutput,
 	),
 	String,
@@ -235,7 +235,7 @@ async fn done_login_internally(
 			let mfa_token = mfa_token.ok_or(SdkUtilError::JsonToStringFailed)?;
 			let mfa_recovery = mfa_recovery.ok_or(SdkUtilError::JsonToStringFailed)?;
 
-			//use this with the token of the auth app but without the verify
+			//use this with the token of the auth app but without to verify
 
 			let url = base_url.clone() +
 				if mfa_recovery {
@@ -280,7 +280,7 @@ pub async fn login(base_url: String, email: &str, password: &str) -> Result<PreL
 			Ok(PreLoginOut::Direct(out))
 		},
 		sentc_crypto_light::sdk_common::user::DoneLoginServerReturn::Otp => {
-			let master_key: sentc_crypto_utils::keys::MasterKeyFormat = derived_master_key.into();
+			let master_key: sentc_crypto_light::sdk_keys::util::MasterKeyFormat = derived_master_key.into();
 
 			Ok(PreLoginOut::Otp(PrepareLoginOtpOutput {
 				master_key: master_key.to_string()?,
