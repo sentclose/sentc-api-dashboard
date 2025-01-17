@@ -23,7 +23,7 @@ getrandom = { version = "0.2", features = ["js"] }
 sha2 = { version = "0.10", default-features = false }
 
 # use the exact version
-wasm-bindgen = { version = "=0.2.83", features = ["serde-serialize"] }
+wasm-bindgen = { version = "=0.2.92", features = ["serde-serialize"] }
 wasm-bindgen-futures = "0.4.31"
 
 serde_json = { version = "1.0.81", default-features = false, features = ["alloc"] }
