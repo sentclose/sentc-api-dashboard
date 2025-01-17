@@ -3,6 +3,7 @@ import {NuxtConfig} from "@nuxt/types";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const path = require("path");
 
+//@ts-ignore
 const config: NuxtConfig = {
 	// Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
 	ssr: false,
