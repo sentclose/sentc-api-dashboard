@@ -22,6 +22,16 @@
 						<v-list-item-title v-text="item.title" />
 					</v-list-item-content>
 				</v-list-item>
+
+				<v-divider v-if="paymentEnable()" />
+				<v-list-item v-if="paymentEnable()" :to="`/payment/app/${$route.params?.appId}`">
+					<v-list-item-action>
+						<v-icon>mdi-cash</v-icon>
+					</v-list-item-action>
+					<v-list-item-content>
+						<v-list-item-title>Cloud payment</v-list-item-title>
+					</v-list-item-content>
+				</v-list-item>
 			</v-list>
 		</v-navigation-drawer>
 
@@ -96,8 +106,7 @@ import {p} from "~/utils/utils";
 	components: {CustomerMenu},
 	middleware: ["getUser"]
 })
-export default class extends Vue
-{
+export default class extends Vue {
 	@Getter("customer/Customer/loggedIn")
 	private getLogin: number;
 
@@ -111,9 +120,14 @@ export default class extends Vue
 
 	private title = "Sentc Dashboard";
 
-	private p(item: string)
-	{
+	private p(item: string) {
 		return p(item);
+	}
+
+	paymentEnable() {
+		//@ts-ignore
+		// eslint-disable-next-line eqeqeq
+		return process.env.NUXT_ENV_PAYMENT == 1;
 	}
 
 	private items = [
