@@ -24,7 +24,7 @@
 				</v-list-item>
 
 				<v-divider v-if="paymentEnable()" />
-				<v-list-item v-if="paymentEnable()" :href="`/payment/app/${$route.params?.appId}`">
+				<v-list-item v-if="paymentEnable()" :href="`/dashboard/payment/app/${$route.params?.appId}`">
 					<v-list-item-action>
 						<v-icon>mdi-cash</v-icon>
 					</v-list-item-action>
